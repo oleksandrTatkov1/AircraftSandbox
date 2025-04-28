@@ -1,0 +1,92 @@
+.container_flex {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.goldInfoAPK {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    background-color: #d3d9e7;
+    border-radius: 1vw;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.goldInfoAPK__img {
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.goldInfoAPK__img img {
+    max-width: 90%;
+    border-radius: 1vw;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.goldInfoAPK__info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 10px 0;
+    font-family: "M PLUS Rounded 1c", sans-serif;
+}
+
+.info__list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: clamp(12px, 1.2vw, 16px);
+    color: #2d2d2d;
+}
+
+.goldInfoAPK__buttonD {
+    padding: 10px 20px;
+    background-color: #838ad7;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-family: "M PLUS Rounded 1c", sans-serif;
+    font-size: clamp(12px, 1vw, 16px);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    align-self: flex-start;
+}
+
+.goldInfoAPK__buttonD:hover {
+    background-color: #6c73c5;
+}
+
+.additionalInfoAPK {
+    background-color: #d3d9e7;
+    padding: 20px;
+    border-radius: 1vw;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    font-family: "M PLUS Rounded 1c", sans-serif;
+}
+
+.additionalInfoAPK__title {
+    font-size: clamp(16px, 2vw, 24px);
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.additionalInfoAPK__discription {
+    text-align: justify;
+    font-size: clamp(12px, 1.2vw, 16px);
+    color: #2d2d2d;
+}
+
+@media (max-width: 767px) {
+    .goldInfoAPK {
+        grid-template-columns: 1fr;
+    }
+
+    .goldInfoAPK__img img {
+        max-width: 100%;
+    }
+}

@@ -1,0 +1,73 @@
+
+
+.guides {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.guide-card {
+    background-color: #c2d2f3;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.guide-card__title {
+    font-size: 20px;
+    margin-bottom: 15px;
+    font-family: 'M PLUS Rounded 1c', sans-serif;
+}
+
+.guide-card__video {
+    position: relative;
+    overflow: hidden;
+    border-radius: 15px;
+}
+
+.guide-card__video video {
+    width: 100%;
+    display: block;
+    border-radius: 15px;
+    transition: transform 0.3s ease;
+}
+
+.guide-card__video:hover video {
+    transform: scale(1.02);
+}
+
+/* Якщо ти залишиш кнопку play поверх відео — залиш це */
+.guide-card__play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.7) url('../AircraftSandbox/img/icons/play.svg') no-repeat center;
+    background-size: 30px 30px;
+    cursor: pointer;
+    transition: background 0.3s;
+    pointer-events: none; /* Щоб не перекривало елементи відео */
+}
+
+.guide-card__video:hover .guide-card__play {
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.guide-card__iframe {
+    width: 100%;
+    height: 315px;
+    border-radius: 15px;
+    transition: transform 0.3s ease;
+}
+
+.guide-card__video:hover .guide-card__iframe {
+    transform: scale(1.02);
+}

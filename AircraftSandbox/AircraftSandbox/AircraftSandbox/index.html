@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../AircraftSandbox/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Londrina+Shadow&family=Londrina+Solid:wght@100;300;400;900&family=M+PLUS+Rounded+1c&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+</head>
+<body>
+    <div class="page-wrapper">
+        <header class="header">
+            <div class="container header__container">
+                <div class="header__logo">
+                    <img src="../AircraftSandbox/img/index/header/logo_black.png" alt="logo" class="header__imgL">
+                </div>
+                <div class="header__menu">
+                    <nav class="header__nav nav">
+                        <ul class="nav__list">
+                            <li class="nav__item"><a href="#" class="nav__link">Головна</a></li>
+                            <li class="nav__item"><a href="#">Форум</a></li>
+                            <li class="nav__item"><a href="#">Маршрути польотів</a></li>
+                            <li class="nav__item"><a href="#">Додаткові APK</a></li>
+                            <li class="nav__item">
+                                <input type="checkbox" id="dropItem" class="dropdown-toggle">
+                                <label for="dropItem" class="dropdown-label">Додаткові ресурси <span class="arrow">▼</span></label>
+                                <ul class="dropdown-menu">
+                                    <li class="dropdown-item"><a href="#">Підтримка</a></li>
+                                    <li class="dropdown-item"><a href="#">Туторіали</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </nav>
+                    <div class="header__registration">
+                        <button class="header__buttonForReg" id="auth-button">
+                            Авторизація 
+                        </button>
+                        <div class="header__profile" id="user-profile" style="display: none;">
+                            <img src="../AircraftSandbox/img/index/header/free-icon-user-483361.png" alt="Профіль" class="profile-icon">
+                        </div>
+                    </div>                    
+                </div>
+                <div class="menu-btn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </header>
+        <main class="main">
+            <div class="container">
+                <section class="faceCite">
+                    <div class="faceCite__TextWithImgAircraft">
+                        <h2 class="faceCite__logoPartF">Aircra</h2>
+                        <img src="../AircraftSandbox/img/index/main/aircraft.png" alt="">
+                        <h2 class="faceCite__logoPartS">andbox</h2>
+                    </div>
+                    <h3 class="faceCite__logoUnder">Aircraft Sandbox</h3>
+                </section>
+                <section class="newsSection">
+                    <h2 class="newsSection__title">Останні новини</h2>
+                    <!-- Slider main container -->
+                    <div class="newsSection__newsSwiper swiper">
+                            <!-- Additional required wrapper -->
+                            <div class="swiper-wrapper">
+                                <!-- Slides -->
+                                <div class="swiper-slide"><div class="slider__item">
+                                    <div class="containerImg">
+                                        <img src="" alt="">
+                                    </div>
+                                    <div class="containerTitle">
+                                    <h2  class="containerTitle__text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita rem commodi consequuntur quo aperiam esse at vitae deleniti in. Molestias iure vero nemo aperiam harum? Ad obcaecati ratione impedit aliquid?</h2>
+                                    </div>
+                                </div></div>
+                                <div class="swiper-slide"><div class="slider__item">
+                                    <div class="containerImg">
+                                        <img src="" alt="">
+                                    </div>
+                                    <div class="containerTitle">
+                                    <h2  class="containerTitle__text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita rem commodi consequuntur quo aperiam esse at vitae deleniti in. Molestias iure vero nemo aperiam harum? Ad obcaecati ratione impedit aliquid?</h2>
+                                    </div>
+                                </div></div>
+                                <div class="swiper-slide"><div class="slider__item">
+                                    <div class="containerImg">
+                                    <img src="" alt="">
+                                </div>
+                                <div class="containerTitle">
+                                    <h2  class="containerTitle__text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita rem commodi consequuntur quo aperiam esse at vitae deleniti in. Molestias iure vero nemo aperiam harum? Ad obcaecati ratione impedit aliquid?</h2>
+                                </div>
+                                </div></div>
+                                <div class="swiper-slide"><div class="slider__item">
+                                    <div class="containerImg">
+                                    <img src="" alt="">
+                                </div>
+                                <div class="containerTitle">
+                                    <h2 class="containerTitle__text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita rem commodi consequuntur quo aperiam esse at vitae deleniti in. Molestias iure vero nemo aperiam harum? Ad obcaecati ratione impedit aliquid?</h2>
+                                </div>
+                                </div></div>
+                                <div class="swiper-slide"><div class="slider__item">
+                                    <div class="containerImg">
+                                    <img src="" alt="">
+                                </div>
+                                <div class="containerTitle">
+                                    <h2  class="containerTitle__text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita rem commodi consequuntur quo aperiam esse at vitae deleniti in. Molestias iure vero nemo aperiam harum? Ad obcaecati ratione impedit aliquid?</h2>
+                                </div>
+                                </div></div>
+                                <div class="swiper-slide"><div class="slider__item">
+                                    <div class="containerImg">
+                                    <img src="" alt="">
+                                </div>
+                                <div class="containerTitle">
+                                    <h2  class="containerTitle__text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita rem commodi consequuntur quo aperiam esse at vitae deleniti in. Molestias iure vero nemo aperiam harum? Ad obcaecati ratione impedit aliquid?</h2>
+                                </div>
+                                </div>
+                            </div>
+                        </div>       
+                        <!-- If we need navigation buttons -->
+                        <div class="swiper-button-prev"></div>
+                        <div class="swiper-button-next"></div>
+                    </div>
+                    <div class="newsSection__newsSwiper swiper">
+                        <!-- Additional required wrapper -->
+                        <div class="swiper-wrapper">
+                            <!-- Slides -->
+                            <div class="swiper-slide"><div class="slider__item">
+                                <div class="containerImg">
+                                    <img src="" alt="">
+                                </div>
+                                <div class="containerTitle">
+                                    <h2  class="containerTitle__text">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nemo non omnis saepe aut odio repellendus vero, at unde harum nam impedit sequi, magnam ipsa pariatur eveniet autem quibusdam. Quaerat, vel.</h2>
+                                </div>
+                            </div></div>
+                            <div class="swiper-slide"><div class="slider__item">
+                                <div class="containerImg">
+                                    <img src="" alt="">
+                                </div>
+                                <div class="containerTitle">
+                                    <h2  class="containerTitle__text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita rem commodi consequuntur quo aperiam esse at vitae deleniti in. Molestias iure vero nemo aperiam harum? Ad obcaecati ratione impedit aliquid?</h2>
+                                </div>
+                            </div></div>
+                            <div class="swiper-slide"><div class="slider__item">
+                                <div class="containerImg">
+                                    <img src="" alt="">
+                                </div>
+                                <div class="containerTitle">
+                                    <h2  class="containerTitle__text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita rem commodi consequuntur quo aperiam esse at vitae deleniti in. Molestias iure vero nemo aperiam harum? Ad obcaecati ratione impedit aliquid?</h2>
+                                </div>
+                            </div></div>
+                            <div class="swiper-slide"><div class="slider__item">
+                                <div class="containerImg">
+                                    <img src="" alt="">
+                                </div>
+                                <div class="containerTitle">
+                                    <h2  class="containerTitle__text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita rem commodi consequuntur quo aperiam esse at vitae deleniti in. Molestias iure vero nemo aperiam harum? Ad obcaecati ratione impedit aliquid?</h2>
+                                </div>
+                            </div></div>
+                            <div class="swiper-slide"><div class="slider__item">
+                                <div class="containerImg">
+                                    <img src="" alt="">
+                                </div>
+                                <div class="containerTitle">
+                                    <h2  class="containerTitle__text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita rem commodi consequuntur quo aperiam esse at vitae deleniti in. Molestias iure vero nemo aperiam harum? Ad obcaecati ratione impedit aliquid?</h2>
+                                </div>
+                            </div></div>
+                            <div class="swiper-slide"><div class="slider__item">
+                                <div class="containerImg">
+                                    <img src="" alt="">
+                                </div>
+                                <div class="containerTitle">
+                                    <h2  class="containerTitle__text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita rem commodi consequuntur quo aperiam esse at vitae deleniti in. Molestias iure vero nemo aperiam harum? Ad obcaecati ratione impedit aliquid?</h2>
+                                </div>
+                            </div></div>
+                        </div>       
+                        <!-- If we need navigation buttons -->
+                        <div class="swiper-button-prev"></div>
+                        <div class="swiper-button-next"></div>
+                </div>
+                </section>
+            </div >   
+        </main>
+        <footer class="footer">
+            <div class="footer__container">
+                <div class="links">
+                    <a href="http://" class="links_Instagram">Instagram</a>
+                    <a href="http://" class="links_Telegram">Telegram</a>
+                    <a href="http://" class="links_WhatSup">WhatSup</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="../AircraftSandbox/js/script.js"></script>
+</html>

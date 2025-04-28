@@ -1,0 +1,238 @@
+.scroll-section {
+    opacity: 0;
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+
+.scroll-section.from-right {
+    transform: translateX(150px);
+}
+
+.scroll-section.from-left {
+    transform: translateX(-150px);
+}
+
+.scroll-section.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+
+
+/* Стилізація поста */
+.post {
+    background-color: #a0a8cb;
+    padding: 16px;
+    border-radius: 20px;
+    max-width: 800px;
+    margin: 40px auto;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    color: #fff;
+    font-family: 'M PLUS Rounded 1c', sans-serif;
+}
+
+.post__header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.post__avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.post__user {
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+.post__title {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.post__image img {
+    width: 100%;
+    border-radius: 12px;
+    margin: 12px 0;
+}
+
+.post__text {
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+}
+
+.post__actions {
+    display: flex;
+    gap: 12px;
+}
+
+.post__actions button {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 50%;
+    padding: 8px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: background 0.3s;
+}
+
+.post__actions button:hover {
+    background: rgba(255, 255, 255, 0.35);
+}
+
+/* Створення посту */
+
+.create-post {
+    background-color: #a0a8cb;
+    padding: 20px;
+    border-radius: 20px;
+    max-width: 800px;
+    margin: 40px auto;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    color: #fff;
+    font-family: 'M PLUS Rounded 1c', sans-serif;
+}
+
+.create-post__title {
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+}
+
+.create-post__form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.create-post__textarea {
+    resize: vertical;
+    min-height: 80px;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    font-size: 1rem;
+    font-family: inherit;
+}
+
+.create-post__actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.file-label {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    padding: 6px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.3s;
+}
+
+.file-label:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+.create-post__file {
+    display: none;
+}
+
+.create-post__submit {
+    background-color: #ffffff;
+    color: #5a5a5a;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.create-post__submit:hover {
+    background-color: #e2e2e2;
+}
+
+
+.post__like,
+.post__dislike {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 50px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.3s;
+}
+
+.post__like:hover,
+.post__dislike:hover {
+    background: rgba(255, 255, 255, 0.35);
+}
+
+.post__count {
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.post__menu {
+    margin-left: auto;
+    position: relative;
+    cursor: pointer;
+    padding: 4px;
+    user-select: none;
+    display: flex;
+    align-items: center;
+}
+
+.post__menu-icon {
+    width: 24px;
+    height: 24px;
+    color: #fff;
+    transition: opacity 0.2s;
+}
+
+.post__menu:hover .post__menu-icon {
+    opacity: 0.7;
+}
+
+.post__dropdown {
+    position: absolute;
+    top: 32px;
+    right: 0;
+    background: #fff;
+    color: #333;
+    list-style: none;
+    padding: 6px 0;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    display: none;
+    z-index: 10;
+    min-width: 160px;
+    font-family: 'M PLUS Rounded 1c', sans-serif;
+}
+
+/* .post__menu:hover .post__dropdown {
+    display: block;
+} */
+
+.post__dropdown-item {
+    padding: 10px 16px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+}
+
+.post__dropdown-item:hover {
+    background: #f1f1f1;
+}
+

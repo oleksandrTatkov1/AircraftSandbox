@@ -1,0 +1,144 @@
+/*Обнуление*/
+*{
+	padding: 0;
+	margin: 0;
+	border: 0;
+}
+*,*:before,*:after{
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}
+:focus,:active{outline: none;}
+a:focus,a:active{outline: none;}
+
+nav,footer,header,aside{display: block;}
+
+* {
+    caret-color: transparent !important;
+  }
+
+html,body{
+	height: 100%;
+	width: 100%;
+	font-size: 100%;
+	line-height: 1;
+	font-size: 14px;
+	-ms-text-size-adjust: 100%;
+	-moz-text-size-adjust: 100%;
+	-webkit-text-size-adjust: 100%;
+}
+input,button,textarea{font-family:inherit;}
+
+input::-ms-clear{display: none;}
+button{cursor: pointer;}
+button::-moz-focus-inner {padding:0;border:0;}
+a, a:visited{text-decoration: none;}
+a:hover{text-decoration: none;}
+ul li{list-style: none;}
+img{vertical-align: top;}
+
+h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
+/*--------------------*/
+
+.zen-maru-gothic-regular {
+    font-family: "Zen Maru Gothic", serif;
+    font-weight: 400;
+    font-style: normal;
+}
+  
+
+body{
+    background-image: url('../img/register/background/175942-minimalistskaya_estetika-estetika-minimalizm-gora-prirodnyj_landshaft-1920x1080.jpg');
+    background-size:cover;
+}
+
+.container {
+    display: flex;
+    justify-content: center; 
+    align-items: center;     
+    height: 100vh;          
+}
+.registrationForm{
+    width: 400px;
+    height: 450px;
+    background-color: rgba(31, 31, 31, 0.25);
+    backdrop-filter: blur(5px);
+    border: 1px solid #B7B7B7;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    font-size: 16px;
+    color: white;
+    padding-top: 57px;
+    font-family: "Zen Maru Gothic";
+}
+
+.registrationForm a{
+    color: white;
+}
+
+.registrationForm__title{
+    font-size: 38px;
+    margin-bottom: 61px;
+}
+
+.registrationForm__linkToIndex{
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px; /* расстояние между стрелкой и текстом */
+    text-decoration: none;
+}
+
+.textInput{
+    background: none;
+    border-bottom: 1px solid #FFFFFF;
+    margin-bottom: 35px;
+    font-size: 18px;
+    padding-left: 10px;
+    width: 280px;
+    color: #FFFFFF;
+}
+
+.textInput::placeholder {
+    color: rgba(255, 255, 255, 0.836); /* белый с прозрачностью */
+}
+
+.arrow-left {
+    color: white;
+    font-size: 24px;
+}
+
+.registrationForm__button{
+    width: 220px;
+    height: 45px;
+    border-radius: 12px;
+    font-size: 18px;
+    background-color: #D9D9D9;
+    margin-bottom: 8px;
+}
+
+.registrationForm__sectionLine{
+    margin-bottom: 40px;
+    font-size: 14px;
+}
+
+.registrationForm__sectionLine > label{
+    margin-right: 40px;
+}
+
+.registrationForm__linkToRegister{
+    font-size: 14px;
+}
+
+.registrationForm__rememberCheckbox {
+    vertical-align: top;
+    margin-top: 1.5px; /* убираем дефолтный отступ браузера */
+  }
+  
+  

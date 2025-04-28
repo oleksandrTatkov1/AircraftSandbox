@@ -1,0 +1,692 @@
+/*Обнуление*/
+*{
+	padding: 0;
+	margin: 0;
+	border: 0;
+}
+*,*:before,*:after{
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}
+:focus,:active{outline: none;}
+a:focus,a:active{outline: none;}
+
+nav,footer,header,aside{display: block;}
+
+* {
+    caret-color: transparent !important;
+  }
+
+html,body{
+	height: 100%;
+	width: 100%;
+	font-size: 100%;
+	line-height: 1;
+	font-size: 14px;
+	-ms-text-size-adjust: 100%;
+	-moz-text-size-adjust: 100%;
+	-webkit-text-size-adjust: 100%;
+}
+input,button,textarea{font-family:inherit;}
+
+input::-ms-clear{display: none;}
+button{cursor: pointer;}
+button::-moz-focus-inner {padding:0;border:0;}
+a, a:visited{text-decoration: none;}
+a:hover{text-decoration: none;}
+ul li{list-style: none;}
+img{vertical-align: top;}
+
+h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
+/*--------------------*/
+.m-plus-rounded-1c-regular {
+    font-family: "M PLUS Rounded 1c", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}  
+
+.londrina-shadow-regular {
+    font-family: "Londrina Shadow", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.londrina-solid-thin {
+    font-family: "Londrina Solid", sans-serif;
+    font-weight: 100;
+    font-style: normal;
+}
+  
+.londrina-solid-light {
+    font-family: "Londrina Solid", sans-serif;
+    font-weight: 300;
+    font-style: normal;
+}
+  
+.londrina-solid-regular {
+    font-family: "Londrina Solid", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+  
+.londrina-solid-black {
+    font-family: "Londrina Solid", sans-serif;
+    font-weight: 900;
+    font-style: normal;
+}
+
+.page-wrapper {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+.container{
+    max-width: 1230px;
+    margin: 0 auto;
+    padding: 0 15px;
+    position: relative;
+}
+
+body{
+    background-color: #AFBAD2;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+  }
+
+
+/*----------header----------*/
+
+ * a{
+    color: black;
+ }
+
+:root {
+    --header-height: 0px; /* Временно ставим ноль */
+}
+
+.header__logo {
+    max-width: clamp(80px, 15vw, 180px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+} 
+
+.header__imgL {
+    width: 100%;  /* Робить зображення повністю гнучким */
+    height: auto;
+    object-fit: contain; /* Гарантує, що зображення не обрізається */
+    margin: 0 auto;
+    transform: translateY(8px);
+}
+
+.header{
+    position: relative;
+    width: 100%;
+    left: 0;
+    top: 0;
+    z-index: 50;
+    padding: 0 15px;
+}
+
+.header__container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    font-family: "M PLUS Rounded 1c";
+}
+
+.header__menu{
+    display: flex;
+    flex: 0 1 80%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header__nav{
+    flex: 0 1 75%;
+}
+
+.nav__list{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    font-size: clamp(12px, 1.2vw, 16px);
+}
+
+
+
+.header__buttonForReg{
+    background: none;
+    position: relative;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: clamp(12px, 1.2vw, 16px);
+}
+
+.header__buttonForReg:after{
+    content: "";
+    display: block;
+    position: absolute;
+    right: 0;
+    bottom: -3px;
+    width: 0;
+    height: 2px; /* Высота линии */
+    background-color:#838ad7; /* Цвет подчеркивания при исчезании линии*/
+    transition: width 0.5s; /* Время эффекта */
+}
+
+.header__buttonForReg:hover:after{
+    content: "";
+    width: 100%;
+    display: block;
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    height: 2px; /* Высота линии */
+    background-color: #838ad7; /* Цвет подчеркивания при появлении линии*/
+    transition: width 0.5s;  /* Время эффекта */
+}
+
+.nav__item{
+    position: relative;
+    cursor: pointer;
+    text-decoration: none; /* Убираем подчеркивание */
+}
+
+.nav__item:after{
+    content: "";
+    display: block;
+    position: absolute;
+    right: 0;
+    bottom: -3px;
+    width: 0;
+    height: 2px; /* Высота линии */
+    background-color:#838ad7; /* Цвет подчеркивания при исчезании линии*/
+    transition: width 0.5s; /* Время эффекта */
+}
+
+.nav__item:hover:after {
+    content: "";
+    width: 100%;
+    display: block;
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    height: 2px; /* Высота линии */
+    background-color: #838ad7; /* Цвет подчеркивания при появлении линии*/
+    transition: width 0.5s;  /* Время эффекта */
+}
+
+*,
+.nav__item,
+.nav__item * {
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+.nav__list .nav__item:nth-child(5):after{
+    content: none;
+    display: none;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 0;
+    height: 0; /* Высота линии */
+    background-color:none; /* Цвет подчеркивания при исчезании линии*/
+    transition: none; /* Время эффекта */
+}
+
+.nav__list .nav__item:nth-child(5):hover:after{
+    content: none;
+    width: 0;
+    display: none;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height:0; /* Высота линии */
+    background-color: none; /* Цвет подчеркивания при появлении линии*/
+    transition: none;  /* Время эффекта */
+}
+
+/* Выпадающее меню */
+.dropdown-menu {
+    position: absolute;
+    top: 100%; /* Опустили меню ниже */
+    left: 50%; /* Центрируем относительно родителя */
+    transform: translateX(-50%); /* Смещаем влево на 50% ширины */
+    background: #dfe1f4;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 10px 0;
+    width: max-content; /* Подстраиваем ширину под контент */
+    min-width: 150px; /* Минимальная ширина */
+    display: none;
+    flex-direction: column;
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+/* Стили элементов выпадающего списка */
+.dropdown-item {
+    padding: 10px 20px;
+    text-align: center;
+    color: black;
+    white-space: nowrap; /* Запрещаем перенос текста */
+    transition: background 0.3s;
+}
+
+.dropdown-item:hover {
+    background: #c6c9e4;;
+}
+
+/* Показываем меню при наведении */
+.nav__dropdown:hover .dropdown-menu {
+    display: block;
+    opacity: 1;
+    transform: translateX(-50%) translateY(5px); /* Легкое смещение вниз */
+}
+
+.dropdown-toggle, .sub-dropdown-menu {
+    display: none;
+}
+
+.dropdown-toggle:checked + .dropdown-label + .dropdown-menu {
+    display: flex;
+}
+
+/* Стрелочка */
+.arrow {
+    display: inline-block;
+    transition: transform 0.3s ease;
+  }
+
+  /* Поворот стрелки при открытии */
+.dropdown-toggle:checked + .dropdown-label .arrow {
+    transform: rotate(180deg);
+}
+
+.menu-btn {
+    width: 30px;
+    height: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    z-index: 100;
+    position: relative;
+  }
+  
+  .menu-btn span {
+    display: block;
+    width: 100%;
+    height: 3px;
+    background-color: white;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    transform-origin: center;
+    position: relative;
+  }
+  
+  
+  .menu-btn.active span:nth-child(1) {
+    transform: rotate(45deg);
+    position: absolute;
+  }
+  
+  .menu-btn.active span:nth-child(2) {
+    opacity: 0;
+  }
+  
+  .menu-btn.active span:nth-child(3) {
+    transform: rotate(-45deg);
+    position: absolute;
+  }
+  
+
+  .header__profile .profile-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.header__profile .profile-icon:hover {
+    transform: scale(1.1);
+}
+
+.header__registration {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px; /* фиксируем высоту, чтобы не прыгало */
+    position: relative;
+}
+
+.header__buttonForReg,
+.header__profile .profile-icon {
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header__buttonForReg {
+    padding: 0 10px;
+}
+
+.header__profile img {
+    display: block;
+}
+
+  
+
+
+/* Адаптивное меню */
+@media (min-width: 768px){
+    .menu-btn{
+        position: absolute;
+        display: none;
+    }
+}
+
+@media (max-width:767px){
+    .menu-btn {
+        overflow: auto;
+        display: flex;
+    }
+    .header__registration{
+        display: none;
+    }
+
+    .header__menu{
+        flex-direction: column;
+        position: absolute;
+        background-color:#8792ab;
+        top: 100%; /* Вот это ключ — меню появится сразу ПОД хедером */
+        right: 0;
+        margin-right: 15px;
+        border-radius: 2vw;
+    }  
+
+    .nav__list{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .nav__list .nav__item:first-child{
+        border-top-left-radius: 2vw;
+        border-top-right-radius: 2vw;
+    }
+
+    .nav__list .nav__item:last-child{
+        display: block;
+        border-bottom-left-radius: 2vw;
+        border-bottom-right-radius: 2vw;
+    }
+
+    .nav__list .nav__item:hover{
+        background-color:#7685aa;
+    }
+
+    .nav__list li{
+        padding: 10px 0;
+        width: clamp(200px, 70vw, 400px);
+        text-align: center;
+    }
+
+    .nav__item::after {
+        content: none;       /* отключает псевдоэлемент */
+        display: none;
+        width: 0;
+        height: 0;
+        background: none;
+      }
+    
+    .nav__item:hover::after {
+        content: none;
+        display: none;
+    }
+
+    .dropdown-menu {
+        position: relative;
+        background: none;
+        border-radius: 0px;
+        box-shadow: none;
+        padding: 0;
+        width: max-content; /* Подстраиваем ширину под контент */
+        min-width: 150px; /* Минимальная ширина */
+        transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+    }
+
+    .nav__item:nth-child(5) {
+        padding: 0;
+    }
+
+    .dropdown-label {
+        display: block;
+        padding: 10px;
+        transition: margin-bottom 0.3s ease;
+      }
+      
+    .dropdown-toggle:checked + .dropdown-label {
+        padding-bottom: 0;
+    }
+
+    .nav__item a {
+        -webkit-tap-highlight-color: transparent;
+        -webkit-focus-ring-color: transparent;
+        outline: none;
+        background: none;
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .header__menu {
+        max-height: 0;
+        opacity: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease, opacity 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+    
+    .header__menu.menu--active {
+        max-height: 500px;
+        opacity: 1;
+    }
+      
+}
+
+/*----------main----------*/
+
+.main {
+    flex: 1 0 auto;
+    margin-bottom: 40px;
+}
+
+/*----------faceCite----------*/
+
+.faceCite{
+    max-height: auto;
+    max-width: 100%;
+    position: relative;
+}
+
+.faceCite__TextWithImgAircraft{
+    position: relative;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.faceCite__TextWithImgAircraft img{
+    max-width: 80%;
+    height: auto;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+}
+
+.faceCite__logoPartF, .faceCite__logoPartS{
+    font-family: "Londrina Shadow";
+    font-size: clamp(10px, calc(10px + 115 * (100vw / 1200)), 165px);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.faceCite__logoPartF{
+    left: 24%;
+}
+
+.faceCite__logoPartS{
+    left: 75%;
+}
+
+.faceCite__logoUnder{
+    position: absolute;
+    font-family: "Londrina Solid";
+    font-size: clamp(22px, calc(22px + 0.0598 * (100vw - 320px)), 91px);
+    left: 51%;
+    top: 71%;
+    transform: translate(-50%, -50%);
+}
+
+@media (min-width: 767px){
+    .faceCite__logoPartF, .faceCite__logoPartS{
+        font-size: calc(12px + (105 + 105 * 0.7) * ((100vw - 320px) / 1200));
+    }
+}
+
+@media (min-width: 1440px) {
+    .faceCite__logoPartF, .faceCite__logoPartS {
+        font-size: 165px; /* Максимальний розмір */
+    }
+}
+
+/*----------newsSection----------*/
+
+.newsSection__title{
+    text-align: center;
+    font-size: clamp(15px, calc(15px + 0.0312 * (100vw - 320px)), 50px);
+    font-family: "M PLUS Rounded 1c", sans-serif;
+}
+
+.slider__item {
+    width: clamp(50px, 35vw, 300px); /* Минимум 200px, динамика от 30vw, максимум 300px */
+    height: clamp(80px, 45vw, 340px); /* Минимум 240px, динамика от 40vw, максимум 340px */
+    background-color: #D3D9E7;
+    border-radius: 3vw; /* Адаптивное скругление */
+    position: relative;
+    padding-top: 0.8vw;
+    margin: 0 auto;
+}
+
+/* Размытые края */
+.slider__item::before {
+    content: "";
+    position: absolute;
+    top: -5%;
+    left: -5%;
+    right: -5%;
+    bottom: -5%;
+    background: inherit;
+    border-radius: 3vw; /* Делаем размытие тоже адаптивным */
+    filter: blur(2px); /* Чуть больше размытия */
+    z-index: -1;
+}
+
+
+.newsSection__newsSwiper .swiper-button-prev::after,
+.newsSection__newsSwiper .swiper-button-next::after{
+    color: white;
+}
+
+.swiper-wrapper{
+    padding: 40px 0 20px 0;
+}
+
+.containerImg{
+    height: 60%;
+    width: 90%; /* Добавь ширину */
+    background-color: aqua;
+    border-radius: 1.5vw;
+    background: url('../img/index/header/Снимок\ экрана\ 2024-12-10\ 092046.png') no-repeat center center;
+    background-size:cover;
+    margin: 0 auto;
+}
+
+.containerTitle{
+    padding: 1vw;
+    height: 40%;
+    width: 90%;
+    margin: 0 auto;
+    font-size: clamp(0.5em, 1.8vw ,1em);
+    font-family: "M PLUS Rounded 1c", sans-serif;
+    text-align: justify;
+}
+
+
+/*----------footer----------*/
+
+.footer{
+    margin-top: 4vw;
+    position: relative;
+    flex-shrink: 0;
+    margin-top: auto;
+}
+
+
+.footer__container{
+    max-width: 100%;
+    height: 4vw;
+    background-color: #7C88A6;
+}
+
+.footer__container::before {
+    content: "";
+    position: absolute;
+    top: -5%;
+    left: 0%;
+    right: 0%;
+    bottom: -5%;
+    background: inherit;
+    filter: blur(2px); /* Чуть больше размытия */
+    z-index: -1;
+}
+
+.links{
+    width: 40%;
+    height: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-content: center;
+    flex-wrap: wrap;
+    font-size: clamp(0.5em, 1.2vw, 1.5em);
+}
+
+.links a{
+    color: rgb(230, 230, 230);
+    font-family: "M PLUS Rounded 1c", sans-serif;
+}
+
+.page-wrapper {
+    display: flex;
+    flex-direction: column;
+}

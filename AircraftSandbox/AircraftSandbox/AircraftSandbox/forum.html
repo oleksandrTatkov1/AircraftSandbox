@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../AircraftSandbox/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Londrina+Shadow&family=Londrina+Solid:wght@100;300;400;900&family=M+PLUS+Rounded+1c&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+    <link rel="stylesheet" href="../AircraftSandbox/css/scrollForumStyle.css">
+</head>
+<body>
+    <div class="page-wrapper">
+        <header class="header">
+            <div class="container header__container">
+                <div class="header__logo">
+                    <img src="../AircraftSandbox/img/index/header/logo_black.png" alt="logo" class="header__imgL">
+                </div>
+                <div class="header__menu">
+                    <nav class="header__nav nav">
+                        <ul class="nav__list">
+                            <li class="nav__item"><a href="#" class="nav__link">Головна</a></li>
+                            <li class="nav__item"><a href="#">Форум</a></li>
+                            <li class="nav__item"><a href="#">Маршрути польотів</a></li>
+                            <li class="nav__item"><a href="#">Додаткові APK</a></li>
+                            <li class="nav__item">
+                                <input type="checkbox" id="dropItem" class="dropdown-toggle">
+                                <label for="dropItem" class="dropdown-label">Додаткові ресурси <span class="arrow">▼</span></label>
+                                <ul class="dropdown-menu">
+                                    <li class="dropdown-item"><a href="#">Підтримка</a></li>
+                                    <li class="dropdown-item"><a href="#">Туторіали</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </nav>
+                    <div class="header__registration">
+                        <button class="header__buttonForReg" id="auth-button">
+                            Авторизація 
+                        </button>
+                        <div class="header__profile" id="user-profile" style="display: none;">
+                            <img src="../AircraftSandbox/img/index/header/free-icon-user-483361.png" alt="Профіль" class="profile-icon">
+                        </div>
+                    </div>                    
+                </div>
+                <div class="menu-btn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </header>
+        <main class="main">
+            <div class="container">
+                <section class="create-post scroll-section">
+                    <h2 class="create-post__title">Створити публікацію</h2>
+                    <form class="create-post__form">
+                        <textarea
+                            class="create-post__textarea"
+                            placeholder="Поділіться своїми досягненнями, думками або поставте запитання..."
+                            required
+                        ></textarea>
+                        <div class="create-post__actions">
+                            <label class="file-label">
+                                📎 Додати зображення
+                                <input type="file" class="create-post__file" accept="image/*">
+                            </label>
+                            <button type="submit" class="create-post__submit">Опублікувати</button>
+                        </div>
+                    </form>
+                </section>
+                <div class="post scroll-section">
+                    <div class="post__header">
+                        <img src="../AircraftSandbox/img/avatar.png" alt="Avatar" class="post__avatar">
+                        <div>
+                            <h3 class="post__user">Professional Flyer</h3>
+                            <p class="post__title">Моя статистика польотів</p>
+                        </div>
+                        <div class="post__menu">
+                            <svg class="post__menu-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="5" cy="12" r="1" />
+                                <circle cx="12" cy="12" r="1" />
+                                <circle cx="19" cy="12" r="1" />
+                            </svg>
+                            <ul class="post__dropdown">
+                                <li class="post__dropdown-item">Поскаржитись</li>
+                            </ul>
+                        </div>                    
+                    </div>
+                
+                    <div class="post__image">
+                        <img src="../AircraftSandbox/img/register/background/175942-minimalistskaya_estetika-estetika-minimalizm-gora-prirodnyj_landshaft-1920x1080.jpg" alt="Chart">
+                    </div>
+                
+                    <div class="post__text">
+                        Привіт друзі, хочу поділитися з вами моїми досягненнями у цій грі, пропоную вам в коментах розказати про свої досягнення, чекаю на ваші коментарі.
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic iste earum architecto? Libero ipsam distinctio ab earum atque recusandae cum, porro exercitationem, nostrum vero omnis placeat assumenda impedit maxime deserunt!
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic iste earum architecto? Libero ipsam distinctio ab earum atque recusandae cum, porro exercitationem, nostrum vero omnis placeat assumenda impedit maxime deserunt!
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic iste earum architecto? Libero ipsam distinctio ab earum atque recusandae cum, porro exercitationem, nostrum vero omnis placeat assumenda impedit maxime deserunt!
+                    </div>
+                
+                    <div class="post__actions">
+                        <button class="post__like">
+                            👍 <span class="post__count">12</span>
+                        </button>
+                        <button class="post__dislike">
+                            👎 <span class="post__count">2</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="post scroll-section">
+                    <div class="post__header">
+                        <img src="../AircraftSandbox/img/avatar.png" alt="Avatar" class="post__avatar">
+                        <div>
+                            <h3 class="post__user">Professional Flyer</h3>
+                            <p class="post__title">Моя статистика польотів</p>
+                        </div>
+                        <div class="post__menu">
+                            <svg class="post__menu-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="5" cy="12" r="1" />
+                                <circle cx="12" cy="12" r="1" />
+                                <circle cx="19" cy="12" r="1" />
+                            </svg>
+                            <ul class="post__dropdown">
+                                <li class="post__dropdown-item">Поскаржитись</li>
+                            </ul>
+                        </div>                    
+                    </div>
+                
+                    <div class="post__image">
+                        <img src="../AircraftSandbox/img/register/background/175942-minimalistskaya_estetika-estetika-minimalizm-gora-prirodnyj_landshaft-1920x1080.jpg" alt="Chart">
+                    </div>
+                
+                    <div class="post__text">
+                        Привіт друзі, хочу поділитися з вами моїми досягненнями у цій грі, пропоную вам в коментах розказати про свої досягнення, чекаю на ваші коментарі.
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic iste earum architecto? Libero ipsam distinctio ab earum atque recusandae cum, porro exercitationem, nostrum vero omnis placeat assumenda impedit maxime deserunt!
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic iste earum architecto? Libero ipsam distinctio ab earum atque recusandae cum, porro exercitationem, nostrum vero omnis placeat assumenda impedit maxime deserunt!
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic iste earum architecto? Libero ipsam distinctio ab earum atque recusandae cum, porro exercitationem, nostrum vero omnis placeat assumenda impedit maxime deserunt!
+                    </div>
+                
+                    <div class="post__actions">
+                        <button class="post__like">
+                            👍 <span class="post__count">12</span>
+                        </button>
+                        <button class="post__dislike">
+                            👎 <span class="post__count">2</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="post scroll-section">
+                    <div class="post__header">
+                        <img src="../AircraftSandbox/img/avatar.png" alt="Avatar" class="post__avatar">
+                        <div>
+                            <h3 class="post__user">Professional Flyer</h3>
+                            <p class="post__title">Моя статистика польотів</p>
+                        </div>
+                        <div class="post__menu">
+                            <svg class="post__menu-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="5" cy="12" r="1" />
+                                <circle cx="12" cy="12" r="1" />
+                                <circle cx="19" cy="12" r="1" />
+                            </svg>
+                            <ul class="post__dropdown">
+                                <li class="post__dropdown-item">Поскаржитись</li>
+                            </ul>
+                        </div>                    
+                    </div>
+                
+                    <div class="post__image">
+                        <img src="../AircraftSandbox/img/register/background/175942-minimalistskaya_estetika-estetika-minimalizm-gora-prirodnyj_landshaft-1920x1080.jpg" alt="Chart">
+                    </div>
+                
+                    <div class="post__text">
+                        Привіт друзі, хочу поділитися з вами моїми досягненнями у цій грі, пропоную вам в коментах розказати про свої досягнення, чекаю на ваші коментарі.
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic iste earum architecto? Libero ipsam distinctio ab earum atque recusandae cum, porro exercitationem, nostrum vero omnis placeat assumenda impedit maxime deserunt!
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic iste earum architecto? Libero ipsam distinctio ab earum atque recusandae cum, porro exercitationem, nostrum vero omnis placeat assumenda impedit maxime deserunt!
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic iste earum architecto? Libero ipsam distinctio ab earum atque recusandae cum, porro exercitationem, nostrum vero omnis placeat assumenda impedit maxime deserunt!
+                    </div>
+                
+                    <div class="post__actions">
+                        <button class="post__like">
+                            👍 <span class="post__count">12</span>
+                        </button>
+                        <button class="post__dislike">
+                            👎 <span class="post__count">2</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="post scroll-section">
+                    <div class="post__header">
+                        <img src="../AircraftSandbox/img/avatar.png" alt="Avatar" class="post__avatar">
+                        <div>
+                            <h3 class="post__user">Professional Flyer</h3>
+                            <p class="post__title">Моя статистика польотів</p>
+                        </div>
+                        <div class="post__menu">
+                            <svg class="post__menu-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="5" cy="12" r="1" />
+                                <circle cx="12" cy="12" r="1" />
+                                <circle cx="19" cy="12" r="1" />
+                            </svg>
+                            <ul class="post__dropdown">
+                                <li class="post__dropdown-item">Поскаржитись</li>
+                            </ul>
+                        </div>                    
+                    </div>
+                
+                    <div class="post__image">
+                        <img src="../AircraftSandbox/img/register/background/175942-minimalistskaya_estetika-estetika-minimalizm-gora-prirodnyj_landshaft-1920x1080.jpg" alt="Chart">
+                    </div>
+                
+                    <div class="post__text">
+                        Привіт друзі, хочу поділитися з вами моїми досягненнями у цій грі, пропоную вам в коментах розказати про свої досягнення, чекаю на ваші коментарі.
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic iste earum architecto? Libero ipsam distinctio ab earum atque recusandae cum, porro exercitationem, nostrum vero omnis placeat assumenda impedit maxime deserunt!
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic iste earum architecto? Libero ipsam distinctio ab earum atque recusandae cum, porro exercitationem, nostrum vero omnis placeat assumenda impedit maxime deserunt!
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic iste earum architecto? Libero ipsam distinctio ab earum atque recusandae cum, porro exercitationem, nostrum vero omnis placeat assumenda impedit maxime deserunt!
+                    </div>
+                
+                    <div class="post__actions">
+                        <button class="post__like">
+                            👍 <span class="post__count">12</span>
+                        </button>
+                        <button class="post__dislike">
+                            👎 <span class="post__count">2</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="post scroll-section">
+                    <div class="post__header">
+                        <img src="../AircraftSandbox/img/avatar.png" alt="Avatar" class="post__avatar">
+                        <div>
+                            <h3 class="post__user">Professional Flyer</h3>
+                            <p class="post__title">Моя статистика польотів</p>
+                        </div>
+                        <div class="post__menu">
+                            <svg class="post__menu-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="5" cy="12" r="1" />
+                                <circle cx="12" cy="12" r="1" />
+                                <circle cx="19" cy="12" r="1" />
+                            </svg>
+                            <ul class="post__dropdown">
+                                <li class="post__dropdown-item">Поскаржитись</li>
+                            </ul>
+                        </div>                    
+                    </div>
+                
+                    <div class="post__image">
+                        <img src="../AircraftSandbox/img/register/background/175942-minimalistskaya_estetika-estetika-minimalizm-gora-prirodnyj_landshaft-1920x1080.jpg" alt="Chart">
+                    </div>
+                
+                    <div class="post__text">
+                        Привіт друзі, хочу поділитися з вами моїми досягненнями у цій грі, пропоную вам в коментах розказати про свої досягнення, чекаю на ваші коментарі.
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic iste earum architecto? Libero ipsam distinctio ab earum atque recusandae cum, porro exercitationem, nostrum vero omnis placeat assumenda impedit maxime deserunt!
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic iste earum architecto? Libero ipsam distinctio ab earum atque recusandae cum, porro exercitationem, nostrum vero omnis placeat assumenda impedit maxime deserunt!
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic iste earum architecto? Libero ipsam distinctio ab earum atque recusandae cum, porro exercitationem, nostrum vero omnis placeat assumenda impedit maxime deserunt!
+                    </div>
+                
+                    <div class="post__actions">
+                        <button class="post__like">
+                            👍 <span class="post__count">12</span>
+                        </button>
+                        <button class="post__dislike">
+                            👎 <span class="post__count">2</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="post scroll-section">
+                    <div class="post__header">
+                        <img src="../AircraftSandbox/img/avatar.png" alt="Avatar" class="post__avatar">
+                        <div>
+                            <h3 class="post__user">Professional Flyer</h3>
+                            <p class="post__title">Моя статистика польотів</p>
+                        </div>
+                        <div class="post__menu">
+                            <svg class="post__menu-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="5" cy="12" r="1" />
+                                <circle cx="12" cy="12" r="1" />
+                                <circle cx="19" cy="12" r="1" />
+                            </svg>
+                            <ul class="post__dropdown">
+                                <li class="post__dropdown-item">Поскаржитись</li>
+                            </ul>
+                        </div>                    
+                    </div>
+                
+                    <div class="post__image">
+                        <img src="../AircraftSandbox/img/register/background/175942-minimalistskaya_estetika-estetika-minimalizm-gora-prirodnyj_landshaft-1920x1080.jpg" alt="Chart">
+                    </div>
+                
+                    <div class="post__text">
+                        Привіт друзі, хочу поділитися з вами моїми досягненнями у цій грі, пропоную вам в коментах розказати про свої досягнення, чекаю на ваші коментарі.
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic iste earum architecto? Libero ipsam distinctio ab earum atque recusandae cum, porro exercitationem, nostrum vero omnis placeat assumenda impedit maxime deserunt!
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic iste earum architecto? Libero ipsam distinctio ab earum atque recusandae cum, porro exercitationem, nostrum vero omnis placeat assumenda impedit maxime deserunt!
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic iste earum architecto? Libero ipsam distinctio ab earum atque recusandae cum, porro exercitationem, nostrum vero omnis placeat assumenda impedit maxime deserunt!
+                    </div>
+                
+                    <div class="post__actions">
+                        <button class="post__like">
+                            👍 <span class="post__count">12</span>
+                        </button>
+                        <button class="post__dislike">
+                            👎 <span class="post__count">2</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="post scroll-section">
+                    <div class="post__header">
+                        <img src="../AircraftSandbox/img/avatar.png" alt="Avatar" class="post__avatar">
+                        <div>
+                            <h3 class="post__user">Professional Flyer</h3>
+                            <p class="post__title">Моя статистика польотів</p>
+                        </div>
+                        <div class="post__menu">
+                            <svg class="post__menu-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="5" cy="12" r="1" />
+                                <circle cx="12" cy="12" r="1" />
+                                <circle cx="19" cy="12" r="1" />
+                            </svg>
+                            <ul class="post__dropdown">
+                                <li class="post__dropdown-item">Поскаржитись</li>
+                            </ul>
+                        </div>                    
+                    </div>
+                
+                    <div class="post__image">
+                        <img src="../AircraftSandbox/img/register/background/175942-minimalistskaya_estetika-estetika-minimalizm-gora-prirodnyj_landshaft-1920x1080.jpg" alt="Chart">
+                    </div>
+                
+                    <div class="post__text">
+                        Привіт друзі, хочу поділитися з вами моїми досягненнями у цій грі, пропоную вам в коментах розказати про свої досягнення, чекаю на ваші коментарі.
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic iste earum architecto? Libero ipsam distinctio ab earum atque recusandae cum, porro exercitationem, nostrum vero omnis placeat assumenda impedit maxime deserunt!
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic iste earum architecto? Libero ipsam distinctio ab earum atque recusandae cum, porro exercitationem, nostrum vero omnis placeat assumenda impedit maxime deserunt!
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic iste earum architecto? Libero ipsam distinctio ab earum atque recusandae cum, porro exercitationem, nostrum vero omnis placeat assumenda impedit maxime deserunt!
+                    </div>
+                
+                    <div class="post__actions">
+                        <button class="post__like">
+                            👍 <span class="post__count">12</span>
+                        </button>
+                        <button class="post__dislike">
+                            👎 <span class="post__count">2</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="post scroll-section">
+                    <div class="post__header">
+                        <img src="../AircraftSandbox/img/avatar.png" alt="Avatar" class="post__avatar">
+                        <div>
+                            <h3 class="post__user">Professional Flyer</h3>
+                            <p class="post__title">Моя статистика польотів</p>
+                        </div>
+                        <div class="post__menu">
+                            <svg class="post__menu-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="5" cy="12" r="1" />
+                                <circle cx="12" cy="12" r="1" />
+                                <circle cx="19" cy="12" r="1" />
+                            </svg>
+                            <ul class="post__dropdown">
+                                <li class="post__dropdown-item">Поскаржитись</li>
+                            </ul>
+                        </div>                    
+                    </div>
+                
+                    <div class="post__image">
+                        <img src="../AircraftSandbox/img/register/background/175942-minimalistskaya_estetika-estetika-minimalizm-gora-prirodnyj_landshaft-1920x1080.jpg" alt="Chart">
+                    </div>
+                
+                    <div class="post__text">
+                        Привіт друзі, хочу поділитися з вами моїми досягненнями у цій грі, пропоную вам в коментах розказати про свої досягнення, чекаю на ваші коментарі.
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic iste earum architecto? Libero ipsam distinctio ab earum atque recusandae cum, porro exercitationem, nostrum vero omnis placeat assumenda impedit maxime deserunt!
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic iste earum architecto? Libero ipsam distinctio ab earum atque recusandae cum, porro exercitationem, nostrum vero omnis placeat assumenda impedit maxime deserunt!
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic iste earum architecto? Libero ipsam distinctio ab earum atque recusandae cum, porro exercitationem, nostrum vero omnis placeat assumenda impedit maxime deserunt!
+                    </div>
+                
+                    <div class="post__actions">
+                        <button class="post__like">
+                            👍 <span class="post__count">12</span>
+                        </button>
+                        <button class="post__dislike">
+                            👎 <span class="post__count">2</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>        
+        <footer class="footer">
+            <div class="footer__container">
+                <div class="links">
+                    <a href="http://" class="links_Instagram">Instagram</a>
+                    <a href="http://" class="links_Telegram">Telegram</a>
+                    <a href="http://" class="links_WhatSup">WhatSup</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="../AircraftSandbox/js/script.js"></script>
+<script src="../AircraftSandbox/js/scrollForum.js"></script>
+</html>
