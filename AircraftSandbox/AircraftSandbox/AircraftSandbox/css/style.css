@@ -82,12 +82,16 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
     flex-direction: column;
   }
 
-.container{
+.container {
+    width: 100%;
     max-width: 1230px;
     margin: 0 auto;
-    padding: 0 15px;
+    padding-left: clamp(10px, 5vw, 20px);
+    padding-right: clamp(10px, 5vw, 20px);
+    box-sizing: border-box;
     position: relative;
 }
+  
 
 body{
     background-color: #AFBAD2;
