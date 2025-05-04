@@ -1,0 +1,104 @@
+.edit-profile {
+  background-color: #a7b4d0;
+  border-radius: 1.5rem;
+  padding: 2rem;
+  font-family: "M PLUS Rounded 1c", sans-serif;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+}
+
+.edit-profile__back {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  color: #2b3254;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.edit-profile__avatar-section {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.edit-profile__avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 1rem;
+  border: 3px solid white;
+}
+
+.edit-profile__upload-btn {
+  display: inline-block;
+  padding: 0.4rem 1rem;
+  background-color: #3b476c;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background-color 0.3s ease;
+}
+
+.edit-profile__upload-btn:hover {
+  background-color: #2a314e;
+}
+
+.edit-profile__form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 0.6rem 0.9rem;
+  border-radius: 10px;
+  border: 1px solid #ccd1e0;
+  background-color: #e6ebf5;
+  font-size: 1rem;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.edit-profile__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.edit-profile__save {
+  background-color: #4c57a3;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.4rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.edit-profile__save:hover {
+  background-color: #3d4689;
+}
+
+.edit-profile__cancel {
+  background-color: transparent;
+  color: #333;
+  padding: 0.6rem 1.4rem;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.edit-profile__cancel:hover {
+  color: #111;
+}
