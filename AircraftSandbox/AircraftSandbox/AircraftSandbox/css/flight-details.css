@@ -1,0 +1,105 @@
+body {
+    margin: 0;
+    font-family: "Segoe UI", sans-serif;
+  }
+  
+  .page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  .flight {
+    flex: 1;
+    padding: 2rem 1rem;
+  }
+  
+  .flight__container {
+    max-width: 1100px;
+    margin: auto;
+    background-color: #f4f6fb;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  }
+  
+  .flight__info {
+    margin-bottom: 2rem;
+  }
+  
+  .flight__route {
+    font-size: 1.6rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .flight__summary {
+    margin-bottom: 1rem;
+    font-size: 1rem;
+  }
+  
+  .flight__cargo {
+    list-style: disc inside;
+    padding-left: 1rem;
+    color: #333;
+  }
+  
+  .flight__item {
+    margin-bottom: 0.3rem;
+  }
+  
+  .flight__planes {
+    display: flex;
+    gap: 1.2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 2rem;
+  }
+  
+  .flight__plane {
+    width: 300px;
+    max-width: 100%;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 4px solid transparent;
+  }
+  
+  .flight__plane:hover {
+    transform: scale(1.03);
+  }
+  
+  .flight__plane--active {
+    border-color: #ef5c5c;
+    box-shadow: 0 0 12px rgba(255, 0, 0, 0.2);
+  }
+  
+  .flight__submit {
+    display: block;
+    margin: auto;
+    padding: 0.8rem 1.6rem;
+    font-size: 1rem;
+    background-color: #4c57a3;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .flight__submit:hover {
+    background-color: #3b447f;
+  }
+  
+  
+  /* 🌐 Адаптив */
+  @media (max-width: 768px) {
+    .flight__planes {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .flight__plane {
+      width: 90%;
+    }
+  }
+  

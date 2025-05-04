@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../AircraftSandbox/css/style.css">
+    <link rel="stylesheet" href="../AircraftSandbox/css/routes.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Londrina+Shadow&family=Londrina+Solid:wght@100;300;400;900&family=M+PLUS+Rounded+1c&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+</head>
+<body>
+    <div class="page-wrapper">
+        <header class="header">
+            <div class="container header__container">
+                <div class="header__logo">
+                    <img src="../AircraftSandbox/img/index/header/logo_black.png" alt="logo" class="header__imgL">
+                </div>
+                <div class="header__menu">
+                    <nav class="header__nav nav">
+                      <ul class="nav__list">
+                        <li class="nav__item"><a href="index.html" class="nav__link">Головна</a></li>
+                        <li class="nav__item"><a href="forum.html" class="nav__link">Форум</a></li>
+                        <li class="nav__item"><a href="routes.html" class="nav__link">Маршрути польотів</a></li>
+                        <li class="nav__item"><a href="apk.html" class="nav__link">Додаткові APK</a></li>
+                        <li class="nav__item">
+                          <input type="checkbox" id="dropItem" class="dropdown-toggle">
+                          <label for="dropItem" class="dropdown-label">Додаткові ресурси <span class="arrow">▼</span></label>
+                          <ul class="dropdown-menu">
+                            <li class="dropdown-item"><a href="">Підтримка</a></li>
+                            <li class="dropdown-item"><a href="guides.html">Туторіали</a></li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </nav>
+                    <div class="header__registration">
+                      <button class="header__buttonForReg" id="auth-button">
+                        Авторизація 
+                      </button>
+                      <div class="header__profile" id="user-profile" style="display: none;">
+                        <img src="/AircraftSandbox/img/index/header/free-icon-user-483361.png" alt="Профіль" class="profile-icon">
+                      </div>
+                    </div>                    
+                </div>
+                <div class="menu-btn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </header>
+        <main class="main">
+            <div class="container routes">
+              <aside class="routes__filter">
+                <h3>Фільтр</h3>
+                <form id="filter-form">
+                  <label>Місто
+                    <input type="text" id="filter-city" placeholder="..." />
+                  </label>
+                  <label>Тип товару
+                    <input type="text" id="filter-cargo" placeholder="..." />
+                  </label>
+                  <label>Вага
+                    <input type="number" id="filter-weight" placeholder="... кг" />
+                  </label>
+                  <label>Час виконання
+                    <input type="number" id="filter-time" placeholder="... год" />
+                  </label>
+                  <button type="submit">Застосувати</button>
+                </form>
+              </aside>
+      
+              <section class="routes__list">
+                <div class="route-card" data-city="луганськ київ" data-cargo="побутова техніка" data-weight="540" data-time="16">
+                  <h4>Луганськ → Київ</h4>
+                  <p>Деталі для побутової техніки – 540 кг. Час виконання: 16 годин. Винагорода:</p>
+                  <button class="route-card__accept">Прийняти</button>
+                </div>
+      
+                <div class="route-card" data-city="лондон париж" data-cargo="харчові продукти" data-weight="1000" data-time="12">
+                  <h4>Лондон → Париж</h4>
+                  <p>Перевезення харчових продуктів – 1 Тона. Час виконання: 12 годин. Винагорода:</p>
+                  <button class="route-card__accept">Прийняти</button>
+                </div>
+      
+                <div class="route-card" data-city="варшава стокгольм" data-cargo="лікарські препарати" data-weight="1500" data-time="18">
+                  <h4>Варшава → Стокгольм</h4>
+                  <p>Лікарські препарати – 1.5 Тони. Час виконання: 18 годин. Винагорода:</p>
+                  <button class="route-card__accept">Прийняти</button>
+                </div>
+      
+                <div class="route-card" data-city="берлін мадрид" data-cargo="вироби" data-weight="350" data-time="22">
+                  <h4>Берлін → Мадрид</h4>
+                  <p>Плавлені вироби – 350 кг. Час виконання: 22 години. Винагорода:</p>
+                  <button class="route-card__accept">Прийняти</button>
+                </div>
+      
+                <div class="route-card" data-city="братислава нью-йорк" data-cargo="транспорт" data-weight="3000" data-time="38">
+                  <h4>Братислава → Нью-Йорк</h4>
+                  <p>Деталі для транспорту – 3 Тони. Час виконання: 38 годин. Винагорода:</p>
+                  <button class="route-card__accept">Прийняти</button>
+                </div>
+
+                <div class="route-card" data-city="луганськ київ" data-cargo="побутова техніка" data-weight="540" data-time="16">
+                    <h4>Луганськ → Київ</h4>
+                    <p>Деталі для побутової техніки – 540 кг. Час виконання: 16 годин. Винагорода:</p>
+                    <button class="route-card__accept">Прийняти</button>
+                  </div>
+        
+                  <div class="route-card" data-city="лондон париж" data-cargo="харчові продукти" data-weight="1000" data-time="12">
+                    <h4>Лондон → Париж</h4>
+                    <p>Перевезення харчових продуктів – 1 Тона. Час виконання: 12 годин. Винагорода:</p>
+                    <button class="route-card__accept">Прийняти</button>
+                  </div>
+        
+                  <div class="route-card" data-city="варшава стокгольм" data-cargo="лікарські препарати" data-weight="1500" data-time="18">
+                    <h4>Варшава → Стокгольм</h4>
+                    <p>Лікарські препарати – 1.5 Тони. Час виконання: 18 годин. Винагорода:</p>
+                    <button class="route-card__accept">Прийняти</button>
+                  </div>
+        
+                  <div class="route-card" data-city="берлін мадрид" data-cargo="вироби" data-weight="350" data-time="22">
+                    <h4>Берлін → Мадрид</h4>
+                    <p>Плавлені вироби – 350 кг. Час виконання: 22 години. Винагорода:</p>
+                    <button class="route-card__accept">Прийняти</button>
+                  </div>
+        
+                  <div class="route-card" data-city="братислава нью-йорк" data-cargo="транспорт" data-weight="3000" data-time="38">
+                    <h4>Братислава → Нью-Йорк</h4>
+                    <p>Деталі для транспорту – 3 Тони. Час виконання: 38 годин. Винагорода:</p>
+                    <button class="route-card__accept">Прийняти</button>
+                  </div>
+              </section>
+            </div>
+          </main>
+        <footer class="footer">
+            <div class="footer__container">
+                <div class="links">
+                    <a href="http://" class="links_Instagram">Instagram</a>
+                    <a href="http://" class="links_Telegram">Telegram</a>
+                    <a href="http://" class="links_WhatSup">WhatSup</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="../AircraftSandbox/js/script.js"></script>
+<script src="../AircraftSandbox/js/routes.js"></script>
+</html>

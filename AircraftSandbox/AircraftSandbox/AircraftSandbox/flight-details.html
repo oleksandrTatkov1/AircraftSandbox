@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Деталі маршруту</title>
+  <link rel="stylesheet" href="../AircraftSandbox/css/flight-details.css" />
+  <link rel="stylesheet" href="../AircraftSandbox/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Londrina+Shadow&family=Londrina+Solid:wght@100;300;400;900&family=M+PLUS+Rounded+1c&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+        <div class="container header__container">
+            <div class="header__logo">
+                <img src="../AircraftSandbox/img/index/header/logo_black.png" alt="logo" class="header__imgL">
+            </div>
+            <div class="header__menu">
+                <nav class="header__nav nav">
+                  <ul class="nav__list">
+                    <li class="nav__item"><a href="index.html" class="nav__link">Головна</a></li>
+                    <li class="nav__item"><a href="forum.html" class="nav__link">Форум</a></li>
+                    <li class="nav__item"><a href="routes.html" class="nav__link">Маршрути польотів</a></li>
+                    <li class="nav__item"><a href="apk.html" class="nav__link">Додаткові APK</a></li>
+                    <li class="nav__item">
+                      <input type="checkbox" id="dropItem" class="dropdown-toggle">
+                      <label for="dropItem" class="dropdown-label">Додаткові ресурси <span class="arrow">▼</span></label>
+                      <ul class="dropdown-menu">
+                        <li class="dropdown-item"><a href="">Підтримка</a></li>
+                        <li class="dropdown-item"><a href="guides.html">Туторіали</a></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </nav>
+                <div class="header__registration">
+                  <button class="header__buttonForReg" id="auth-button">
+                    Авторизація 
+                  </button>
+                  <div class="header__profile" id="user-profile" style="display: none;">
+                    <img src="/AircraftSandbox/img/index/header/free-icon-user-483361.png" alt="Профіль" class="profile-icon">
+                  </div>
+                </div>                    
+            </div>
+            <div class="menu-btn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <main class="flight">
+      <div class="flight__container">
+        <div class="flight__info">
+          <h2 class="flight__route">Лісабон → Бразилія</h2>
+          <p class="flight__summary">Взуття та одяг – 1 Тона. Час виконання: 32 години. Винагорода: —</p>
+
+          <ul class="flight__cargo">
+            <li class="flight__item">Взуття: 200 пар</li>
+            <li class="flight__item">Футболки: 1000 шт</li>
+            <li class="flight__item">Штани: 500 шт</li>
+            <li class="flight__item">Сорочки: 200 шт</li>
+            <li class="flight__item">Ремені: 50 шт</li>
+          </ul>
+        </div>
+
+        <div class="flight__planes">
+          <img src="plane1.png" alt="Літак 1" class="flight__plane flight__plane--active" />
+          <img src="plane2.png" alt="Літак 2" class="flight__plane" />
+        </div>
+
+        <button class="flight__submit">Вибрати літак</button>
+      </div>
+    </main>
+
+    <footer class="footer">
+            <div class="footer__container">
+                <div class="links">
+                    <a href="http://" class="links_Instagram">Instagram</a>
+                    <a href="http://" class="links_Telegram">Telegram</a>
+                    <a href="http://" class="links_WhatSup">WhatSup</a>
+                </div>
+            </div>
+        </footer>
+  </div>
+
+  <script>
+    const planes = document.querySelectorAll('.flight__plane');
+    planes.forEach(plane => {
+      plane.addEventListener('click', () => {
+        planes.forEach(p => p.classList.remove('flight__plane--active'));
+        plane.classList.add('flight__plane--active');
+      });
+    });
+
+    const route = JSON.parse(localStorage.getItem('selectedRoute'));
+
+    if (route) {
+    document.querySelector('.flight__route').textContent = route.title;
+    document.querySelector('.flight__summary').textContent = route.summary;
+
+    // Можна динамічно генерувати список вантажу
+    const cargoList = document.querySelector('.flight__cargo');
+    cargoList.innerHTML = '';
+
+    const items = route.cargo.split(','); // якщо розділені комами
+    items.forEach(item => {
+        const li = document.createElement('li');
+        li.className = 'flight__item';
+        li.textContent = item.trim();
+        cargoList.appendChild(li);
+    });
+    }
+
+  </script>
+</body>
+</html>
