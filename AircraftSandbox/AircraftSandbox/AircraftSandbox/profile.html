@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Профіль</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Londrina+Shadow&family=Londrina+Solid:wght@100;300;400;900&family=M+PLUS+Rounded+1c&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+  <link rel="stylesheet" href="../AircraftSandbox/css/style.css">
+  <link rel="stylesheet" href="../AircraftSandbox/css/profile.css"/>
+</head>
+<body>
+  <div class="page-wrapper">
+    <header class="header">
+        <div class="container header__container">
+            <div class="header__logo">
+                <img src="../AircraftSandbox/img/index/header/logo_black.png" alt="logo" class="header__imgL">
+            </div>
+            <div class="header__menu">
+                <nav class="header__nav nav">
+                  <ul class="nav__list">
+                    <li class="nav__item"><a href="index.html" class="nav__link">Головна</a></li>
+                    <li class="nav__item"><a href="forum.html" class="nav__link">Форум</a></li>
+                    <li class="nav__item"><a href="routes.html" class="nav__link">Маршрути польотів</a></li>
+                    <li class="nav__item"><a href="apk.html" class="nav__link">Додаткові APK</a></li>
+                    <li class="nav__item">
+                      <input type="checkbox" id="dropItem" class="dropdown-toggle">
+                      <label for="dropItem" class="dropdown-label">Додаткові ресурси <span class="arrow">▼</span></label>
+                      <ul class="dropdown-menu">
+                        <li class="dropdown-item"><a href="">Підтримка</a></li>
+                        <li class="dropdown-item"><a href="guides.html">Туторіали</a></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </nav>
+                <div class="header__registration">
+                  <button class="header__buttonForReg" id="auth-button">
+                    Авторизація 
+                  </button>
+                  <div class="header__profile" id="user-profile" style="display: none;">
+                    <img src="/AircraftSandbox/img/index/header/free-icon-user-483361.png" alt="Профіль" class="profile-icon">
+                  </div>
+                </div>                    
+            </div>
+            <div class="menu-btn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+          <div class="profile-card">
+            <div class="profile-card__header">
+              <img src="../AircraftSandbox/img/APK/main/photo_2025-04-17_15-47-28.jpg" alt="Avatar" class="profile-card__avatar">
+              <div class="profile-card__info">
+                <h2 class="profile-card__username">@GloryToWLW</h2>
+                <p class="profile-card__bio">
+                  Discussing all things aviation, from dogfights to dream flights. Join the squadron! ✈️
+                </p>
+              </div>
+              <button class="profile-card__edit"><a href="profileRedact.html">Редагувати профіль</a></button>
+            </div>
+      
+            <div class="profile-card__tabs">
+                <div class="profile-card__indicator" id="tab-indicator"></div>
+              
+                <button class="profile-card__tab" data-tab="posts">Пости</button>
+                <button class="profile-card__tab" data-tab="replies">Відповіді</button>
+              </div>
+              
+      
+            <div class="profile-card__content" id="posts">
+              <div class="profile-card__post">
+                <div class="post__header">
+                  <img src="e737bbb3-f42c-48c5-a56f-d1beb509ac81.png" class="post__avatar" />
+                  <span class="post__user">@GloryToWLW</span>
+                </div>
+                <h4 class="post__title">Best Beginner-Friendly Airliners?</h4>
+                <p class="post__text">Hey everyone! 🖐 I’m new to flight sims and looking for a good airliner to start with...</p>
+              </div>
+
+              <div class="profile-card__post">
+                <div class="post__header">
+                  <img src="e737bbb3-f42c-48c5-a56f-d1beb509ac81.png" class="post__avatar" />
+                  <span class="post__user">@GloryToWLW</span>
+                </div>
+                <h4 class="post__title">Best Beginner-Friendly Airliners?</h4>
+                <p class="post__text">Hey everyone! 🖐 I’m new to flight sims and looking for a good airliner to start with...</p>
+              </div>
+      
+              <!-- Повторіть інші пости за цією ж структурою -->
+            </div>
+      
+            <div class="profile-card__content hidden" id="replies">
+              <div class="profile-card__answer">
+                <div class="answer__header">
+                  <img src="e737bbb3-f42c-48c5-a56f-d1beb509ac81.png" class="answer__avatar" />
+                  <span class="answer__user">@GloryToWLW</span>
+                </div>
+                <h4 class="answer__title">Best Beginner-Friendly Airliners?</h4>
+                <p class="answer__text">Hey everyone! 🖐 I’m new to flight sims and looking for a good airliner to start with...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+      
+
+    <footer class="footer">
+        <div class="footer__container">
+            <div class="links">
+                <a href="http://" class="links_Instagram">Instagram</a>
+                <a href="http://" class="links_Telegram">Telegram</a>
+                <a href="http://" class="links_WhatSup">WhatSup</a>
+            </div>
+        </div>
+    </footer>
+  </div>
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="../AircraftSandbox/js/script.js"></script>
+<script src="../AircraftSandbox/js/profile.js"></script>
+</html>

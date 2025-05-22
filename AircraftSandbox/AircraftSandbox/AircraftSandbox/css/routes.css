@@ -1,0 +1,118 @@
+body {
+    margin: 0;
+    font-family: "Segoe UI", sans-serif;
+  }
+
+  
+  .container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 2rem 1rem;
+  }
+  
+  .routes {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start; /* додатково для ясності */
+  }
+  
+  .routes__filter {
+    background-color: #e6ebf5;
+    padding: 1.5rem;
+    border-radius: 15px;
+    width: 260px;
+    flex-shrink: 0;
+    align-self: flex-start; /* ✅ це ключове */
+  }
+  
+  
+  .routes__filter h3 {
+    margin-bottom: 1rem;
+  }
+  
+  .routes__filter label {
+    display: block;
+    margin-bottom: 1rem;
+    font-weight: 500;
+  }
+  
+  .routes__filter input {
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 8px;
+    border: 1px solid #bcc3d6;
+    margin-top: 0.3rem;
+    background-color: #f2f5fb;
+  }
+  
+  .routes__filter button {
+    margin-top: 1rem;
+    width: 100%;
+    background-color: #4c57a3;
+    color: white;
+    border: none;
+    padding: 0.6rem;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+  }
+  
+  .routes__filter button:hover {
+    background-color: #3b447f;
+  }
+  
+  .routes__list {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-bottom: 2rem;
+  }
+  
+  .route-card {
+    background-color: #f9f9fb;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease;
+  }
+  
+  .route-card:hover {
+    transform: translateY(-2px);
+  }
+  
+  .route-card h4 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .route-card p {
+    font-size: 0.95rem;
+    margin-bottom: 0.8rem;
+  }
+  
+  .route-card button {
+    background-color: #3b476c;
+    color: white;
+    padding: 0.4rem 1.2rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  
+  .route-card button:hover {
+    background-color: #2a314e;
+  }
+  
+  /* Адаптив */
+  @media (max-width: 768px) {
+    .routes {
+      flex-direction: column;
+    }
+  
+    .routes__filter {
+      width: 100%;
+    }
+  }
+  

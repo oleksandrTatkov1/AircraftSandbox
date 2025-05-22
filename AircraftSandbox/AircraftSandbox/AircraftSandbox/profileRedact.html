@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Профіль</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Londrina+Shadow&family=Londrina+Solid:wght@100;300;400;900&family=M+PLUS+Rounded+1c&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+  <link rel="stylesheet" href="../AircraftSandbox/css/style.css">
+  <link rel="stylesheet" href="../AircraftSandbox/css/profileRedact.css"/>
+</head>
+<body>
+  <div class="page-wrapper">
+    <header class="header">
+        <div class="container header__container">
+            <div class="header__logo">
+                <img src="../AircraftSandbox/img/index/header/logo_black.png" alt="logo" class="header__imgL">
+            </div>
+            <div class="header__menu">
+                <nav class="header__nav nav">
+                  <ul class="nav__list">
+                    <li class="nav__item"><a href="index.html" class="nav__link">Головна</a></li>
+                    <li class="nav__item"><a href="forum.html" class="nav__link">Форум</a></li>
+                    <li class="nav__item"><a href="routes.html" class="nav__link">Маршрути польотів</a></li>
+                    <li class="nav__item"><a href="apk.html" class="nav__link">Додаткові APK</a></li>
+                    <li class="nav__item">
+                      <input type="checkbox" id="dropItem" class="dropdown-toggle">
+                      <label for="dropItem" class="dropdown-label">Додаткові ресурси <span class="arrow">▼</span></label>
+                      <ul class="dropdown-menu">
+                        <li class="dropdown-item"><a href="">Підтримка</a></li>
+                        <li class="dropdown-item"><a href="guides.html">Туторіали</a></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </nav>
+                <div class="header__registration">
+                  <button class="header__buttonForReg" id="auth-button">
+                    Авторизація 
+                  </button>
+                  <div class="header__profile" id="user-profile" style="display: none;">
+                    <img src="/AircraftSandbox/img/index/header/free-icon-user-483361.png" alt="Профіль" class="profile-icon">
+                  </div>
+                </div>                    
+            </div>
+            <div class="menu-btn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+          <div class="edit-profile">
+            <a href="profile.html" class="edit-profile__back">← Повернутись</a>
+  
+            <div class="edit-profile__avatar-section">
+              <img src="../AircraftSandbox/img/APK/main/photo_2025-04-17_15-47-28.jpg" alt="avatar" class="edit-profile__avatar"/>
+              <br><label class="edit-profile__upload-btn">
+                Завантажити нове фото
+                <input type="file" accept="image/*" hidden>
+              </label>
+            </div>
+  
+            <form class="edit-profile__form">
+              <div class="form-group">
+                <label for="username">Ім’я користувача</label>
+                <input type="text" id="username" value="@GloryToWLW" />
+              </div>
+  
+              <div class="form-group">
+                <label for="bio">Опис облікового запису</label>
+                <textarea id="bio" rows="4">Обговорення всього, що стосується авіації, від повітряних боїв до польотів мрії. Приєднуйтесь до ескадрильї! ✈️</textarea>
+              </div>
+  
+              <div class="edit-profile__actions">
+                <button type="submit" class="edit-profile__save">Зберегти зміни</button>
+                <a href="profile.html" class="edit-profile__cancel">Скасувати</a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </main>
+
+    <footer class="footer">
+        <div class="footer__container">
+            <div class="links">
+                <a href="http://" class="links_Instagram">Instagram</a>
+                <a href="http://" class="links_Telegram">Telegram</a>
+                <a href="http://" class="links_WhatSup">WhatSup</a>
+            </div>
+        </div>
+    </footer>
+  </div>
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="../AircraftSandbox/js/script.js"></script>
+<script src="../AircraftSandbox/js/profile.js"></script>
+</html>

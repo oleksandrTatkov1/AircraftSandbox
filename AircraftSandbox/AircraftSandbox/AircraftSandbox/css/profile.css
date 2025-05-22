@@ -1,0 +1,162 @@
+/* === Основний контейнер сторінки профілю === */
+.profile-card {
+  background-color: #a7b4d0;
+  border-radius: 1.5rem;
+  padding: 2rem;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+  font-family: "M PLUS Rounded 1c", sans-serif;
+}
+
+/* === Верхня частина профілю (аватар, ім’я, біо, кнопка) === */
+.profile-card__header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.profile-card__avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid white;
+}
+
+.profile-card__info {
+  flex: 1;
+}
+
+.profile-card__username {
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+.profile-card__bio {
+  font-size: 1rem;
+  color: #111;
+}
+
+/* === Кнопка редагування === */
+.profile-card__edit a{
+  background-color: #3b476c;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 10px;
+  height: fit-content;
+  cursor: pointer;
+}
+
+.profile-card__edit:hover {
+  background-color: #6c73be;
+}
+
+/* === Таб-перемикачі === */
+.profile-card__tabs {
+  display: flex;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.profile-card__tab {
+  flex: 1;
+  padding: 0.6rem;
+  background-color: #8f9bb9;
+  border: none;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+
+/* === Контент вкладки === */
+.profile-card__content {
+  display: block;
+}
+
+.hidden {
+  display: none;
+}
+
+/* === Окремий пост === */
+.profile-card__post, .profile-card__answer{
+  background-color: #cfd8ec;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* Заголовок поста */
+.post__title, .answer__title{
+  font-size: 1.1rem;
+  margin: 0.3rem 0;
+  font-weight: bold;
+}
+
+/* Текст поста */
+.post__text, .answer__text {
+  font-size: 0.95rem;
+}
+
+/* Аватар і юзернейм у пості */
+.post__header, .answer__header {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.post__avatar, .answer__avatar{
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.post__user, .answer__avatar{
+  font-weight: bold;
+}
+
+/* Анимация перелива */
+
+.profile-card__tabs {
+  display: flex;
+  position: relative;
+  margin-bottom: 1rem;
+  border-radius: 10px;
+  background-color: #8f9bb9;
+  overflow: hidden;
+}
+
+/* Елемент, що переливається */
+.profile-card__indicator {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  background: #2b3254;
+  border-radius: 10px;
+  z-index: 0;
+  transition: transform 0.9s ease;
+}
+
+/* Кнопки */
+.profile-card__tab {
+  flex: 1;
+  padding: 0.6rem;
+  background: transparent;
+  border: none;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+}
+
+.profile-card__tab.active {
+  color: #ffffff;
+}
