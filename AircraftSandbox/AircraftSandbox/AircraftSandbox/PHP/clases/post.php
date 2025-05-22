@@ -7,6 +7,7 @@ class Post {
     public $likesCount;
     public $dislikesCount;
     public $ownerLogin;
+
     public function __construct() {
         $this->id = 0;
         $this->header = '';
@@ -18,56 +19,100 @@ class Post {
     }
 
     public function loadFromDB($db, $id) {
-        $stmt = $db->prepare("SELECT * FROM Post WHERE id = :id");
-        $stmt->bindParam(':id', $id);
-        $stmt->execute();
-        $post = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($post) {
-            $this->id = $post['id'];
-            $this->header = $post['header'];
-            $this->imagePath = $post['imagePath'];
-            $this->content = $post['content'];
-            $this->likesCount = $post['likesCount'];
-            $this->dislikesCount = $post['dislikesCount'];
-            $this->ownerLogin = $post['ownerLogin'];
-            return true;
-        } else {
-            return false;
+        if (!is_numeric($id)) {
+            throw new Exception("Invalid post ID.");
         }
+
+        $stmt = $db->prepare("SELECT * FROM Post WHERE id = :id");
+        if (!$stmt) {
+            throw new Exception("Failed to prepare statement for loading post.");
+        }
+
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        if (!$stmt->execute()) {
+            throw new Exception("Failed to execute statement for loading post.");
+        }
+
+        $post = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$post) {
+            throw new Exception("Post not found.");
+        }
+
+        $this->id = $post['id'];
+        $this->header = $post['header'];
+        $this->imagePath = $post['imagePath'];
+        $this->content = $post['content'];
+        $this->likesCount = $post['likesCount'];
+        $this->dislikesCount = $post['dislikesCount'];
+        $this->ownerLogin = $post['ownerLogin'];
+
+        return true;
     }
 
     public function saveToDB($db) {
         $stmt = $db->prepare("INSERT INTO Post (header, imagePath, content, likesCount, dislikesCount, ownerLogin) 
                               VALUES (:header, :imagePath, :content, :likesCount, :dislikesCount, :ownerLogin)");
+        if (!$stmt) {
+            throw new Exception("Failed to prepare insert statement.");
+        }
+
         $stmt->bindParam(':header', $this->header);
         $stmt->bindParam(':imagePath', $this->imagePath);
         $stmt->bindParam(':content', $this->content);
         $stmt->bindParam(':likesCount', $this->likesCount);
         $stmt->bindParam(':dislikesCount', $this->dislikesCount);
         $stmt->bindParam(':ownerLogin', $this->ownerLogin);
-        return $stmt->execute();
+
+        if (!$stmt->execute()) {
+            throw new Exception("Failed to insert post into database.");
+        }
+
+        return true;
     }
 
     public function updateToDB($db) {
+        if ($this->id <= 0) {
+            throw new Exception("Invalid post ID for update.");
+        }
+
         $stmt = $db->prepare("UPDATE Post SET header = :header, imagePath = :imagePath, content = :content, 
-                              likesCount = :likesCount, dislikesCount = :dislikesCount, ownerLogin = :ownerLogin WHERE id = :id");
+                              likesCount = :likesCount, dislikesCount = :dislikesCount, ownerLogin = :ownerLogin 
+                              WHERE id = :id");
+        if (!$stmt) {
+            throw new Exception("Failed to prepare update statement.");
+        }
+
         $stmt->bindParam(':header', $this->header);
         $stmt->bindParam(':imagePath', $this->imagePath);
         $stmt->bindParam(':content', $this->content);
         $stmt->bindParam(':likesCount', $this->likesCount);
         $stmt->bindParam(':dislikesCount', $this->dislikesCount);
         $stmt->bindParam(':ownerLogin', $this->ownerLogin);
-        $stmt->bindParam(':id', $this->id);
+        $stmt->bindParam(':id', $this->id, PDO::PARAM_INT);
 
-        return $stmt->execute();
+        if (!$stmt->execute()) {
+            throw new Exception("Failed to update post.");
+        }
+
+        return true;
     }
 
     public function deleteFromDB($db) {
-        $stmt = $db->prepare("DELETE FROM Post WHERE id = :id");
-        $stmt->bindParam(':id', $this->id);
+        if ($this->id <= 0) {
+            throw new Exception("Invalid post ID for deletion.");
+        }
 
-        return $stmt->execute();
+        $stmt = $db->prepare("DELETE FROM Post WHERE id = :id");
+        if (!$stmt) {
+            throw new Exception("Failed to prepare delete statement.");
+        }
+
+        $stmt->bindParam(':id', $this->id, PDO::PARAM_INT);
+        if (!$stmt->execute()) {
+            throw new Exception("Failed to delete post.");
+        }
+
+        return true;
     }
 
     public function createPost() {
@@ -78,7 +123,7 @@ class Post {
         $postId = (int)$this->id;
         $likes = (int)$this->likesCount;
         $dislikes = (int)$this->dislikesCount;
-    
+
         return '
         <div class="post scroll-section" id="post-' . $postId . '">
             <div class="post__header">
@@ -98,15 +143,15 @@ class Post {
                     </ul>
                 </div>                    
             </div>
-    
+
             <div class="post__image">
                 <img src="' . $escapedImagePath . '" alt="Post image">
             </div>
-    
+
             <div class="post__text">
                 ' . $escapedContent . '
             </div>
-    
+
             <div class="post__actions">
                 <button class="post__like" data-action="like" data-id="' . $postId . '">
                     👍 <span class="post__count like-count">' . $likes . '</span>
@@ -117,6 +162,5 @@ class Post {
             </div>
         </div>';
     }
-       
 }
 ?>
