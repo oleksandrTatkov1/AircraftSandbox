@@ -1,4 +1,7 @@
 <?php
+namespace PHP\Clases;
+use PDO;
+use Exception;
 class User {
     public $Login;
     public $Name;
@@ -29,7 +32,7 @@ class User {
             throw new Exception("Failed to execute statement.");
         }
 
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        $user = $stmt->fetch(\PDO::FETCH_ASSOC);
         if ($user) {
             $this->Login = $user['Login'];
             $this->Name = $user['Name'];
@@ -57,7 +60,7 @@ class User {
         $stmt->bindParam(':name', $this->Name);
         $stmt->bindParam(':password', $this->Password);
         $stmt->bindParam(':phone', $this->Phone);
-        $stmt->bindParam(':isSuperUser', $this->IsSuperUser, PDO::PARAM_INT);
+        $stmt->bindParam(':isSuperUser', $this->IsSuperUser, \PDO::PARAM_INT);
 
         if (!$stmt->execute()) {
             throw new Exception("Failed to save user to database.");
@@ -82,7 +85,7 @@ class User {
         $stmt->bindParam(':name', $this->Name);
         $stmt->bindParam(':password', $this->Password);
         $stmt->bindParam(':phone', $this->Phone);
-        $stmt->bindParam(':isSuperUser', $this->IsSuperUser, PDO::PARAM_INT);
+        $stmt->bindParam(':isSuperUser', $this->IsSuperUser, \PDO::PARAM_INT);
 
         if (!$stmt->execute()) {
             throw new Exception("Failed to update user.");

@@ -1,41 +1,56 @@
 <?php
+declare(strict_types=1);
+
+// подавляем варнинги/нотиcы
+ini_set('display_errors', '0');
+ini_set('display_startup_errors', '0');
+error_reporting(E_ERROR | E_PARSE);
+
+// подключаем класс Post
+require_once __DIR__ . '/../../PHP/clases/Post.php';
+
 session_start();
-require_once '../../PHP/clases/Post.php';
 
-$db = new PDO('sqlite:../../sqlite/users.db');
-$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-$uploadDir = realpath(__DIR__ . '/../../img/posts') . DIRECTORY_SEPARATOR;
-
-$imageBaseURL = '../AircraftSandbox/img/posts/';
-$imagePath = $imageBaseURL . 'defaultimage.jpg';
-
-if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-    $filename = basename($_FILES['image']['name']);
-    $targetFile = $uploadDir . $filename;
-
-    if (move_uploaded_file($_FILES['image']['tmp_name'], $targetFile)) {
-        $imagePath = $imageBaseURL . $filename; 
+try {
+    // соединяемся с БД
+    $dbFile = __DIR__ . '/../../sqlite/users.db';
+    if (!file_exists($dbFile) || !is_readable($dbFile)) {
+        exit;
     }
-}
-if (!isset($_SESSION['user_login'])) {
-    error_log("❗ НЕМАЄ user_login в сесії!");
-} else {
-    error_log("✅ Сесія знайдена, логін: " . $_SESSION['user_login']);
-}
+    $db = new \PDO("sqlite:$dbFile");
+    $db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
-$post = new Post();
-$post->header = $_POST['header'] ?? 'Новий пост';
-$post->content = $_POST['content'] ?? '';
-$post->likesCount = 0;
-$post->dislikesCount = 0;
-$post->imagePath = $imagePath;
-$post->ownerLogin = $_SESSION['user_login'] ?? 'guest';
+    // парсим входящие поля
+    $header = $_POST['header']  ?? '';
+    $content = $_POST['content'] ?? '';
+    $owner = $_SESSION['user_login'] ?? 'guest';
 
-if ($post->saveToDB($db)) {
+    // загрузка файла (если есть)
+    $uploadDir    = realpath(__DIR__ . '/../../img/posts') . DIRECTORY_SEPARATOR;
+    $imageBaseURL = '../AircraftSandbox/img/posts/';
+    $imagePath    = $imageBaseURL . 'defaultimage.jpg';
+    if (!empty($_FILES['image']['tmp_name']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+        $fn = basename($_FILES['image']['name']);
+        if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadDir . $fn)) {
+            $imagePath = $imageBaseURL . $fn;
+        }
+    }
+
+    // создаём объект и сохраняем
+    $post = new \PHP\Clases\Post();
+    $post->header        = $header;
+    $post->content       = $content;
+    $post->likesCount    = 0;
+    $post->dislikesCount = 0;
+    $post->imagePath     = $imagePath;
+    $post->ownerLogin    = $owner;
+
+    $post->saveToDB($db);
+
+    // подхватываем ID и сразу возвращаем HTML
     echo $post->createPost();
-} else {
-    echo "❌ Помилка збереження поста.";
-}
 
-?>
+} catch (\Exception $e) {
+    // ничего не выводим спустя AJAX-запроса
+    exit;
+}

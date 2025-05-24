@@ -1,4 +1,5 @@
 <?php
+namespace PHP\Clases;
 class Post {
     public $id;
     public $header;
@@ -62,11 +63,11 @@ class Post {
         $stmt->bindParam(':likesCount', $this->likesCount);
         $stmt->bindParam(':dislikesCount', $this->dislikesCount);
         $stmt->bindParam(':ownerLogin', $this->ownerLogin);
-
+        
         if (!$stmt->execute()) {
             throw new Exception("Failed to insert post into database.");
         }
-
+        $this->id = (int)$db->lastInsertId();
         return true;
     }
 
@@ -116,51 +117,60 @@ class Post {
     }
 
     public function createPost() {
-        $escapedLogin = htmlspecialchars($this->ownerLogin);
-        $escapedHeader = htmlspecialchars($this->header);
-        $escapedContent = nl2br(htmlspecialchars($this->content));
-        $escapedImagePath = htmlspecialchars($this->imagePath);
-        $postId = (int)$this->id;
-        $likes = (int)$this->likesCount;
-        $dislikes = (int)$this->dislikesCount;
+    $escapedLogin     = htmlspecialchars($this->ownerLogin, ENT_QUOTES, 'UTF-8');
+    $escapedHeader    = htmlspecialchars($this->header, ENT_QUOTES, 'UTF-8');
+    $escapedContent   = nl2br(htmlspecialchars($this->content, ENT_QUOTES, 'UTF-8'));
+    $escapedImagePath = htmlspecialchars($this->imagePath, ENT_QUOTES, 'UTF-8');
+    $postId           = (int)$this->id;
+    $likes            = (int)$this->likesCount;
+    $dislikes         = (int)$this->dislikesCount;
 
-        return '
-        <div class="post scroll-section" id="post-' . $postId . '">
-            <div class="post__header">
-                <img src="/AircraftSandbox/img/users/' . $escapedLogin . '.png" alt="Avatar" class="post__avatar">
-                <div>
-                    <h3 class="post__user">' . $escapedLogin . '</h3>
-                    <p class="post__title">' . $escapedHeader . '</p>
-                </div>
-                <div class="post__menu">
-                    <svg class="post__menu-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="5" cy="12" r="1" />
-                        <circle cx="12" cy="12" r="1" />
-                        <circle cx="19" cy="12" r="1" />
-                    </svg>
-                    <ul class="post__dropdown">
-                        <li class="post__dropdown-item">Поскаржитись</li>
-                    </ul>
-                </div>                    
-            </div>
+    // Пути к аватаркам относительно страницы, например:
+    $userAvatarUrl   = "../img/users/{$escapedLogin}.png";
+    $defaultAvatarUrl = "../img/users/default-avatar.png";
 
-            <div class="post__image">
-                <img src="' . $escapedImagePath . '" alt="Post image">
-            </div>
+    return "
+    <div class=\"post scroll-section\" id=\"post-{$postId}\">
+      <div class=\"post__header\">
+        <img 
+          src=\"{$userAvatarUrl}\" 
+          alt=\"Avatar of {$escapedLogin}\" 
+          class=\"post__avatar\"
+          onerror=\"this.onerror=null;this.src='{$defaultAvatarUrl}'\"
+        >
+        <div>
+          <h3 class=\"post__user\">{$escapedLogin}</h3>
+          <p class=\"post__title\">{$escapedHeader}</p>
+        </div>
+        <div class=\"post__menu\">
+          <svg class=\"post__menu-icon\" xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\">
+            <circle cx=\"5\" cy=\"12\" r=\"1\" />
+            <circle cx=\"12\" cy=\"12\" r=\"1\" />
+            <circle cx=\"19\" cy=\"12\" r=\"1\" />
+          </svg>
+          <ul class=\"post__dropdown\">
+            <li class=\"post__dropdown-item\">Поскаржитись</li>
+          </ul>
+        </div>                    
+      </div>
 
-            <div class="post__text">
-                ' . $escapedContent . '
-            </div>
+      <div class=\"post__image\">
+        <img src=\"{$escapedImagePath}\" alt=\"Post image\">
+      </div>
 
-            <div class="post__actions">
-                <button class="post__like" data-action="like" data-id="' . $postId . '">
-                    👍 <span class="post__count like-count">' . $likes . '</span>
-                </button>
-                <button class="post__dislike" data-action="dislike" data-id="' . $postId . '">
-                    👎 <span class="post__count dislike-count">' . $dislikes . '</span>
-                </button>
-            </div>
-        </div>';
-    }
+      <div class=\"post__text\">
+        {$escapedContent}
+      </div>
+
+      <div class=\"post__actions\">
+        <button class=\"post__like\" data-action=\"like\" data-id=\"{$postId}\">
+          👍 <span class=\"post__count like-count\">{$likes}</span>
+        </button>
+        <button class=\"post__dislike\" data-action=\"dislike\" data-id=\"{$postId}\">
+          👎 <span class=\"post__count dislike-count\">{$dislikes}</span>
+        </button>
+      </div>
+    </div>";
+}
 }
 ?>

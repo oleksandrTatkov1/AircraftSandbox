@@ -55,26 +55,32 @@
             <div class="container">
                 <section class="create-post scroll-section">
                     <h2 class="create-post__title">Створити публікацію</h2>
-                    <form class="create-post__form">
+                    <form class="create-post__form" enctype="multipart/form-data">
                         <textarea
-                        class="create-post__namearea"
-                        placeholder="Назва..."
-                        required
+                            name="header"              
+                            class="create-post__namearea"
+                            placeholder="Назва..."
+                            required
                         ></textarea>
                         <textarea
+                            name="content"           
                             class="create-post__textarea"
-                            placeholder="Поділіться своїми досягненнями, думками або поставте запитання..."
+                            placeholder="Поділіться своїми досягненнями…"
                             required
                         ></textarea>
                         <div class="create-post__actions">
                             <label class="file-label">
-                                📎 Додати зображення
-                                <input type="file" class="create-post__file" accept="image/*">
+                            📎 Додати зображення
+                            <input
+                                type="file"
+                                name="image"           
+                                class="create-post__file"
+                                accept="image/*"
+                            >
                             </label>
                             <button type="submit" class="create-post__submit">Опублікувати</button>
                         </div>
                     </form>
-                    
                 </section>
                 <div class="posts-container">
             </div>
@@ -90,33 +96,37 @@
         </footer>
     </div>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            document.body.addEventListener('click', (event) => {
-                const button = event.target.closest('.post__like, .post__dislike');
-                if (!button) return;
+        document.body.addEventListener('click', event => {
+            const btn = event.target.closest('.post__like, .post__dislike');
+            if (!btn) return;
 
-                const postId = button.dataset.id;
-                const action = button.dataset.action;
+            const postId = btn.dataset.id;
+            const action = btn.dataset.action; // "like" или "dislike"
+            console.log('Sending:', postId, action);
 
-                fetch('../AircraftSandbox/PHP/scripts/updateLikes.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: `postId=${postId}&action=${action}`
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        if (action === 'like') {
-                            button.querySelector('.like-count').textContent = data.likesCount;
-                        } else {
-                            button.querySelector('.dislike-count').textContent = data.dislikesCount;
-                        }
-                    } else {
-                        alert('Ошибка: ' + data.message);
-                    }
-                });
+            fetch('PHP/scripts/updateLikes.php', {
+                method: 'POST',
+                headers: {'Content-Type':'application/x-www-form-urlencoded'},
+                body: `postId=${postId}&action=${action}`
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (!data.success) {
+                alert('Ошибка: ' + data.message);
+                return;
+                }
+                // Обновляем ОДНОВРЕМЕННО Оба счётчика
+                const postElem = document.getElementById(`post-${postId}`);
+                if (!postElem) return;
+
+                const likeSpan = postElem.querySelector('.like-count');
+                const dislSpan = postElem.querySelector('.dislike-count');
+                likeSpan.textContent = data.likesCount;
+                dislSpan.textContent = data.dislikesCount;
+            })
+            .catch(err => console.error('Network or JSON error:', err));
             });
-        });
+
     </script>
     <script>
        document.addEventListener("DOMContentLoaded", function () {

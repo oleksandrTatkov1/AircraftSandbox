@@ -1,6 +1,11 @@
 <?php
-require_once 'User.php';
-require_once 'Post.php';
+namespace PHP\Clases;
+use Exception;
+use PDO;
+use PDOException;
+
+require_once __DIR__ . '/User.php';
+require_once __DIR__ . '/Post.php';
 
 class UserInfo extends User {
     public $posts = []; // список постів цього юзера
@@ -16,6 +21,56 @@ class UserInfo extends User {
         }
 
         return true;
+    }
+
+    /**
+     * Пакетная вставка нескольких Post-объектов в БД одним prepared-запросом.
+     * @param PDO  $db
+     * @param Post[] $posts
+     * @return int — число успешно вставленных записей
+     * @throws Exception
+     */
+    public function addMultiplePosts(PDO $db, array $posts): int
+    {
+        if (empty($this->Login)) {
+            throw new Exception("User login is not set.");
+        }
+
+        $sql = "INSERT INTO Post 
+                  (Header, ImagePath, Content, LikesCount, DislikesCount, ownerLogin)
+                VALUES 
+                  (:header, :imagePath, :content, :likesCount, :dislikesCount, :ownerLogin)";
+
+        try {
+            $db->beginTransaction();
+            $stmt = $db->prepare($sql);
+            if (!$stmt) {
+                throw new Exception("Failed to prepare bulk insert statement.");
+            }
+
+            $count = 0;
+            foreach ($posts as $post) {
+                /* @var Post $post */
+                $stmt->execute([
+                    ':header'        => $post->header,
+                    ':imagePath'     => $post->imagePath,
+                    ':content'       => $post->content,
+                    ':likesCount'    => $post->likesCount,
+                    ':dislikesCount' => $post->dislikesCount,
+                    ':ownerLogin'    => $this->Login,
+                ]);
+                $count++;
+            }
+
+            $db->commit();
+            return $count;
+
+        } catch (PDOException $e) {
+            $db->rollBack();
+            // логируем детали ошибки
+            error_log("SQLSTATE={$e->getCode()}; info=" . json_encode($e->errorInfo));
+            throw new Exception("Bulk insert failed: " . $e->getMessage());
+        }
     }
 
     public function deletePost($db, $postId) {
