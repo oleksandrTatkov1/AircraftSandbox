@@ -38,16 +38,54 @@ class GuardLogger {
     }
 
     public function logIpValidation() {
-        $ip = $this->user['ip'] ?? $_SERVER['REMOTE_ADDR'];
+        // Если в $this->user['ip'] нет, то пытаемся получить «реальный» из запросов
+        $ip = $this->user['ip'] ?? getRealClientIp();
 
         $isValid = filter_var($ip, FILTER_VALIDATE_IP) !== false;
 
+        // Для локальной разработки можно подменять IPv6/локальный IPv4 на внешний
         if ($ip === '::1' || $ip === '127.0.0.1') {
-            // подменяем локальный IP на тестовый внешний IP для геолокации
-            $ip = '8.8.8.8';  // Google DNS IP для примера
+            $ip = '8.8.8.8';
         }
 
-        return "[Блок 1] IP-адреса $ip є " . ($isValid ? 'валідною' : 'невалідною');
+        return "[Блок 1] IP-адрес $ip є " . ($isValid ? 'валідною' : 'невалідною');
+    }
+
+
+    /**
+     * Возвращает "реальный" IP клиента, учитывая заголовки прокси.
+     * @return string|null
+     */
+    function getRealClientIp(): ?string {
+        // Список заголовков, в которых могут прилетать IP
+        $headers = [
+            'HTTP_X_FORWARDED_FOR',
+            'HTTP_CLIENT_IP',
+            'HTTP_X_REAL_IP',
+            'HTTP_CF_CONNECTING_IP', // Cloudflare
+            'HTTP_X_FORWARDED',
+            'HTTP_X_CLUSTER_CLIENT_IP',
+            'HTTP_FORWARDED_FOR',
+            'HTTP_FORWARDED'
+        ];
+
+        foreach ($headers as $header) {
+            if (!empty($_SERVER[$header])) {
+                // Может быть список через запятую
+                $ips = explode(',', $_SERVER[$header]);
+                foreach ($ips as $ip) {
+                    $ip = trim($ip);
+                    // Берём первый публичный IPv4/IPv6
+                    if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+                        return $ip;
+                    }
+                }
+            }
+        }
+
+        // Фолбэк — REMOTE_ADDR (может быть локалхост или адрес прокси)
+        $ip = $_SERVER['REMOTE_ADDR'] ?? null;
+        return $ip;
     }
 
     // === БЛОК 2 ===

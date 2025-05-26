@@ -7,8 +7,6 @@ error_reporting(E_ERROR | E_PARSE);
 // 2) Импорты – ДОЛЖНЫ стоять до любого кода (кроме declare/namespace)
 use PHP\Utils\Validator;
 use PHP\Clases\User;
-use PDO;
-use Exception;
 
 // 3) Подключаем файлы классов
 require_once '../../PHP/utils/Validator.php';
@@ -36,6 +34,9 @@ try {
         }
         if (!Validator::isPhone($phone)) {
             throw new Exception('Невірний формат телефону.');
+        }
+        if (!Validator::isPassReliable($password)) {
+            throw new Exception('Пароль надто простий. Він має містити щонайменше 8 символів, великі та малі літери, цифри й спеціальні символи.');
         }
 
         // Создаём пользователя

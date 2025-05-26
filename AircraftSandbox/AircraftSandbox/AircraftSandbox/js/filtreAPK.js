@@ -34,21 +34,21 @@
       apkGrid.innerHTML = '';
       paginationContainer.innerHTML = '';
 
-      shownCards.forEach(card => {
-        apkGrid.insertAdjacentHTML('beforeend', card.outerHTML);
-      });
+    shownCards.forEach(card => {
+      const clone = card.cloneNode(true);
+      clone.classList.add('fade-in');
+      apkGrid.appendChild(clone);
+    });
 
-      bindCardClicks();
-
-      const prevBtn = document.createElement('button');
-      prevBtn.textContent = '◀';
-      prevBtn.className = 'pagination-btn';
-      prevBtn.disabled = currentPage === 1;
-      prevBtn.addEventListener('click', () => {
-        currentPage--;
-        paginate(getFilteredCards());
-      });
-      paginationContainer.appendChild(prevBtn);
+    const prevBtn = document.createElement('button');
+    prevBtn.textContent = '◀';
+    prevBtn.className = 'pagination-btn';
+    prevBtn.disabled = currentPage === 1;
+    prevBtn.addEventListener('click', () => {
+      currentPage--;
+      paginate(getFilteredCards());
+    });
+    paginationContainer.appendChild(prevBtn);
 
       for (let i = 1; i <= totalPages; i++) {
         const btn = document.createElement('button');

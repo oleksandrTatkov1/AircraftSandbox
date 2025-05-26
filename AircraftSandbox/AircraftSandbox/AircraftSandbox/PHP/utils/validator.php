@@ -22,4 +22,13 @@ class Validator
     {
         return htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     }
+    
+    public static function isPassReliable(string $password): bool {
+        return strlen($password) >= 8 &&
+            preg_match('/[A-Z]/', $password) &&     // Велика літера
+            preg_match('/[a-z]/', $password) &&     // Маленька літера
+            preg_match('/[0-9]/', $password) &&     // Цифра
+            preg_match('/[\W_]/', $password);       // Спецсимвол (не літера/цифра)
+    }
+
 }
