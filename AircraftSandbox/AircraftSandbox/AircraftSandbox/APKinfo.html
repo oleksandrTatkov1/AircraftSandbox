@@ -55,7 +55,7 @@
             <div class="container container_flex">
                <div class="goldInfoAPK goldInfoAPK_grid">
                     <div class="goldInfoAPK__img">
-                        <img src="../AircraftSandbox/img/APK/main/photo_2025-04-17_15-47-28.jpg" alt="">
+                        <img src="" alt="">
                     </div>
                     <div class="goldInfoAPK__info info">
                         <ul class="info__list">
@@ -70,11 +70,7 @@
                </div>
                <div class="additionalInfoAPK">
                 <h6 class="additionalInfoAPK__title">Про APK:</h6>
-                <p class="additionalInfoAPK__discription">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Vitae saepe dolores, est ad quo 
-                    pariatur velit impedit sint dolore aut mollitia distinctio iure molestiae rem iusto illo 
-                    minus. Architecto, vero. Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam 
-                    sint provident magnam voluptatum, adipisci voluptatem. Velit sequi voluptatum excepturi 
-                    quaerat et, veniam deserunt? Incidunt asperiores eius corporis eaque culpa facere!</p>
+                <p class="additionalInfoAPK__discription"></p>
                </div>
             </div >   
         </main>
@@ -90,5 +86,31 @@
     </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+const id = urlParams.get('Id') || urlParams.get('id');
+if (!id) return;
+
+fetch(`PHP/scripts/loadApkById.php?Id=${id}`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.error) {
+        console.error('❌', data.error);
+        return;
+      }
+
+      document.querySelector('.goldInfoAPK__img img').src = data.imagePath;
+      const infoItems = document.querySelectorAll('.info__item');
+      infoItems[0].innerText = `Автор: ${data.author}`;
+      infoItems[1].innerText = `Розмір: ${data.size}`;
+      infoItems[2].innerText = `Додав: ${data.addedBy}`;
+      infoItems[3].innerText = `Дата: ${data.date}`;
+      infoItems[4].innerText = `Завантажень: ${data.downloads}`;
+      document.querySelector('.additionalInfoAPK__discription').innerText = data.description;
+    })
+    .catch(err => console.error('❌ Fetch error:', err));
+});
+</script>
 <script src="../AircraftSandbox/js/script.js"></script>
 </html>

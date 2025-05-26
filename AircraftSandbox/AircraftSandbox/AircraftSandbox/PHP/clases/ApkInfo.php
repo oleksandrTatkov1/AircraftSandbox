@@ -28,50 +28,52 @@ class ApkInfo {
     }
 
     public function loadFromDB($db, $id) {
-        if (!is_numeric($id)) {
-            throw new Exception("Invalid APK ID.");
-        }
-
-        $stmt = $db->prepare("SELECT * FROM ApkInfo WHERE id = :id");
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-        $stmt->execute();
-
-        $apk = $stmt->fetch(PDO::FETCH_ASSOC);
-        if (!$apk) {
-            throw new Exception("APK not found.");
-        }
-
-        $this->id          = $apk['id'];
-        $this->author      = $apk['author'];
-        $this->size        = $apk['size'];
-        $this->addedBy     = $apk['added_by'];
-        $this->date        = $apk['date'];
-        $this->downloads   = $apk['downloads'];
-        $this->imagePath   = $apk['image_path'];
-        $this->description = $apk['description'];
-        $this->category    = $apk['category'];
-
-        return true;
+    if (!is_numeric($id)) {
+        throw new Exception("Invalid APK ID.");
     }
+
+    $stmt = $db->prepare("SELECT * FROM ApkInfo WHERE Id = :id"); // <<< тут ВЕЛИКА LITERA
+    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+    $stmt->execute();
+
+    $apk = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (!$apk) {
+        throw new Exception("APK not found.");
+    }
+
+    // 👇 обов'язково так само з великої букви:
+    $this->id          = $apk['Id'];
+    $this->author      = $apk['Author'];
+    $this->size        = $apk['Size'];
+    $this->addedBy     = $apk['AddedBy'];
+    $this->date        = $apk['Date'];
+    $this->downloads   = $apk['Downloads'];
+    $this->imagePath   = $apk['ImagePath'];
+    $this->description = $apk['Description'];
+    $this->category    = $apk['Category'];
+
+    return true;
+}
 
     public static function renderCardById($db, $id) {
-        $stmt = $db->prepare("SELECT * FROM ApkInfo WHERE Id = :id");
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-        $stmt->execute();
+    $stmt = $db->prepare("SELECT * FROM ApkInfo WHERE Id = :id");
+    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+    $stmt->execute();
 
-        $apk = $stmt->fetch(PDO::FETCH_ASSOC);
-        if (!$apk) return '';
+    $apk = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (!$apk) return '';
 
-        $title    = htmlspecialchars($apk['Description'], ENT_QUOTES, 'UTF-8');
-        $category = htmlspecialchars($apk['Category'], ENT_QUOTES, 'UTF-8');
+    $title    = htmlspecialchars($apk['Description'], ENT_QUOTES, 'UTF-8');
+    $category = htmlspecialchars($apk['Category'], ENT_QUOTES, 'UTF-8');
+    $apkId    = (int)$apk['Id']; // ❗ важливо
 
-        return "
-        <div class=\"apk-card {$category} fade-in\">
-            <div class=\"apk-card__overlay\">
-                <span class=\"apk-card__title\">{$title}</span>
-            </div>
-        </div>";
-    }
+    return "
+    <div class=\"apk-card {$category} fade-in\" data-id=\"{$apkId}\">
+        <div class=\"apk-card__overlay\">
+            <span class=\"apk-card__title\">{$title}</span>
+        </div>
+    </div>";
+}
 
     public function saveToDB($db) {
         $stmt = $db->prepare("INSERT INTO ApkInfo (author, size, added_by, date, downloads, image_path, description, category)

@@ -10,6 +10,15 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Londrina+Shadow&family=Londrina+Solid:wght@100;300;400;900&family=M+PLUS+Rounded+1c&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <style>
+  .apk-card__overlay {
+    pointer-events: none !important;
+  }
+
+  .apk-card {
+    cursor: pointer !important;
+  }
+</style>
 </head>
 <body>
   <!-- Check git -->
@@ -93,26 +102,6 @@
       </div>
     </footer>
   </div>
-  <script>
-  document.addEventListener('DOMContentLoaded', () => {
-  fetch('PHP/scripts/loadApk.php')
-    .then(res => res.text())
-    .then(html => {
-      console.log("📦 HTML із loadApk.php:", html); // перевір у F12 → Console
-      const container = document.querySelector('.apk-grid');
-      container.innerHTML = html;
-
-      // ❗ після вставки — знайди нові картки
-      const allCards = Array.from(container.querySelectorAll('.apk-card'));
-      if (allCards.length === 0) {
-        console.warn('😕 Жодної apk-card не знайдено після вставки!');
-      } else {
-        console.log('✅ Картки вставлено:', allCards.length);
-      }
-    })
-    .catch(err => console.error('❌ Помилка при fetch:', err));
-});
-</script>
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script src="../AircraftSandbox/js/script.js"></script>
   <script src="../AircraftSandbox/js/filtreAPK.js"></script>
