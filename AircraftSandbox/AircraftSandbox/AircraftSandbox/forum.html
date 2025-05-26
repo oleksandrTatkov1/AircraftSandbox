@@ -101,7 +101,7 @@
             if (!btn) return;
 
             const postId = btn.dataset.id;
-            const action = btn.dataset.action; // "like" или "dislike"
+            const action = btn.dataset.action;
             console.log('Sending:', postId, action);
 
             fetch('PHP/scripts/updateLikes.php', {

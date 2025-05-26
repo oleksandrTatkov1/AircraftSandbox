@@ -23,11 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
     paginationContainer.innerHTML = '';
 
     shownCards.forEach(card => {
-      const clone = card.cloneNode(true);
-      clone.classList.add('fade-in');
-      apkGrid.appendChild(clone);
+      apkGrid.insertAdjacentHTML('beforeend', card.outerHTML);
     });
-
     const prevBtn = document.createElement('button');
     prevBtn.textContent = '◀';
     prevBtn.className = 'pagination-btn';
