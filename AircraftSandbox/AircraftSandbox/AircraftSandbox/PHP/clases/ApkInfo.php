@@ -13,7 +13,8 @@ class ApkInfo {
     public $downloads;
     public $imagePath;
     public $description;
-    public $category; // нове поле
+    public $category;
+    public $apkLink;
 
     public function __construct() {
         $this->id = 0;
@@ -25,6 +26,7 @@ class ApkInfo {
         $this->imagePath = '';
         $this->description = '';
         $this->category = '';
+        $this->apkLink = '';
     }
 
     public function loadFromDB($db, $id) {
@@ -51,6 +53,7 @@ class ApkInfo {
     $this->imagePath   = $apk['ImagePath'];
     $this->description = $apk['Description'];
     $this->category    = $apk['Category'];
+    $this->apkLink     = $apk['ApkLink'];
 
     return true;
 }
