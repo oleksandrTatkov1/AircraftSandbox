@@ -79,14 +79,14 @@
         </form>
 
         <form class="admin-panel__form admin-panel__form--news" enctype="multipart/form-data">
-          <label class="admin-panel__label">Заголовок новини:
-            <input class="admin-panel__input" type="text" name="newsTitle" required>
-          </label>
           <label class="admin-panel__label">Зображення новини:
             <input class="admin-panel__input" type="file" name="newsImage" accept="image/*" required>
           </label>
           <label class="admin-panel__label">Опис новини:
             <textarea class="admin-panel__input" name="newsDesc" required></textarea>
+          </label>
+          <label class="admin-panel__label">Індекс слайдеру:
+            <textarea class="admin-panel__input"  type="text" name="newsSliderId" required></textarea>
           </label>
           <button type="submit" class="admin-panel__submit">Додати новину</button>
         </form>
@@ -122,5 +122,22 @@
       });
     });
   </script>
+  <script>
+    document.querySelector('.admin-panel__form--news').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const form = this;
+      const formData = new FormData(form);
+
+      fetch('/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/addNews.php', {
+        method: 'POST',
+        body: formData
+      })
+      .then(res => res.text())
+      .then(response => alert(response))
+      .catch(() => alert('❌ Помилка при з’єднанні з сервером.'));
+    });
+  </script>
+
 </body>
 </html>
