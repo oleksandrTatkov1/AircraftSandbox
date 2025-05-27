@@ -62,20 +62,24 @@ class News {
     }
 
     public function renderNewsItem() {
-        $imgTag = $this->imagePath ? "<img src=\"{$this->imagePath}\" alt=\"\">" : "";
+        // Render news item with fixed image size and rounded corners
+        $imgTag = $this->imagePath 
+            ? '<img src="' . htmlspecialchars($this->imagePath) . '" alt="News Image" ' 
+              . 'width="270" height="200" style="object-fit:cover; border-radius:12px;"/>' 
+            : '';
         $desc = htmlspecialchars($this->description);
 
         return <<<HTML
-        <div class="swiper-slide">
-            <div class="slider__item">
-                <div class="containerImg">
-                    $imgTag
-                </div>
-                <div class="containerTitle">
-                    <h2 class="containerTitle__text">$desc</h2>
+            <div class="swiper-slide">
+                <div class="slider__item">
+                    <div class="containerImg">
+                        {$imgTag}
+                    </div>
+                    <div class="containerTitle">
+                        <h2 class="containerTitle__text">{$desc}</h2>
+                    </div>
                 </div>
             </div>
-        </div>
-        HTML;
+            HTML;
     }
 }
