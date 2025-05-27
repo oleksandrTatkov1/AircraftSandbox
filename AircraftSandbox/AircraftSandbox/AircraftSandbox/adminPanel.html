@@ -88,6 +88,9 @@
           <label class="admin-panel__label">Індекс слайдеру:
             <textarea class="admin-panel__input"  type="text" name="newsSliderId" required></textarea>
           </label>
+          <label for="dropdown">Удаление новостей:</label>
+              <select id="deleteNewsDropdown" name="deleteNews">
+              </select>
           <button type="submit" class="admin-panel__submit">Додати новину</button>
         </form>
       </section>
@@ -136,6 +139,72 @@
       .then(res => res.text())
       .then(response => alert(response))
       .catch(() => alert('❌ Помилка при з’єднанні з сервером.'));
+    });
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const dropdown = document.getElementById('deleteNewsDropdown');
+
+      // === Завантаження списку новин ===
+      fetch('/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/getNewsList.php')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP-помилка: ${response.status} ${response.statusText}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (!Array.isArray(data)) {
+            throw new Error('Очікувався масив у відповіді, але отримано інше.');
+          }
+
+          dropdown.innerHTML = '<option value="">Оберіть новину для видалення</option>';
+
+          data.forEach(item => {
+            if (!item.id || typeof item.Description !== 'string') return;
+            const option = document.createElement('option');
+            option.value = item.id;
+            option.textContent = `${item.id}:${item.Description.slice(0, 10)}`;
+            dropdown.appendChild(option);
+          });
+        })
+        .catch(error => {
+          console.error('❌ Помилка завантаження новин:', error);
+          alert('Не вдалося завантажити список новин. Спробуйте пізніше.');
+        });
+
+      // === Обробка видалення новини ===
+      dropdown.addEventListener('change', () => {
+        const id = dropdown.value;
+        if (!id) return;
+
+        if (!confirm(`Ви впевнені, що хочете видалити новину з ID ${id}?`)) return;
+
+        fetch('/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/deleteNews.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: 'id=' + encodeURIComponent(id)
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP-помилка: ${response.status} ${response.statusText}`);
+          }
+          return response.text();
+        })
+        .then(msg => {
+          alert(msg);
+
+          const deletedOption = dropdown.querySelector(`option[value="${id}"]`);
+          if (deletedOption) {
+            deletedOption.remove();
+            dropdown.selectedIndex = 0;
+          }
+        })
+        .catch(error => {
+          console.error('❌ Помилка видалення новини:', error);
+          alert('Сталася помилка при спробі видалити новину. Спробуйте ще раз.');
+        });
+      });
     });
   </script>
 
