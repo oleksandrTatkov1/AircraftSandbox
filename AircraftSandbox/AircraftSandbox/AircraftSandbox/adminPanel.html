@@ -54,6 +54,7 @@
         <div class="admin-panel__tabs">
           <button class="admin-panel__tab admin-panel__tab--active" data-target="apk">Додати APK</button>
           <button class="admin-panel__tab" data-target="news">Додати новину</button>
+          <button class="admin-panel__tab" data-target="delete-apk">Видалити APK</button>
         </div>
 
               <form class="admin-panel__form admin-panel__form--apk is-visible" enctype="multipart/form-data">
@@ -104,6 +105,7 @@
         </label>
 
         <button type="submit" class="admin-panel__submit">Додати APK</button>
+
       </form>
 
         <form class="admin-panel__form admin-panel__form--news" enctype="multipart/form-data">
@@ -121,6 +123,12 @@
               </select>
           <button type="submit" class="admin-panel__submit">Додати новину</button>
         </form>
+
+        <form class="admin-panel__form admin-panel__form--delete-apk">
+      <label class="admin-panel__label">Оберіть картку APK для видалення:
+          <select id="deleteApkDropdown" class="admin-panel__input" required></select>
+      </label>
+    </form>
       </section>
     </main>
 
@@ -170,7 +178,6 @@
     });
   </script>
   <script>
-<<<<<<< HEAD
     document.addEventListener('DOMContentLoaded', () => {
       const dropdown = document.getElementById('deleteNewsDropdown');
 
@@ -236,10 +243,9 @@
       });
     });
   </script>
-=======
+  <script>
     document.querySelector('.admin-panel__form--apk').addEventListener('submit', function (e) {
       e.preventDefault();
->>>>>>> a23e9bc740c4aa7de199b50ca82fe1df5be0cd8a
 
       const form = this;
       const formData = new FormData(form);
@@ -253,5 +259,42 @@
       .catch(() => alert('❌ Помилка при з’єднанні з сервером.'));
     });
   </script>
+  <script>
+document.addEventListener('DOMContentLoaded', () => {
+  const dropdown = document.getElementById('deleteApkDropdown');
+
+  // Завантаження списку карток
+  fetch('PHP/scripts/getApkList.php')
+    .then(res => res.json())
+    .then(data => {
+      dropdown.innerHTML = '<option value="">Оберіть APK</option>';
+      data.forEach(apk => {
+        const option = document.createElement('option');
+        option.value = apk.Id;
+        option.textContent = `${apk.Id}: ${apk.Description}`;
+        dropdown.appendChild(option);
+      });
+    });
+
+  dropdown.addEventListener('change', () => {
+    const id = dropdown.value;
+    const text = dropdown.options[dropdown.selectedIndex].text;
+
+    if (!id || !confirm(`Ви впевнені, що хочете видалити картку ${text}?`)) return;
+
+    fetch('PHP/scripts/deleteApk.php', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: 'id=' + encodeURIComponent(id)
+    })
+    .then(res => res.text())
+    .then(msg => {
+      alert(msg);
+      dropdown.querySelector(`option[value="${id}"]`).remove();
+      dropdown.selectedIndex = 0;
+    });
+  });
+});
+</script>
 </body>
 </html>
