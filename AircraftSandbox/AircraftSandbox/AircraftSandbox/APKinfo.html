@@ -89,10 +89,10 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const urlParams = new URLSearchParams(window.location.search);
-const id = urlParams.get('Id') || urlParams.get('id');
-if (!id) return;
+  const id = urlParams.get('Id') || urlParams.get('id');
+  if (!id) return;
 
-fetch(`PHP/scripts/loadApkById.php?Id=${id}`)
+  fetch(`PHP/scripts/loadApkById.php?Id=${id}`)
     .then(res => res.json())
     .then(data => {
       if (data.error) {
@@ -108,6 +108,16 @@ fetch(`PHP/scripts/loadApkById.php?Id=${id}`)
       infoItems[3].innerText = `Дата: ${data.date}`;
       infoItems[4].innerText = `Завантажень: ${data.downloads}`;
       document.querySelector('.additionalInfoAPK__discription').innerText = data.description;
+
+      // 👉 Додаємо подію для кнопки Завантажити
+      const downloadBtn = document.querySelector('.goldInfoAPK__buttonD');
+      downloadBtn.addEventListener('click', () => {
+        if (data.apkLink) {
+          window.open(data.apkLink, '_blank');
+        } else {
+          alert('Посилання на APK відсутнє.');
+        }
+      });
     })
     .catch(err => console.error('❌ Fetch error:', err));
 });

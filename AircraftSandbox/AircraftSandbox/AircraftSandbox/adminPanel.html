@@ -56,27 +56,55 @@
           <button class="admin-panel__tab" data-target="news">Додати новину</button>
         </div>
 
-        <form class="admin-panel__form admin-panel__form--apk is-visible" enctype="multipart/form-data">
-          <label class="admin-panel__label">Назва APK:
-            <input class="admin-panel__input" type="text" name="apkTitle" required>
-          </label>
-          <label class="admin-panel__label">Тип APK:
-            <select class="admin-panel__input" name="apkType">
-              <option value="plane">Літак</option>
-              <option value="ground">Наземний транспорт</option>
-              <option value="weather">Погода</option>
-              <option value="avatar">Аватар</option>
-              <option value="infra">Інфраструктура</option>
-            </select>
-          </label>
-          <label class="admin-panel__label">Опис:
-            <textarea class="admin-panel__input" name="apkDesc" required></textarea>
-          </label>
-          <label class="admin-panel__label">Зображення APK:
-            <input class="admin-panel__input" type="file" name="apkImage" accept="image/*" required>
-          </label>
-          <button type="submit" class="admin-panel__submit">Додати APK</button>
-        </form>
+              <form class="admin-panel__form admin-panel__form--apk is-visible" enctype="multipart/form-data">
+
+                <label class="admin-panel__label">Тип APK:
+          <select class="admin-panel__input" name="apkType" required>
+            <option value="plane">Літаки</option>
+            <option value="skinsPlane">Скіни на літаки</option>
+            <option value="ground">Наземний транспорт</option>
+            <option value="skinsGround">Скіни на наземний транспорт</option>
+            <option value="weather">Погодні умови</option>
+            <option value="avatar">Аватари</option>
+            <option value="skinsAvatar">Скіни для аватара</option>
+            <option value="infra">Інфраструктура</option>
+          </select>
+        </label>
+
+        <label class="admin-panel__label">Опис:
+          <textarea class="admin-panel__input" name="apkDesc" required></textarea>
+        </label>
+
+        <label class="admin-panel__label">Зображення APK:
+          <input class="admin-panel__input" type="file" name="apkImage" accept="image/*" required>
+        </label>
+
+        <label class="admin-panel__label">Автор:
+          <input class="admin-panel__input" type="text" name="apkAuthor" required>
+        </label>
+
+        <label class="admin-panel__label">Розмір (наприклад: 9.8 MB):
+          <input class="admin-panel__input" type="text" name="apkSize" required>
+        </label>
+
+        <label class="admin-panel__label">Додав:
+          <input class="admin-panel__input" type="text" name="apkAddedBy" required>
+        </label>
+
+        <label class="admin-panel__label">Дата:
+          <input class="admin-panel__input" type="date" name="apkDate" required>
+        </label>
+
+        <label class="admin-panel__label">Завантажень:
+          <input class="admin-panel__input" type="number" name="apkDownloads" min="0" required>
+        </label>
+
+        <label class="admin-panel__label">Посилання на APK:
+          <input class="admin-panel__input" type="url" name="apkLink" required>
+        </label>
+
+        <button type="submit" class="admin-panel__submit">Додати APK</button>
+      </form>
 
         <form class="admin-panel__form admin-panel__form--news" enctype="multipart/form-data">
           <label class="admin-panel__label">Зображення новини:
@@ -138,6 +166,21 @@
       .catch(() => alert('❌ Помилка при з’єднанні з сервером.'));
     });
   </script>
+  <script>
+    document.querySelector('.admin-panel__form--apk').addEventListener('submit', function (e) {
+      e.preventDefault();
 
+      const form = this;
+      const formData = new FormData(form);
+
+      fetch('PHP/scripts/addApk.php', {
+        method: 'POST',
+        body: formData
+      })
+      .then(res => res.text())
+      .then(response => alert(response))
+      .catch(() => alert('❌ Помилка при з’єднанні з сервером.'));
+    });
+  </script>
 </body>
 </html>
