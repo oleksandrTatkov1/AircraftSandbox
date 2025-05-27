@@ -55,6 +55,7 @@
           <button class="admin-panel__tab admin-panel__tab--active" data-target="apk">Додати APK</button>
           <button class="admin-panel__tab" data-target="news">Додати новину</button>
           <button class="admin-panel__tab" data-target="delete-apk">Видалити APK</button>
+          <button class="admin-panel__tab" data-target="delete-news">Видалити новину</button>
         </div>
 
               <form class="admin-panel__form admin-panel__form--apk is-visible" enctype="multipart/form-data">
@@ -118,12 +119,14 @@
           <label class="admin-panel__label">Індекс слайдеру:
             <textarea class="admin-panel__input"  type="text" name="newsSliderId" required></textarea>
           </label>
-          <label for="dropdown">Удаление новостей:</label>
-              <select id="deleteNewsDropdown" name="deleteNews">
-              </select>
+         
           <button type="submit" class="admin-panel__submit">Додати новину</button>
         </form>
-
+       <form class="admin-panel__form admin-panel__form--delete-news">
+      <label class="admin-panel__label">Оберіть новину для видалення:
+          <select id="deleteNewsDropdown" class="admin-panel__input" required></select>
+      </label>
+      </form>
         <form class="admin-panel__form admin-panel__form--delete-apk">
       <label class="admin-panel__label">Оберіть картку APK для видалення:
           <select id="deleteApkDropdown" class="admin-panel__input" required></select>
@@ -181,68 +184,59 @@
     document.addEventListener('DOMContentLoaded', () => {
       const dropdown = document.getElementById('deleteNewsDropdown');
 
-      // === Завантаження списку новин ===
-      fetch('/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/getNewsList.php')
-        .then(response => {
-          if (!response.ok) {
-            throw new Error(`HTTP-помилка: ${response.status} ${response.statusText}`);
-          }
-          return response.json();
+      // 1) Завантажуємо всі новини і заповнюємо <select>
+      fetch('PHP/scripts/getNewsList.php')
+        .then(res => {
+          if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
+          return res.json();
         })
         .then(data => {
-          if (!Array.isArray(data)) {
-            throw new Error('Очікувався масив у відповіді, але отримано інше.');
-          }
-
-          dropdown.innerHTML = '<option value="">Оберіть новину для видалення</option>';
-
+          // Очікуємо масив {id, Description}
+          dropdown.innerHTML = '<option value=\"\">Оберіть новину для видалення</option>';
           data.forEach(item => {
-            if (!item.id || typeof item.Description !== 'string') return;
-            const option = document.createElement('option');
-            option.value = item.id;
-            option.textContent = `${item.id}:${item.Description.slice(0, 10)}`;
-            dropdown.appendChild(option);
+            const opt = document.createElement('option');
+            opt.value = item.id;
+            // Можна робити item.Description.slice(0,10) для обрізки
+            opt.textContent = `${item.id}: ${item.Description}`;
+            dropdown.appendChild(opt);
           });
         })
-        .catch(error => {
-          console.error('❌ Помилка завантаження новин:', error);
-          alert('Не вдалося завантажити список новин. Спробуйте пізніше.');
+        .catch(err => {
+          console.error('❌ Помилка завантаження новин:', err);
+          alert('Не вдалося завантажити список новин.');
         });
 
-      // === Обробка видалення новини ===
+      // 2) При зміні вибору відправляємо запит на deleteNews.php
       dropdown.addEventListener('change', () => {
         const id = dropdown.value;
         if (!id) return;
 
-        if (!confirm(`Ви впевнені, що хочете видалити новину з ID ${id}?`)) return;
+        if (!confirm(`Видалити новину з ID ${id}?`)) return;
 
-        fetch('/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/deleteNews.php', {
+        fetch('PHP/scripts/deleteNews.php', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          headers: {'Content-Type':'application/x-www-form-urlencoded'},
           body: 'id=' + encodeURIComponent(id)
         })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error(`HTTP-помилка: ${response.status} ${response.statusText}`);
-          }
-          return response.text();
+        .then(res => {
+          if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
+          return res.text();
         })
         .then(msg => {
           alert(msg);
-
-          const deletedOption = dropdown.querySelector(`option[value="${id}"]`);
-          if (deletedOption) {
-            deletedOption.remove();
-            dropdown.selectedIndex = 0;
-          }
+          // Видаляємо з <select> видалений option
+          const removed = dropdown.querySelector(`option[value="${id}"]`);
+          if (removed) removed.remove();
+          dropdown.selectedIndex = 0;
         })
-        .catch(error => {
-          console.error('❌ Помилка видалення новини:', error);
-          alert('Сталася помилка при спробі видалити новину. Спробуйте ще раз.');
+        .catch(err => {
+          console.error('❌ Помилка видалення новини:', err);
+          alert('Не вдалося видалити новину.');
         });
       });
     });
   </script>
+
   <script>
     document.querySelector('.admin-panel__form--apk').addEventListener('submit', function (e) {
       e.preventDefault();

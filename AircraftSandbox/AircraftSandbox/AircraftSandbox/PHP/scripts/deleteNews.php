@@ -1,16 +1,38 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+// deleteNews.php
+// Удаляет запись News по переданному POST-id и возвращает текстовый ответ
 
-$db = new PDO(__DIR__ . '/../../sqlite/users.db');
+// Отключаем вывод варнингов
+ini_set('display_errors', 0);
+error_reporting(0);
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $id = (int)($_POST['id'] ?? 0);
-    $stmt = $db->prepare("DELETE FROM News WHERE id = :id");
-    $stmt->execute([':id' => $id]);
+try {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        throw new Exception('Неправильний метод запиту');
+    }
 
-    echo "✅ Запис $id видалено.";
-} else {
-    echo "❌ Невірний запит.";
+    if (empty($_POST['id']) || !ctype_digit($_POST['id'])) {
+        throw new Exception('Некоректний ID');
+    }
+    $id = (int)$_POST['id'];
+
+    $dbFile = __DIR__ . '/../../sqlite/users.db';
+    $db = new PDO("sqlite:" . $dbFile);
+    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    // Проверяем, что такая запись есть
+    $check = $db->prepare("SELECT COUNT(*) FROM News WHERE id = :id");
+    $check->execute([':id' => $id]);
+    if ($check->fetchColumn() == 0) {
+        throw new Exception("Запис з ID $id не знайдено");
+    }
+
+    // Удаляем
+    $del = $db->prepare("DELETE FROM News WHERE id = :id");
+    $del->execute([':id' => $id]);
+
+    echo "✅ Новина з ID $id успішно видалена!";
+} catch (Exception $e) {
+    http_response_code(400);
+    echo '❌ Помилка: ' . htmlspecialchars($e->getMessage(), ENT_QUOTES);
 }
