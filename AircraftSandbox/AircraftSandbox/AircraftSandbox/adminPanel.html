@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Адмін Панель</title>
+  <link rel="stylesheet" href="../AircraftSandbox/css/style.css">
+  <link rel="stylesheet" href="../AircraftSandbox/css/styleAPK.css">
+  <link rel="stylesheet" href="../AircraftSandbox/css/adminPanelStyle.css">
+</head>
+<body>
+  <div class="page-wrapper">
+    <header class="header">
+        <div class="container header__container">
+            <div class="header__logo">
+                <img src="../AircraftSandbox/img/index/header/logo_black.png" alt="logo" class="header__imgL">
+            </div>
+            <div class="header__menu">
+                <nav class="header__nav nav">
+                  <ul class="nav__list">
+                    <li class="nav__item"><a href="index.html" class="nav__link">Головна</a></li>
+                    <li class="nav__item"><a href="forum.html" class="nav__link">Форум</a></li>
+                    <li class="nav__item"><a href="routes.html" class="nav__link">Маршрути польотів</a></li>
+                    <li class="nav__item"><a href="apk.html" class="nav__link">Додаткові APK</a></li>
+                    <li class="nav__item">
+                      <input type="checkbox" id="dropItem" class="dropdown-toggle">
+                      <label for="dropItem" class="dropdown-label">Додаткові ресурси <span class="arrow">▼</span></label>
+                      <ul class="dropdown-menu">
+                        <li class="dropdown-item"><a href="https://t.me/SkyTechDev_bot">Підтримка</a></li>
+                        <li class="dropdown-item"><a href="guides.html">Туторіали</a></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </nav>
+                <div class="header__registration">
+                  <button class="header__buttonForReg" id="auth-button">
+                    Авторизація 
+                  </button>
+                  <div class="header__profile" id="user-profile" style="display: none;">
+                    <img src="/AircraftSandbox/img/index/header/free-icon-user-483361.png" alt="Профіль" class="profile-icon">
+                  </div>
+                </div>                    
+            </div>
+            <div class="menu-btn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+      <section class="admin-panel">
+        <div class="admin-panel__tabs">
+          <button class="admin-panel__tab admin-panel__tab--active" data-target="apk">Додати APK</button>
+          <button class="admin-panel__tab" data-target="news">Додати новину</button>
+        </div>
+
+        <form class="admin-panel__form admin-panel__form--apk is-visible" enctype="multipart/form-data">
+          <label class="admin-panel__label">Назва APK:
+            <input class="admin-panel__input" type="text" name="apkTitle" required>
+          </label>
+          <label class="admin-panel__label">Тип APK:
+            <select class="admin-panel__input" name="apkType">
+              <option value="plane">Літак</option>
+              <option value="ground">Наземний транспорт</option>
+              <option value="weather">Погода</option>
+              <option value="avatar">Аватар</option>
+              <option value="infra">Інфраструктура</option>
+            </select>
+          </label>
+          <label class="admin-panel__label">Опис:
+            <textarea class="admin-panel__input" name="apkDesc" required></textarea>
+          </label>
+          <label class="admin-panel__label">Зображення APK:
+            <input class="admin-panel__input" type="file" name="apkImage" accept="image/*" required>
+          </label>
+          <button type="submit" class="admin-panel__submit">Додати APK</button>
+        </form>
+
+        <form class="admin-panel__form admin-panel__form--news" enctype="multipart/form-data">
+          <label class="admin-panel__label">Заголовок новини:
+            <input class="admin-panel__input" type="text" name="newsTitle" required>
+          </label>
+          <label class="admin-panel__label">Зображення новини:
+            <input class="admin-panel__input" type="file" name="newsImage" accept="image/*" required>
+          </label>
+          <label class="admin-panel__label">Опис новини:
+            <textarea class="admin-panel__input" name="newsDesc" required></textarea>
+          </label>
+          <button type="submit" class="admin-panel__submit">Додати новину</button>
+        </form>
+      </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer__container">
+            <div class="links">
+                <a href="https://www.instagram.com/skytechdev/?igsh=MXRyZnI2eW9reWp0dg%3D%3D#" class="links_Instagram">Instagram</a>
+                <a href="https://t.me/skytechdev" class="links_Telegram">Telegram</a>
+                <a href="https://www.youtube.com/@skytechdev" class="links_YouTube">YouTube</a>
+            </div>
+        </div>
+    </footer>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script src="../AircraftSandbox/js/script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const tabs = document.querySelectorAll('.admin-panel__tab');
+      const forms = document.querySelectorAll('.admin-panel__form');
+
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          tabs.forEach(t => t.classList.remove('admin-panel__tab--active'));
+          forms.forEach(f => f.classList.remove('is-visible'));
+
+          tab.classList.add('admin-panel__tab--active');
+          const target = tab.dataset.target;
+          document.querySelector(`.admin-panel__form--${target}`).classList.add('is-visible');
+        });
+      });
+    });
+  </script>
+</body>
+</html>

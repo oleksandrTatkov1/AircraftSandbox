@@ -1,0 +1,102 @@
+main{
+    margin-top: 20px;
+}
+.admin-panel {
+  padding: 5vw 5vw;
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: "M PLUS Rounded 1c", sans-serif;
+  background: #dbe4f5;
+  border-radius: 1.5rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.admin-panel__tabs {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.admin-panel__tab {
+  padding: 0.8rem 1.8rem;
+  border: 2px solid #8ba5ff;
+  background: transparent;
+  color: #3a3a3a;
+  font-weight: 500;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s;
+}
+
+.admin-panel__tab--active {
+  background: #8ba5ff;
+  color: white;
+}
+
+.admin-panel__form {
+  display: none;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.admin-panel__form.is-visible {
+  display: flex;
+}
+
+.admin-panel__label {
+  display: flex;
+  flex-direction: column;
+  font-size: 1rem;
+  color: #1e1e1e;
+}
+
+.admin-panel__input {
+  margin-top: 0.4rem;
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  border: 1px solid #b2b9c7;
+  background-color: white;
+  font-size: 1rem;
+  transition: border 0.2s;
+}
+
+.admin-panel__input:focus {
+  border-color: #6f89f3;
+  outline: none;
+}
+
+.admin-panel__submit {
+  background-color: #8ba5ff;
+  color: white;
+  font-weight: 600;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  align-self: flex-start;
+}
+
+.admin-panel__submit:hover {
+  background-color: #6a8cf4;
+}
+
+@media (max-width: 768px) {
+  .admin-panel {
+    padding: 6vw 4vw;
+  }
+  .admin-panel__tabs {
+    gap: 0.5rem;
+  }
+  .admin-panel__tab {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+  }
+  .admin-panel__submit {
+    width: 100%;
+    text-align: center;
+  }
+}
