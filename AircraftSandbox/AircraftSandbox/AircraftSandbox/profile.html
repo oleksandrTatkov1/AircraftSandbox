@@ -38,7 +38,7 @@
                   </ul>
                 </nav>
                 <div class="header__registration">
-            
+        
                 </div>                    
             </div>
             <div class="menu-btn">
@@ -56,7 +56,7 @@
               <img src="../AircraftSandbox/img/APK/main/photo_2025-04-17_15-47-28.jpg" alt="Avatar" class="profile-card__avatar">
               <div class="profile-card__info">
                 <h2 class="profile-card__username">@DefaultUsername</h2>
-                <p class="profile-card__bio">Default bio text...</p>
+                <p class="profile-card__bio">Придумайте біо.</p>
               </div>
               <button class="profile-card__edit"><a href="profileRedact.html">Редагувати профіль</a></button>
             </div>
@@ -116,10 +116,12 @@
         </div>
     </footer>
   </div>
-
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
   <script>
    document.addEventListener("DOMContentLoaded", function () {
-  fetch("/AircraftSandbox/AircraftSandbox/AircraftSandbox//AircraftSandbox/PHP/scripts/login_Fake.php")
+  fetch("/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/login_Firebase.php")
   .then(response => response.json())
     .then(user => {
       if (!user || !user.Login) return;
@@ -175,7 +177,7 @@
 </body>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script src="../AircraftSandbox/js/script.js"></script>
-<<<<<<< HEAD
+
 <script src="../AircraftSandbox/js/profile.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
@@ -195,6 +197,4 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
 </html>
-=======
-<script src="../AircraftSandbox/js/profile.js"></script> </html>
->>>>>>> 6033ae18eda789a1d943456e5dd4ac84b665a4c2
+
