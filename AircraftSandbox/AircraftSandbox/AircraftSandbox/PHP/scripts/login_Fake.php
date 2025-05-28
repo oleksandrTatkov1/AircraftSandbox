@@ -12,7 +12,7 @@ $_SESSION['user'] = [
     'Password' => 'huesos228',
     'Phone' => '+380935262394',
     'IsSuperUser' => 0,
-    'ImagePath' => '/xampp/img/fimozphoto.jpg',
+    'ImagePath' => '/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/fimozphoto.jpg',
     'Bio' => 'Ебашу пятилеток'
 ];
 
