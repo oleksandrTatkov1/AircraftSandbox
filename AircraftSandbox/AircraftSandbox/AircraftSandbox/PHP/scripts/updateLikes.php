@@ -13,7 +13,7 @@ try {
 
     // 2) Авторизация
     if (!isset($_SESSION['user_login'])) {
-        echo json_encode(['success' => false, 'message' => 'Пользователь не авторизован']);
+        echo json_encode(['success' => false, 'message' => 'Користувач не авторизований']);
         exit;
     }
     $userLogin = $_SESSION['user_login'];

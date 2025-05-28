@@ -38,12 +38,9 @@ class GuardLogger {
     }
 
     public function logIpValidation() {
-        // Если в $this->user['ip'] нет, то пытаемся получить «реальный» из запросов
         $ip = $this->user['ip'] ?? getRealClientIp();
 
         $isValid = filter_var($ip, FILTER_VALIDATE_IP) !== false;
-
-        // Для локальной разработки можно подменять IPv6/локальный IPv4 на внешний
         if ($ip === '::1' || $ip === '127.0.0.1') {
             $ip = '8.8.8.8';
         }
@@ -102,10 +99,8 @@ class GuardLogger {
     // === БЛОК 3 ===
     public function logGeoLocation() {
         $ip = $this->user['ip'] ?? $_SERVER['REMOTE_ADDR'];
-
-        // Подмена локального адреса на тестовый публичный
         if ($ip === '::1' || $ip === '127.0.0.1') {
-            $ip = '8.8.8.8'; // Google DNS, можно заменить на другой IP
+            $ip = '8.8.8.8';
         }
 
         $url = "http://ip-api.com/json/" . urlencode($ip) . "?fields=status,message,country,regionName,city,lat,lon";

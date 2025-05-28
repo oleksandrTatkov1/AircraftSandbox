@@ -12,6 +12,12 @@ require_once __DIR__ . '/../../PHP/clases/Post.php';
 session_start();
 
 try {
+    // Проверка авторизации
+    if (empty($_SESSION['user_login'])) {
+        http_response_code(403); // Запрещено
+        exit;
+    }
+
     // соединяемся с БД
     $dbFile = __DIR__ . '/../../sqlite/users.db';
     if (!file_exists($dbFile) || !is_readable($dbFile)) {
@@ -23,7 +29,7 @@ try {
     // парсим входящие поля
     $header = $_POST['header']  ?? '';
     $content = $_POST['content'] ?? '';
-    $owner = $_SESSION['user_login'] ?? 'guest';
+    $owner = $_SESSION['user_login'];
 
     // загрузка файла (если есть)
     $uploadDir    = realpath(__DIR__ . '/../../img/posts') . DIRECTORY_SEPARATOR;
