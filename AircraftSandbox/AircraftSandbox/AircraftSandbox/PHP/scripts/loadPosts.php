@@ -20,19 +20,33 @@ try {
     if (!$rows) exit;
 
     foreach ($rows as $row) {
-        $p = new \PHP\Clases\Post();
-        // здесь именно те ключи, как в таблице:
-        $p->id            = (int)$row['Id'];
-        $p->header        = $row['Header'];
-        $p->imagePath     = $row['ImagePath'];
-        $p->content       = $row['Content'];
-        $p->likesCount    = (int)$row['LikesCount'];
-        $p->dislikesCount = (int)$row['DislikesCount'];
-        $p->ownerLogin    = $row['ownerLogin'];
-        echo $p->createPost();
+        $id            = (int)$row['Id'];
+        $header        = htmlspecialchars($row['Header']);
+        $imagePath     = htmlspecialchars($row['ImagePath']);
+        $content       = nl2br(htmlspecialchars($row['Content']));
+        $likesCount    = (int)$row['LikesCount'];
+        $dislikesCount = (int)$row['DislikesCount'];
+        $ownerLogin    = htmlspecialchars($row['ownerLogin']);
+
+        echo <<<HTML
+    <div class="post scroll-section from-left" data-id="$id">
+        <div class="post__header">
+            <img class="post__avatar" src="img/avatars/default.png" alt="User avatar">
+            <div>
+                <p class="post__user">$ownerLogin</p>
+                <p class="post__title">$header</p>
+            </div>
+        </div>
+        <div class="post__image"><img src="$imagePath" alt="Post image"></div>
+        <p class="post__text">$content</p>
+        <div class="post__footer">
+            <button class="post__like" data-id="$id" data-action="like">👍 <span class="like-count">$likesCount</span></button>
+            <button class="post__dislike" data-id="$id" data-action="dislike">👎 <span class="dislike-count">$dislikesCount</span></button>
+        </div>
+    </div>
+HTML;
     }
 
 } catch (\Exception $e) {
-    // молча выходим
     exit;
 }
