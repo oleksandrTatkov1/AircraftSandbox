@@ -10,6 +10,8 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
   <link rel="stylesheet" href="../AircraftSandbox/css/style.css">
   <link rel="stylesheet" href="../AircraftSandbox/css/profile.css"/>
+
+
 </head>
 <body>
   <div class="page-wrapper">
@@ -58,10 +60,8 @@
             <div class="profile-card__header">
               <img src="../AircraftSandbox/img/APK/main/photo_2025-04-17_15-47-28.jpg" alt="Avatar" class="profile-card__avatar">
               <div class="profile-card__info">
-                <h2 class="profile-card__username">@GloryToWLW</h2>
-                <p class="profile-card__bio">
-                  Discussing all things aviation, from dogfights to dream flights. Join the squadron! ✈️
-                </p>
+                <h2 class="profile-card__username">@DefaultUsername</h2>
+                <p class="profile-card__bio">Default bio text...</p>
               </div>
               <button class="profile-card__edit"><a href="profileRedact.html">Редагувати профіль</a></button>
             </div>
@@ -122,6 +122,58 @@
     </footer>
   </div>
 
+  <script>
+   document.addEventListener("DOMContentLoaded", function () {
+  fetch("/AircraftSandbox/AircraftSandbox/AircraftSandbox//AircraftSandbox/PHP/scripts/login_Fake.php")
+  .then(response => response.json())
+    .then(user => {
+      if (!user || !user.Login) return;
+
+      // --- Основний профіль ---
+      const avatar = document.querySelector(".profile-card__avatar");
+      if (avatar && user.Photo) avatar.src = user.Photo;
+
+      const username = document.querySelector(".profile-card__username");
+      if (username && user.Name) username.textContent = "@" + user.Name;
+
+      const bio = document.querySelector(".profile-card__bio");
+      if (bio && user.Bio) bio.textContent = user.Bio;
+
+      const authButton = document.getElementById("auth-button");
+      const userProfile = document.getElementById("user-profile");
+      if (authButton) authButton.style.display = "none";
+      if (userProfile) userProfile.style.display = "block";
+
+      // --- Пости: ім'я користувача та аватар ---
+      const postUsers = document.querySelectorAll(".post__user");
+      const postAvatars = document.querySelectorAll(".post__avatar");
+
+      postUsers.forEach(el => {
+        el.textContent = "@" + user.Name;
+      });
+
+      postAvatars.forEach(el => {
+        el.src = user.Photo;
+      });
+
+      // --- Відповіді: ім'я користувача та аватар ---
+      const answerUsers = document.querySelectorAll(".answer__user");
+      const answerAvatars = document.querySelectorAll(".answer__avatar");
+
+      answerUsers.forEach(el => {
+        el.textContent = "@" + user.Name;
+      });
+
+      answerAvatars.forEach(el => {
+        el.src = user.Photo;
+      });
+    })
+    .catch(error => {
+      console.error("Помилка отримання сесії:", error);
+    });
+});
+
+    </script>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script src="../AircraftSandbox/js/script.js"></script>
