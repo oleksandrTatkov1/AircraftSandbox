@@ -1,8 +1,8 @@
 <?php
 namespace PHP\Clases;
 
-require_once __DIR__ . '/../utils/FirebasePublisher.php';
-use PHP\Clases\FirebasePublisher;
+require_once __DIR__ . '/../utils/firebasePublisher.php';
+use PHP\Utils\FirebasePublisher;
 use Exception;
 
 class User {
@@ -23,8 +23,7 @@ class User {
         $this->firebase = new FirebasePublisher($authToken);
     }
 
-   public function loadFromDB($login) {
-        // Используем метод sanitizeKey из User, а не из FirebasePublisher
+    public function loadFromDB($login) {
         $safeEmail = $this->sanitizeKey($login);
 
         $path = "users/$safeEmail";
