@@ -148,5 +148,15 @@
 </body>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script src="../AircraftSandbox/js/script.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const isLoggedIn = sessionStorage.getItem('user_login');
+
+    if (!isLoggedIn) {
+      alert('Користувач не авторизован');
+      window.location.href = '/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/registerAlpha/register.html';
+    }
+  });
+</script>
 <script src="../AircraftSandbox/js/routes.js"></script>
 </html>

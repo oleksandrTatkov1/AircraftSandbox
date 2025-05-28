@@ -11,6 +11,8 @@ class User {
     public $Password;
     public $Phone;
     public $IsSuperUser;
+    public $Bio
+    public $ImagePath
 
     private $firebase;
 
@@ -20,6 +22,9 @@ class User {
         $this->Password = '';
         $this->Phone = '';
         $this->IsSuperUser = 0;
+        $this->ImagePath = '';
+        $this->Bio = '';
+        
         $this->firebase = new FirebasePublisher($authToken);
     }
 
@@ -36,6 +41,8 @@ class User {
             $this->Password    = $data['Password'] ?? null;
             $this->Phone       = $data['Phone'] ?? null;
             $this->IsSuperUser = (int)($data['IsSuperUser'] ?? 0);
+            $this->ImagePath = $data['ImagePath'] ?? null;
+            $this->Bio = $data['Bio'] ?? null;
             return true;
         }
         return false;
@@ -57,7 +64,9 @@ class User {
             'Name' => $this->Name,
             'Password' => $this->Password,
             'Phone' => $this->Phone,
-            'IsSuperUser' => $this->IsSuperUser
+            'IsSuperUser' => $this->IsSuperUser,
+            'ImagePath' => $this->ImagePath,
+            'Bio' => $this->Bio
         ];
 
         $this->firebase->publish("users/$key", $data);

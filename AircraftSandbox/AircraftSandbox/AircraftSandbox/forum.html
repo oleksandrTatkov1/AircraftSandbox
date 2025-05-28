@@ -210,6 +210,16 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 });
 </script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const isLoggedIn = sessionStorage.getItem('user_login');
+
+    if (!isLoggedIn) {
+      window.location.href = '/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/registerAlpha/register.html';
+    }
+  });
+</script>
+
 <script src="../AircraftSandbox/js/script.js"></script>
 <script src="../AircraftSandbox/js/scrollForum.js"></script>
 </html>
