@@ -38,7 +38,7 @@
                     <div class="header__registration">
                         <div class="header__profile" id="user-profile">
                             <a href="/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/profile.html">
-                            <img src="/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/default-image.png" alt="Профіль" class="profile-icon">
+                                <img id="header-avatar" src="/AircraftSandbox/img/index/header/free-icon-user-483361.png" alt="Профіль" class="profile-icon" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
                             </a>
                         </div>
                     </div>
@@ -224,7 +224,34 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 });
 </script>
-
+    
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+      fetch('/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/login_Fake.php')
+        .then(res => res.json())
+        .then(user => {
+          if (user && user.ImagePath) {
+            const avatar = document.getElementById('header-avatar');
+            if (avatar) {
+              avatar.src = user.ImagePath;
+            }
+    
+            const userProfileLink = document.getElementById('user-profile');
+            if (userProfileLink) {
+              userProfileLink.style.display = 'inline-block';
+            }
+    
+            const authButton = document.getElementById('auth-button');
+            if (authButton) {
+              authButton.style.display = 'none';
+            }
+          }
+        })
+        .catch(err => {
+          console.error('Не вдалося завантажити дані користувача:', err);
+        });
+    });
+    </script>
 
 <script src="../AircraftSandbox/js/script.js"></script>
 <script src="../AircraftSandbox/js/scrollForum.js"></script>

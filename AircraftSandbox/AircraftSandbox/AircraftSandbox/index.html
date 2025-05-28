@@ -35,12 +35,9 @@
                       </ul>
                     </nav>
                     <div class="header__registration">
-                      <button class="header__buttonForReg" id="auth-button">
-                        Авторизація 
-                      </button>
-                      <div class="header__profile" id="user-profile" style="display: none;">
-                        <img src="/AircraftSandbox/img/index/header/free-icon-user-483361.png" alt="Профіль" class="profile-icon">
-                      </div>
+                        <a href="/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/profile.html">
+                            <img id="header-avatar" src="/AircraftSandbox/img/index/header/free-icon-user-483361.png" alt="Профіль" class="profile-icon" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                        </a>
                     </div>                    
                 </div>
                 <div class="menu-btn">
@@ -150,6 +147,34 @@
                 });
             });
         </script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+      fetch('/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/login_Fake.php')
+        .then(res => res.json())
+        .then(user => {
+          if (user && user.ImagePath) {
+            const avatar = document.getElementById('header-avatar');
+            if (avatar) {
+              avatar.src = user.ImagePath;
+            }
+    
+            const userProfileLink = document.getElementById('user-profile');
+            if (userProfileLink) {
+              userProfileLink.style.display = 'inline-block';
+            }
+    
+            const authButton = document.getElementById('auth-button');
+            if (authButton) {
+              authButton.style.display = 'none';
+            }
+          }
+        })
+        .catch(err => {
+          console.error('Не вдалося завантажити дані користувача:', err);
+        });
+    });
+    </script>
 <script src="../AircraftSandbox/js/script.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
