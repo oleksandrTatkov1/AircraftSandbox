@@ -11,8 +11,8 @@ class User {
     public $Password;
     public $Phone;
     public $IsSuperUser;
-    public $Bio
-    public $ImagePath
+    public $Bio;
+    public $ImagePath;
 
     private $firebase;
 

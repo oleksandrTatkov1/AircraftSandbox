@@ -29,12 +29,20 @@
     </div>
 </body>
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const isLoggedIn = sessionStorage.getItem('user_login');
-
-    if (!isLoggedIn) {
-      window.location.href = '/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/registerAlpha/register.html';
-    }
-  });
+document.addEventListener('DOMContentLoaded', () => {
+    fetch('/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/authCheck.php')
+        .then(response => response.json())
+        .then(data => {
+            if (!data.authorized) {
+                window.location.href = '/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/registerAlpha/register.html';
+            }
+        })
+        .catch(error => {
+            console.error('❌ Помилка перевірки авторизації:', error);
+            // можно временно перенаправить при ошибке сервера
+            window.location.href = '/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/registerAlpha/register.html';
+        });
+});
 </script>
+
 </html>

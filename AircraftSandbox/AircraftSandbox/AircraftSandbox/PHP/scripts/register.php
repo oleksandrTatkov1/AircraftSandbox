@@ -12,15 +12,15 @@ use PHP\Clases\User;
 session_start();
 
 try {
-    // Обработка формы
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send'])) {
         $name     = $_POST['name']         ?? '';
         $login    = $_POST['login']        ?? '';
         $password = $_POST['password']     ?? '';
         $phone    = $_POST['phone']        ?? '';
         $isSuper  = $_POST['is_superuser'] ?? 0;
-
-        // Валидация
+        $Bio      = $_POST['bio']          ?? '';
+        $ImagePath = $_POST['image_path']  ?? '';
+        
         if (!Validator::isEmail($login)) {
             throw new Exception('Невірний формат email у полі "login".');
         }
@@ -31,14 +31,14 @@ try {
             throw new Exception('Пароль надто простий. Він має містити щонайменше 8 символів, великі та малі літери, цифри й спеціальні символи.');
         }
 
-        $user = new User(); // FirebasePublisher уже внутри конструктора
+        $user = new User(); 
         $user->Name        = $name;
         $user->Login       = $login;
         $user->setPassword($password);
         $user->Phone       = $phone;
         $user->IsSuperUser = (int)$isSuper;
-
-        // Сохраняем в Firebase
+        $user->Bio = $Bio;
+        $user->ImagePath = $ImagePath;
         if ($user->saveToDB()) {
             echo '✅ Реєстрація успішна!';
         } else {

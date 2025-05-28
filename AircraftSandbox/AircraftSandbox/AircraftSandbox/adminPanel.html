@@ -150,14 +150,22 @@
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script src="../AircraftSandbox/js/script.js"></script>
   <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const isLoggedIn = sessionStorage.getItem('user_login');
+    document.addEventListener('DOMContentLoaded', () => {
+        fetch('/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/authCheck.php')
+            .then(response => response.json())
+            .then(data => {
+                if (!data.authorized) {
+                    window.location.href = '/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/registerAlpha/register.html';
+                }
+            })
+            .catch(error => {
+                console.error('❌ Помилка перевірки авторизації:', error);
+                // можно временно перенаправить при ошибке сервера
+                window.location.href = '/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/registerAlpha/register.html';
+            });
+    });
+  </script>
 
-    if (!isLoggedIn) {
-      window.location.href = '/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/registerAlpha/register.html';
-    }
-  });
-</script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const tabs = document.querySelectorAll('.admin-panel__tab');
