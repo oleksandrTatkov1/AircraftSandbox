@@ -55,33 +55,36 @@
 
     <main class="main">
         <div class="container">
-          <div class="edit-profile">
-            <a href="profile.html" class="edit-profile__back">← Повернутись</a>
   
-            <div class="edit-profile__avatar-section">
-              <img src="../AircraftSandbox/img/APK/main/photo_2025-04-17_15-47-28.jpg" alt="avatar" class="edit-profile__avatar"/>
-              <br><label class="edit-profile__upload-btn">
-                Завантажити нове фото
-                <input type="file" accept="image/*" hidden>
-              </label>
+            <div class="edit-profile">
+              <a href="profile.html" class="edit-profile__back">← Повернутись</a>
+            
+              <form id="profileForm" class="edit-profile__form" enctype="multipart/form-data">
+                <div class="edit-profile__avatar-section">
+                  <img id="photoPreview" src="/AircraftSandbox/img/users/default-avatar.png" alt="avatar" class="edit-profile__avatar"/>
+                  <br><label class="edit-profile__upload-btn">
+                    Завантажити нове фото
+                    <input type="file" name="photo" id="photoInput" accept="image/*" hidden>
+                  </label>
+                </div>
+            
+                <div class="form-group">
+                  <label for="name">Ім’я користувача</label>
+                  <input type="text" name="name" id="name" required />
+                </div>
+            
+                <div class="form-group">
+                  <label for="bio">Опис облікового запису</label>
+                  <textarea name="bio" id="bio" rows="4"></textarea>
+                </div>
+            
+                <div class="edit-profile__actions">
+                  <button type="submit" class="edit-profile__save">Зберегти зміни</button>
+                  <a href="profile.html" class="edit-profile__cancel">Скасувати</a>
+                </div>
+              </form>
             </div>
-  
-            <form class="edit-profile__form">
-              <div class="form-group">
-                <label for="username">Ім’я користувача</label>
-                <input type="text" id="username" value="@GloryToWLW" />
-              </div>
-  
-              <div class="form-group">
-                <label for="bio">Опис облікового запису</label>
-                <textarea id="bio" rows="4">Обговорення всього, що стосується авіації, від повітряних боїв до польотів мрії. Приєднуйтесь до ескадрильї! ✈️</textarea>
-              </div>
-  
-              <div class="edit-profile__actions">
-                <button type="submit" class="edit-profile__save">Зберегти зміни</button>
-                <a href="profile.html" class="edit-profile__cancel">Скасувати</a>
-              </div>
-            </form>
+            
           </div>
         </div>
       </main>
@@ -97,32 +100,31 @@
     </footer>
   </div>
   
-  <form id="profileForm" enctype="multipart/form-data">
-    <label>Ім’я:</label>
-    <input type="text" name="name" id="name" required>
-    <br>
-    <label>Фото:</label>
-    <input type="file" name="photo" id="photoInput" accept="image/*">
-    <br>
-    <img id="photoPreview" src="" width="100" alt="Попередній перегляд">
-    <br>
-    <button type="submit">Зберегти зміни</button>
-  </form>
-  <form id="profileForm" enctype="multipart/form-data">
-    <label>Ім’я:</label>
-    <input type="text" name="name" id="name" required>
-    <br>
-    <label>Фото:</label>
-    <input type="file" name="photo" id="photoInput" accept="image/*">
-    <br>
-    <img id="photoPreview" src="" width="100" alt="Попередній перегляд">
-    <br>
-    <button type="submit">Зберегти зміни</button>
-  </form>
-  
+<form id="profileForm" class="edit-profile__form" enctype="multipart/form-data">
+  <div class="edit-profile__avatar-section">
+    <img id="photoPreview" src="/AircraftSandbox/img/users/default-avatar.png" alt="avatar" class="edit-profile__avatar"/>
+    <br><label class="edit-profile__upload-btn">
+      Завантажити нове фото
+      <input type="file" name="photo" id="photoInput" accept="image/*" hidden>
+    </label>
+  </div>
 
-  
-    
+  <div class="form-group">
+    <label for="name">Ім’я користувача</label>
+    <input type="text" name="name" id="name" required />
+  </div>
+
+  <div class="form-group">
+    <label for="bio">Опис облікового запису</label>
+    <textarea name="bio" id="bio" rows="4"></textarea>
+  </div>
+
+  <div class="edit-profile__actions">
+    <button type="submit" class="edit-profile__save">Зберегти зміни</button>
+    <a href="profile.html" class="edit-profile__cancel">Скасувати</a>
+  </div>
+</form>
+
 </body>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script src="../AircraftSandbox/js/script.js"></script>
@@ -143,5 +145,40 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 });
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const nameInput = document.getElementById('name');
+  const bioInput = document.getElementById('bio');
+  const photoPreview = document.getElementById('photoPreview');
 
+  fetch('/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/login_Firebase.php')
+    .then(res => res.json())
+    .then(user => {
+      if (!user || !user.Login) {
+        console.warn('❌ Користувач не знайдений');
+        return;
+      }
+
+      // Установка значень
+      nameInput.value = user.Name || '';
+      bioInput.value = user.Bio || '';
+      photoPreview.src = user.ImagePath || '/AircraftSandbox/img/users/default-avatar.png';
+    })
+    .catch(err => {
+      console.error('❌ Помилка завантаження даних профілю:', err);
+    });
+
+  // Попередній перегляд аватарки
+  document.getElementById('photoInput').addEventListener('change', function () {
+    const file = this.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = e => photoPreview.src = e.target.result;
+      reader.readAsDataURL(file);
+    }
+  });
+});
+
+  </script>
+  
 </html>
