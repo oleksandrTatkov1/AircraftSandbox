@@ -1,173 +1,118 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Тред посту</title>
-  <link rel="stylesheet" href="../AircraftSandbox/css/style.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Londrina+Shadow&family=Londrina+Solid:wght@100;300;400;900&family=M+PLUS+Rounded+1c&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
-  <link rel="stylesheet" href="css/post.css">
+  <link rel="stylesheet" href="../AircraftSandbox/css/style.css"/>
+  <link rel="stylesheet" href="css/post.css"/>
 </head>
 <body>
   <div class="page-wrapper">
     <header class="header">
-        <div class="container header__container">
-            <div class="header__logo">
-                <img src="../AircraftSandbox/img/index/header/logo_black.png" alt="logo" class="header__imgL">
-            </div>
-            <div class="header__menu">
-                <nav class="header__nav nav">
-                    <ul class="nav__list">
-                        <li class="nav__item"><a href="#" class="nav__link">Головна</a></li>
-                        <li class="nav__item"><a href="#">Форум</a></li>
-                        <li class="nav__item"><a href="#">Маршрути польотів</a></li>
-                        <li class="nav__item"><a href="#">Додаткові APK</a></li>
-                        <li class="nav__item">
-                            <input type="checkbox" id="dropItem" class="dropdown-toggle">
-                            <label for="dropItem" class="dropdown-label">Додаткові ресурси <span class="arrow">▼</span></label>
-                            <ul class="dropdown-menu">
-                                <li class="dropdown-item"><a href="https://t.me/SkyTechDev_bot">Підтримка</a></li>
-                                <li class="dropdown-item"><a href="guides.html">Туторіали</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </nav>
-                <div class="header__registration">
-                    <button class="header__buttonForReg" id="auth-button">
-                        Авторизація 
-                    </button>
-                    <div class="header__profile" id="user-profile" style="display: none;">
-                        <img src="../AircraftSandbox/img/index/header/free-icon-user-483361.png" alt="Профіль" class="profile-icon">
-                    </div>
-                </div>                    
-            </div>
-            <div class="menu-btn">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        </div>
+      <!-- ... (твій хедер без змін) ... -->
     </header>
-     <!--  -->
+
     <main class="main container">
-        <section class="post-thread">
-          <div class="post-thread__post">
-            <h2 class="post-thread__title">MLM SUPREMACY</h2>
-            <img src="img/register/background/175942-minimalistskaya_estetika-estetika-minimalizm-gora-prirodnyj_landshaft-1920x1080.jpg" alt="Post image" class="post-thread__image">
-            <p class="post-thread__text">We found a bug in the game we need company to fix it... SkyTechDev fix it quickly!</p>
-            <div class="post-thread__actions">
-              <button class="post-thread__like">👍 <span id="like-count">12</span></button>
-              <button class="post-thread__dislike">👎 <span id="dislike-count">2</span></button>
-            </div>
+      <section class="post-thread">
+        <div class="post-thread__post">
+          <h2 class="post-thread__title" id="post-title"></h2>
+          <img src="" alt="Post image" class="post-thread__image" id="post-image" style="display:none;">
+          <p class="post-thread__text" id="post-text"></p>
+          <div class="post-thread__actions">
+          <button class="post-thread__like" data-action="like" data-id="">👍 <span class="like-count" id="like-count">0</span></button>
+          <button class="post-thread__dislike" data-action="dislike" data-id="">👎 <span class="dislike-count" id="dislike-count">0</span></button>
           </div>
-  
-          <div class="post-thread__comments">
-            <h3 class="post-thread__comments-title">Коментарі</h3>
-  
-            <div class="comment">
-              <div class="comment__inner">
-                <img class="comment__avatar" src="img/avatar1.png" alt="avatar">
-                <div>
-                  <p class="comment__user">DogPower228</p>
-                  <p class="comment__text">I think this true. SkyTechDev fix it.</p>
-                </div>
-              </div>
-              <div class="comment__reply-form">
-                <input class="comment__reply-input" type="text" placeholder="Ваша відповідь...">
-                <button class="comment__reply-button">Відповісти</button>
-              </div>
-              <div class="comment__replies">
-                <div class="comment">
-                  <div class="comment__inner">
-                    <img class="comment__avatar" src="img/avatar2.png" alt="avatar">
-                    <div>
-                      <p class="comment__user">ReplyGuy1</p>
-                      <p class="comment__text">Totally agree!</p>
-                    </div>
-                  </div>
-                  <div class="comment__reply-form">
-                    <input class="comment__reply-input" type="text" placeholder="Ваша відповідь...">
-                    <button class="comment__reply-button">Відповісти</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-  
-            <div class="comment">
-              <div class="comment__inner">
-                <img class="comment__avatar" src="img/avatar3.png" alt="avatar">
-                <div>
-                  <p class="comment__user">StarikDomPonik</p>
-                  <p class="comment__text">I don’t think so. SkyTechDev can’t fix it so fast as u want.</p>
-                </div>
-              </div>
-              <div class="comment__reply-form">
-                <input class="comment__reply-input" type="text" placeholder="Ваша відповідь...">
-                <button class="comment__reply-button">Відповісти</button>
-              </div>
-            </div>
-  
-            <div class="comment">
-              <div class="comment__inner">
-                <img class="comment__avatar" src="img/avatar4.png" alt="avatar">
-                <div>
-                  <p class="comment__user">LybitelPonickovSMaslom</p>
-                  <p class="comment__text">I need more donuts. SKYTECHDEV I NEED DONUTS IN YOUR GAME</p>
-                </div>
-              </div>
-              <div class="comment__reply-form">
-                <input class="comment__reply-input" type="text" placeholder="Ваша відповідь...">
-                <button class="comment__reply-button">Відповісти</button>
-              </div>
-              <div class="comment__replies">
-                <div class="comment">
-                  <div class="comment__inner">
-                    <img class="comment__avatar" src="img/avatar3.png" alt="avatar">
-                    <div>
-                      <p class="comment__user">GloryToLvL</p>
-                      <p class="comment__text">Same here!</p>
-                    </div>
-                  </div>
-                  <div class="comment__reply-form">
-                    <input class="comment__reply-input" type="text" placeholder="Ваша відповідь...">
-                    <button class="comment__reply-button">Відповісти</button>
-                  </div>
-                </div>
-                <div class="comment">
-                  <div class="comment__inner">
-                    <img class="comment__avatar" src="img/avatar1.png" alt="avatar">
-                    <div>
-                      <p class="comment__user">DogPower228</p>
-                      <p class="comment__text">Haha true 😂</p>
-                    </div>
-                  </div>
-                  <div class="comment__reply-form">
-                    <input class="comment__reply-input" type="text" placeholder="Ваша відповідь...">
-                    <button class="comment__reply-button">Відповісти</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-  
+        </div>
+
+        <div class="post-thread__comments">
+          <h3 class="post-thread__comments-title">Коментарі</h3>
+          <div id="comments-container">
+            <p>Коментарів поки немає.</p>
           </div>
-        </section>
-      </main>
+        </div>
+      </section>
+    </main>
 
     <footer class="footer">
-        <div class="footer__container">
-            <div class="links">
-                <a href="https://www.instagram.com/skytechdev/?igsh=MXRyZnI2eW9reWp0dg%3D%3D#" class="links_Instagram">Instagram</a>
-                <a href="https://t.me/skytechdev" class="links_Telegram">Telegram</a>
-                <a href="https://www.youtube.com/@skytechdev" class="links_YouTube">YouTube</a>
-            </div>
-        </div>
+      <!-- ... (твой футер без змін) ... -->
     </footer>
   </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script src="../AircraftSandbox/js/script.js"></script>
+  <script>
+    let globalPostId = null;
+
+document.addEventListener("DOMContentLoaded", function () {
+  const params = new URLSearchParams(window.location.search);
+  const postId = params.get('id');
+  globalPostId = postId;
+
+  if (!postId) {
+    document.getElementById("post-title").textContent = "❌ Пост не знайдено.";
+    return;
+  }
+
+  fetch(`/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/loadPostById.php?id=${postId}`)
+    .then(res => res.json())
+    .then(data => {
+      if (!data || data.error) {
+        document.getElementById("post-title").textContent = "❌ Пост не знайдено.";
+        return;
+      }
+
+      document.getElementById("post-title").textContent = data.header;
+      document.getElementById("post-text").textContent = data.content;
+      document.getElementById("like-count").textContent = data.likesCount;
+      document.getElementById("dislike-count").textContent = data.dislikesCount;
+
+      document.querySelector('.post-thread__like').dataset.id = postId;
+      document.querySelector('.post-thread__dislike').dataset.id = postId;
+
+      if (data.imagePath) {
+        const img = document.getElementById("post-image");
+        img.src = data.imagePath;
+        img.style.display = 'block';
+      }
+    });
+
+  // Авторизація
+  fetch('/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/getSessionUser.php')
+    .then(res => res.json())
+    .then(data => {
+      if (data.loggedIn) {
+        const profileEl = document.getElementById('user-profile');
+        if (profileEl) {
+          profileEl.style.display = 'block';
+          profileEl.title = `Ви увійшли як: ${data.login}`;
+        }
+      }
+    });
+
+  // Обробка лайків / дизлайків
+  document.querySelectorAll('.post-thread__like, .post-thread__dislike').forEach(button => {
+    button.addEventListener('click', () => {
+      const action = button.dataset.action;
+      const postId = globalPostId;
+
+      fetch('/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/updateLikes.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `postId=${postId}&action=${action}`
+      })
+      .then(res => res.json())
+      .then(result => {
+        if (result.success) {
+          document.getElementById('like-count').textContent = result.likesCount;
+          document.getElementById('dislike-count').textContent = result.dislikesCount;
+        } else {
+          console.warn("⚠️", result.message || 'Не вдалося оновити реакцію');
+        }
+      });
+    });
+  });
+});
+  </script>
 </body>
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-<script src="../AircraftSandbox/js/script.js"></script>
-<script src="js/post.js"></script>
 </html>

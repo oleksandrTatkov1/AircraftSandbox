@@ -96,38 +96,40 @@
         </footer>
     </div>
     <script>
-        document.body.addEventListener('click', event => {
-            const btn = event.target.closest('.post__like, .post__dislike');
-            if (!btn) return;
+document.body.addEventListener('click', event => {
+    const btn = event.target.closest('.post__like, .post__dislike');
+    if (!btn) return;
 
-            const postId = btn.dataset.id;
-            const action = btn.dataset.action;
-            console.log('Sending:', postId, action);
+    const postId = btn.dataset.id;
+    const action = btn.dataset.action;
 
-            fetch('PHP/scripts/updateLikes.php', {
-                method: 'POST',
-                headers: {'Content-Type':'application/x-www-form-urlencoded'},
-                body: `postId=${postId}&action=${action}`
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (!data.success) {
-                alert('Ошибка: ' + data.message);
-                return;
-                }
-                // Обновляем ОДНОВРЕМЕННО Оба счётчика
-                const postElem = document.getElementById(`post-${postId}`);
-                if (!postElem) return;
+    fetch('/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/updateLikes.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: `postId=${encodeURIComponent(postId)}&action=${encodeURIComponent(action)}`
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (!data.success) {
+            alert('❌ Помилка: ' + data.message);
+            return;
+        }
 
-                const likeSpan = postElem.querySelector('.like-count');
-                const dislSpan = postElem.querySelector('.dislike-count');
-                likeSpan.textContent = data.likesCount;
-                dislSpan.textContent = data.dislikesCount;
-            })
-            .catch(err => console.error('Network or JSON error:', err));
-            });
+        // ✅ Знайдемо потрібний пост
+        const postElem = btn.closest('.post');
+        if (!postElem) return;
 
-    </script>
+        const likeSpan = postElem.querySelector('.like-count');
+        const dislSpan = postElem.querySelector('.dislike-count');
+
+        if (likeSpan) likeSpan.textContent = data.likesCount;
+        if (dislSpan) dislSpan.textContent = data.dislikesCount;
+    })
+    .catch(err => {
+        console.error('❌ Мережева помилка або JSON:', err);
+    });
+});
+</script>
     <script>
        document.addEventListener("DOMContentLoaded", function () {
         document.querySelector('.create-post__form').addEventListener('submit', function (e) {
@@ -185,6 +187,28 @@
                 document.querySelector('.posts-container').innerHTML = html;
             });
     });
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Зачекаємо, поки завантажаться пости
+    fetch('/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/loadPosts.php')
+        .then(response => response.text())
+        .then(html => {
+            const container = document.querySelector('.posts-container');
+            container.innerHTML = html;
+
+            // Після вставлення HTML — додаємо обробники на зображення
+            container.querySelectorAll('.post__image img').forEach(img => {
+                img.addEventListener('click', () => {
+                    const parent = img.closest('.post');
+                    if (parent && parent.dataset.id) {
+                        const postId = parent.dataset.id;
+                        window.location.href = `post.html?id=${postId}`;
+                    }
+                });
+            });
+        });
+});
 </script>
 <script src="../AircraftSandbox/js/script.js"></script>
 <script src="../AircraftSandbox/js/scrollForum.js"></script>
