@@ -55,6 +55,7 @@
 
     <main class="main">
         <div class="container">
+
   
             <div class="edit-profile">
               <a href="profile.html" class="edit-profile__back">← Повернутись</a>
@@ -131,54 +132,52 @@
 <script src="../AircraftSandbox/js/profile.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    fetch('/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/authCheck.php')
-        .then(response => response.json())
-        .then(data => {
-            if (!data.authorized) {
-                window.location.href = '/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/registerAlpha/register.html';
-            }
-        })
-        .catch(error => {
-            console.error('❌ Помилка перевірки авторизації:', error);
-            // можно временно перенаправить при ошибке сервера
-            window.location.href = '/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/registerAlpha/register.html';
-        });
-});
-</script>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
   const nameInput = document.getElementById('name');
   const bioInput = document.getElementById('bio');
+  const photoInput = document.getElementById('photoInput');
   const photoPreview = document.getElementById('photoPreview');
+  const form = document.getElementById('profileForm');
 
+  // Завантаження поточних даних
   fetch('/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/login_Firebase.php')
     .then(res => res.json())
     .then(user => {
-      if (!user || !user.Login) {
-        console.warn('❌ Користувач не знайдений');
-        return;
-      }
-
-      // Установка значень
+      if (!user || !user.Login) return;
       nameInput.value = user.Name || '';
       bioInput.value = user.Bio || '';
       photoPreview.src = user.ImagePath || '/AircraftSandbox/img/users/default-avatar.png';
-    })
-    .catch(err => {
-      console.error('❌ Помилка завантаження даних профілю:', err);
     });
 
-  // Попередній перегляд аватарки
-  document.getElementById('photoInput').addEventListener('change', function () {
-    const file = this.files[0];
+  photoInput.addEventListener('change', () => {
+    const file = photoInput.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = e => photoPreview.src = e.target.result;
       reader.readAsDataURL(file);
     }
   });
-});
 
+  // Відправка змін
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+    fetch('/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/updateProfile.php', {
+      method: 'POST',
+      body: formData
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert('✅ Профіль оновлено!');
+          location.reload();
+        } else {
+          alert('❌ Помилка: ' + data.message);
+        }
+      })
+      .catch(() => alert('❌ Серверна помилка.'));
+  });
+});
   </script>
   
 </html>
