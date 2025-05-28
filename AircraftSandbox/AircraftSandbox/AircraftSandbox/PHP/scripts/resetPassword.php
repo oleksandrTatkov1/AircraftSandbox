@@ -1,14 +1,24 @@
 <?php
 require_once '../../PHP/utils/firebasePublisher.php';
-use PHP\Utils\FirebasePublisher
+
+use PHP\Utils\FirebasePublisher;
+
+header('Content-Type: application/json');
+
 $token = $_POST['token'] ?? '';
 $newPassword = $_POST['newPassword'] ?? '';
+
+// Перевірка вхідних даних
+if (empty($token) || empty($newPassword)) {
+    exit(json_encode(["error" => "❌ Токен або новий пароль відсутній."]));
+}
 
 $firebase = new FirebasePublisher();
 $data = $firebase->getAll("reset_tokens/$token");
 
-if (!$data || $data['expires'] < time()) {
-    exit("❌ Недійсний або прострочений токен.");
+// Перевірка наявності токена та дії
+if (!$data || ($data['expires'] ?? 0) < time()) {
+    exit(json_encode(["error" => "❌ Недійсний або прострочений токен."]));
 }
 
 $email = $data['email'];
@@ -16,6 +26,7 @@ $safeEmail = str_replace(['@', '.'], ['_at_', '_dot_'], $email);
 
 $firebase->publish("users/$safeEmail/Password", password_hash($newPassword, PASSWORD_DEFAULT));
 
+// Видалення токена після використання
 $firebase->publish("reset_tokens/$token", null);
 
-echo "✅ Пароль оновлено.";
+echo json_encode(["success" => "✅ Пароль успішно оновлено."]);
