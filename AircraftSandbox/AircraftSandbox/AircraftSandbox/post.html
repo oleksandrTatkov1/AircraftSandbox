@@ -28,7 +28,10 @@
         <div class="post-thread__comments">
           <h3 class="post-thread__comments-title">Коментарі</h3>
           <div id="comments-container">
-            <p>Коментарів поки немає.</p>
+            <div id="comment-form" style="margin-top: 20px;">
+            <textarea id="comment-text" placeholder="Напишіть свій коментар..." style="width:100%;padding:10px;border-radius:8px;"></textarea>
+            <button id="submit-comment" style="margin-top:10px;padding:8px 16px;">Надіслати</button>
+          </div>
           </div>
         </div>
       </section>
@@ -114,5 +117,59 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
   </script>
+  <script>
+function loadComments(postId) {
+  fetch(`/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/loadComments.php?postId=${postId}`)
+    .then(res => res.json())
+    .then(comments => {
+      const container = document.getElementById('comments-container');
+      container.innerHTML = '';
+      if (!comments.length) {
+        container.innerHTML = '<p>Коментарів поки немає.</p>';
+        return;
+      }
+
+      comments.forEach(c => {
+        const el = document.createElement('div');
+        el.className = 'comment';
+        el.innerHTML = `
+          <div class="comment__inner">
+            <div>
+              <p class="comment__user">${c.UserLogin}</p>
+              <p class="comment__text">${c.CommentText}</p>
+              <small>${c.CommentDate}</small>
+            </div>
+          </div>
+        `;
+        container.appendChild(el);
+      });
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const postId = globalPostId;
+  loadComments(postId);
+
+  document.getElementById('submit-comment')?.addEventListener('click', () => {
+    const text = document.getElementById('comment-text').value.trim();
+    if (!text) return;
+
+    fetch('/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/addComment.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `postId=${postId}&comment=${encodeURIComponent(text)}`
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        document.getElementById('comment-text').value = '';
+        loadComments(postId);
+      } else {
+        alert(data.message || 'Помилка при додаванні коментаря');
+      }
+    });
+  });
+});
+</script>
 </body>
 </html>
