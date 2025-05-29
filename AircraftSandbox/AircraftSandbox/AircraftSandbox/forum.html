@@ -253,6 +253,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     </script>
 
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('.post__avatar').forEach(img => {
+    img.onerror = function () {
+      this.onerror = null;
+      this.src = '/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/default-avatar.png';
+    };
+  });
+});
+
+</script>
+
 <script src="../AircraftSandbox/js/script.js"></script>
 <script src="../AircraftSandbox/js/scrollForum.js"></script>
 </html>

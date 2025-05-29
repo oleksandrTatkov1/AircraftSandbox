@@ -126,15 +126,20 @@ class Post {
         $postId           = htmlspecialchars($this->id, ENT_QUOTES, 'UTF-8');
         $likes            = (int)$this->likesCount;
         $dislikes         = (int)$this->dislikesCount;
-        
+        $author = $this->getAuthor();
+        $authorImage = '/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/default-avatar.png'; // дефолт
+    
+        if ($author !== null && !empty($author->ImagePath)) {
+            $authorImage = htmlspecialchars($author->ImagePath, ENT_QUOTES, 'UTF-8');
+        }
         return"
         <div class=\"post scroll-section\" id=\"post-{$postId}\">
           <div class=\"post__header\">
             <img 
-              src=\"\" 
+              src=\"{$authorImage}\" 
               alt=\"Avatar of {$escapedAuthor}\" 
               class=\"post__avatar\"
-              onerror=\"this.onerror=null;this.src=''\"
+              onerror=\"this.onerror=null;this.src='/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/default-avatar.png'\"
             >
             <div>
               <h3 class=\"post__user\">{$escapedAuthor}</h3>
@@ -172,5 +177,18 @@ class Post {
           </div>
         </div>";
     }
+    public function getAuthor(): ?User {
+      if (empty($this->ownerLogin)) {
+          return null;
+      }
+
+      $user = new User();
+      if ($user->loadFromDB($this->ownerLogin)) {
+          return $user;
+      }
+
+      return null;
+  }
+
   }
 ?>

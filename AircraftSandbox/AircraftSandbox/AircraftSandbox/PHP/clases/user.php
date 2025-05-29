@@ -101,4 +101,32 @@ class User {
 
         return password_verify($plainPassword, $this->Password);
     }
+
+    public static function searchById(string $login, ?string $authToken = null): ?User
+    {
+        $firebase = new FirebasePublisher($authToken);
+        $allUsers = $firebase->getAll("users");
+
+        if (!is_array($allUsers)) {
+            return null;
+        }
+
+        $sanitizedKey = str_replace(['@', '.'], ['_at_', '_dot_'], $login);
+
+        foreach ($allUsers as $key => $data) {
+            if ($key === $sanitizedKey) {
+                $user = new self($authToken);
+                $user->Login       = $login;
+                $user->Name        = $data['Name'] ?? null;
+                $user->Password    = $data['Password'] ?? null;
+                $user->Phone       = $data['Phone'] ?? null;
+                $user->IsSuperUser = (int)($data['IsSuperUser'] ?? 0);
+                $user->ImagePath   = $data['ImagePath'] ?? null;
+                $user->Bio         = $data['Bio'] ?? null;
+                return $user;
+            }
+        }
+
+        return null;
+    }
 }
