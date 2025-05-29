@@ -25,7 +25,7 @@ $content       = trim($_POST['content'] ?? '');
 $imagePath     = ''; // за замовчуванням
 $likesCount    = 0;
 $dislikesCount = 0;
-
+$ownerLogin    = '';
 // Обробка завантаження зображення (за бажанням)
 if (!empty($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
     $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/posts/';
@@ -66,6 +66,7 @@ $postId = (string) time();  // або будь-який власний гене�
 // 4) Створюємо і зберігаємо Post
 $post = new Post();
 $post->id          = $postId;
+$post->ownerLogin  = $currentUser;
 $post->header      = $header;
 $post->content     = $content;
 $post->imagePath   = $imagePath;

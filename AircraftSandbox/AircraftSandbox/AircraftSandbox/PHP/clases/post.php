@@ -58,7 +58,7 @@ class Post {
         $this->content       = $data['content'] ?? '';
         $this->likesCount    = (int)($data['likesCount'] ?? 0);
         $this->dislikesCount = (int)($data['dislikesCount'] ?? 0);
-
+        $this->ownerLogin    = $data['ownerLogin'];
         return true;
     }
 
@@ -105,6 +105,7 @@ class Post {
             'content'       => $this->content,
             'likesCount'    => $this->likesCount,
             'dislikesCount' => $this->dislikesCount,
+            'ownerLogin' => $this->ownerLogin
         ];
 
         // Save post data
@@ -119,6 +120,7 @@ class Post {
     public function createPost($authorLogin) {
 
         $escapedHeader    = htmlspecialchars($this->header, ENT_QUOTES, 'UTF-8');
+        $escapedAuthor    = htmlspecialchars($this->ownerLogin, ENT_QUOTES, 'UTF-8');
         $escapedContent   = nl2br(htmlspecialchars($this->content, ENT_QUOTES, 'UTF-8'));
         $escapedImagePath = htmlspecialchars($this->imagePath, ENT_QUOTES, 'UTF-8');
         $postId           = htmlspecialchars($this->id, ENT_QUOTES, 'UTF-8');
@@ -130,12 +132,12 @@ class Post {
           <div class=\"post__header\">
             <img 
               src=\"\" 
-              alt=\"Avatar of {$authorLogin}\" 
+              alt=\"Avatar of {$escapedAuthor}\" 
               class=\"post__avatar\"
               onerror=\"this.onerror=null;this.src=''\"
             >
             <div>
-              <h3 class=\"post__user\">{$authorLogin}</h3>
+              <h3 class=\"post__user\">{$escapedAuthor}</h3>
               <p class=\"post__title\">{$escapedHeader}</p>
             </div>
             <div class=\"post__menu\">
