@@ -47,9 +47,11 @@ try {
         throw new Exception('Не вдалося зберегти файл на сервері.');
     }
 
+    // Унікальний ID одразу
+    $uniqueId = uniqid();
+
     // Створюємо об'єкт новини
-    $news = new News($relativePath, $desc, $sliderId);
-    $news->id = uniqid(); // Унікальний ID на основі часу
+    $news = new News($relativePath, $desc, $sliderId, $uniqueId);
     $news->saveToDB();
 
     echo '✅ Новина успішно додана!';
