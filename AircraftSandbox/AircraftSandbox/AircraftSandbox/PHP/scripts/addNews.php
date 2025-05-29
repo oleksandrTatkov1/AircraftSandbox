@@ -34,23 +34,23 @@ try {
         throw new Exception('Неприпустимий формат зображення. Дозволено: ' . implode(', ', $allowedExt));
     }
 
-    $newName      = uniqid('news_', true) . '.' . $ext;
-    $relativePath = '/img/news/' . $newName;
-    $fullPath     = rtrim($_SERVER['DOCUMENT_ROOT'], '/') . $relativePath;
+    // 💡 Використовуємо оригінальне ім’я файлу
+    $cleanName = basename($image['name']);
+    $relativePath = '/img/news/' . $cleanName;
+    $fullPath = rtrim($_SERVER['DOCUMENT_ROOT'], '/') . $relativePath;
 
     $dir = dirname($fullPath);
     if (!is_dir($dir) && !mkdir($dir, 0777, true)) {
         throw new Exception('Не вдалося створити директорію для зображень.');
     }
 
+    // Якщо вже існує файл з таким ім’ям — перезапишеться
     if (!move_uploaded_file($image['tmp_name'], $fullPath)) {
         throw new Exception('Не вдалося зберегти файл на сервері.');
     }
 
-    // Унікальний ID одразу
-    $uniqueId = uniqid();
+    $uniqueId = uniqid(); // Унікальний ID новини
 
-    // Створюємо об'єкт новини
     $news = new News($relativePath, $desc, $sliderId, $uniqueId);
     $news->saveToDB();
 
