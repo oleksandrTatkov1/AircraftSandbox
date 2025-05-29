@@ -1,29 +1,19 @@
 <?php
-declare(strict_types=1);
+require_once __DIR__ . '/../clases/ApkInfo.php';
+require_once __DIR__ . '/../utils/firebasePublisher.php';
 
-ini_set('display_errors', '0');
-error_reporting(E_ERROR | E_PARSE);
-
-require_once __DIR__ . '/../clases/ApkInfo.php'; // підключення класу
-session_start();
+use PHP\Clases\ApkInfo;
+use PHP\Utils\FirebasePublisher;
 
 try {
-    $dbFile = __DIR__ . '/../../sqlite/users.db';
-    if (!file_exists($dbFile) || !is_readable($dbFile)) {
-        exit;
+    $firebase = new FirebasePublisher();
+    $allData = $firebase->getAll("apkInfo");
+
+    if (!$allData) exit;
+
+    foreach ($allData as $id => $apkData) {
+        echo ApkInfo::renderCardById($firebase, $id);
     }
-
-    $db = new \PDO("sqlite:$dbFile");
-    $db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-
-    $stmt = $db->query('SELECT Id FROM ApkInfo ORDER BY Id DESC');
-    $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    if (!$rows) exit;
-
-    foreach ($rows as $row) {
-        echo \PHP\Clases\ApkInfo::renderCardById($db, (int)$row['Id']);
-    }
-
-} catch (\Exception $e) {
+} catch (Throwable $e) {
     exit;
 }

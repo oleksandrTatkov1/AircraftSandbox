@@ -47,7 +47,7 @@ if (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
 
     if (move_uploaded_file($_FILES['photo']['tmp_name'], $targetPath)) {
         $relativePath = '/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/' . $filename;
-        $user->ImagePath = $relativePath;
+        $user->ImagePath = $relativePath . '?t=' . time();
     }
 }
 

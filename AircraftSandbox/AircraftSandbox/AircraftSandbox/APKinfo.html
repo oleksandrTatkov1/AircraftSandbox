@@ -114,9 +114,9 @@ document.addEventListener('DOMContentLoaded', () => {
   fetch(`PHP/scripts/loadApkById.php?Id=${id}`)
     .then(res => res.json())
     .then(data => {
-      if (data.error) {
-        console.error('❌', data.error);
-        return;
+      if (!data || data.success === false || data.error) {
+      console.error('❌ Помилка завантаження APK:', data.error || 'невідомо');
+      return;
       }
 
       document.querySelector('.goldInfoAPK__img img').src = data.imagePath;

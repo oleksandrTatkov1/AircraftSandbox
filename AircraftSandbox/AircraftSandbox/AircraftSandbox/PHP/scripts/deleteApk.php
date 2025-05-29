@@ -7,18 +7,15 @@ try {
         throw new Exception("Метод не підтримується.");
     }
 
-    if (empty($_POST['id']) || !is_numeric($_POST['id'])) {
+    if (empty($_POST['id'])) {
         throw new Exception("Некоректний ID.");
     }
 
-    $id = (int)$_POST['id'];
-    $db = new PDO("sqlite:" . __DIR__ . '/../../sqlite/users.db');
-
     $apk = new ApkInfo();
-    $apk->loadFromDB($db, $id);
-    $apk->deleteFromDB($db);
+    $apk->loadFromDB($_POST['id']);
+    $apk->deleteFromDB();
 
-    echo "✅ Картку з ID $id успішно видалено.";
+    echo "✅ Картку з ID {$_POST['id']} успішно видалено.";
 } catch (Throwable $e) {
     echo "❌ Помилка: " . $e->getMessage();
 }

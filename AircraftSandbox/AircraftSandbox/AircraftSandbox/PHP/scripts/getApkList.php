@@ -1,13 +1,20 @@
 <?php
 require_once __DIR__ . '/../clases/ApkInfo.php';
-use PHP\Clases\ApkInfo;
+require_once __DIR__ . '/../utils/firebasePublisher.php';
+
+use PHP\Utils\FirebasePublisher;
 
 try {
-    $dbFile = __DIR__ . '/../../sqlite/users.db';
-    $db = new PDO("sqlite:$dbFile");
+    $firebase = new FirebasePublisher();
+    $allData = $firebase->getAll("apkInfo");
 
-    $result = $db->query("SELECT Id, Description FROM ApkInfo ORDER BY Id");
-    $rows = $result->fetchAll(PDO::FETCH_ASSOC);
+    $rows = [];
+    foreach ($allData as $id => $apk) {
+        $rows[] = [
+            "Id" => $id,
+            "Description" => $apk['description'] ?? ''
+        ];
+    }
 
     header('Content-Type: application/json');
     echo json_encode($rows);
