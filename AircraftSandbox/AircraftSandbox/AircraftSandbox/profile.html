@@ -64,7 +64,10 @@
                 </button>
                 <button class="profile-card__edit">
                   <a href="profileRedact.html">Редагувати профіль</a>
+                 
                 </button>
+                <button class="logout-button" id="logoutBtn">Вийти з аккаунту</button>
+
               </div>
               
             </div>
@@ -202,6 +205,31 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 });
 </script>
-
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', function () {
+        fetch('/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/sessionLogout.php', {
+          method: 'POST'
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            window.location.href = '/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/registerAlpha/register.html';
+          } else {
+            console.error('⚠️ Logout failed:', data);
+          }
+        })
+        .catch(err => {
+          console.error('❌ Logout error:', err);
+        });
+      });
+    }
+  });
+  </script>
+  
+  
+  
 </html>
 
