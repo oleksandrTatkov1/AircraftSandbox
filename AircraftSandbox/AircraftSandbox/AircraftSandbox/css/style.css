@@ -540,6 +540,7 @@ html, body {
     height: auto;
     position: relative;
     left: 50%;
+    margin-top: -55px;
     transform: translateX(-50%);
     z-index: 1;
 }
@@ -549,7 +550,7 @@ html, body {
     font-size: clamp(10px, calc(10px + 115 * (100vw / 1200)), 165px);
     position: absolute;
     left: 50%;
-    top: 50%;
+    top: 45%;
     transform: translate(-50%, -50%);
 }
 
@@ -565,7 +566,7 @@ html, body {
     position: absolute;
     font-family: "Londrina Solid";
     font-size: clamp(22px, calc(22px + 0.0598 * (100vw - 320px)), 91px);
-    left: 51%;
+    left:50%;
     top: 71%;
     transform: translate(-50%, -50%);
 }
