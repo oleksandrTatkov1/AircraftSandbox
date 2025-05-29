@@ -12,8 +12,8 @@ try {
     }
 
     $apk = new ApkInfo();
-    $apk->loadFromDB($_POST['id']);
-    $apk->deleteFromDB();
+    $apk->id = $_POST['id'];
+    $apk->deleteFromDB(); 
 
     echo "✅ Картку з ID {$_POST['id']} успішно видалено.";
 } catch (Throwable $e) {

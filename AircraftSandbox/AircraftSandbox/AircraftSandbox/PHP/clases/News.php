@@ -1,71 +1,85 @@
 <?php
 namespace PHP\Clases;
+
+require_once __DIR__ . '/../utils/firebasePublisher.php';
+use PHP\Utils\FirebasePublisher;
 use Exception;
-use PDO;
-use PDOException;
 
 class News {
     public $id;
     public $imagePath;
     public $description;
     public $sliderId;
-    
-    public function __construct($imagePath = '', $description = '', $sliderId = null, $id = null) {
+
+    private $firebase;
+
+    public function __construct($imagePath = '', $description = '', $sliderId = null, $id = null, $authToken = null) {
         $this->id = $id;
         $this->imagePath = $imagePath;
         $this->description = $description;
         $this->sliderId = $sliderId;
+
+        $this->firebase = new FirebasePublisher($authToken);
     }
 
-    private function connectDB($dbFile) {
-        return new PDO("sqlite:" . $this->$dbFile);
+    private function sanitizeKey($key) {
+        return str_replace(['@', '.', ' '], ['_at_', '_dot_', '_'], (string)$key);
     }
 
-    public function saveToDB($dbFile) {
-        $db = $this->connectDB($dbFile);
-        $stmt = $db->prepare("INSERT INTO News (ImagePath, Description, SliderId) VALUES (:imagePath, :description, :sliderId)");
-        $stmt->bindParam(':imagePath', $this->imagePath);
-        $stmt->bindParam(':description', $this->description);
-        $stmt->bindParam(':sliderId', $this->sliderId);
-        $stmt->execute();
-        $this->id = $db->lastInsertId();
-    }
-
-    public function loadFromDB($id, $dbFile) {
-        $db = $this->connectDB($dbFile);
-        $stmt = $db->prepare("SELECT * FROM News WHERE id = :id");
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-        $stmt->execute();
-        $data = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($data) {
-            $this->id = $data['id'];
-            $this->imagePath = $data['ImagePath'];
-            $this->description = $data['Description'];
-            $this->sliderId = $data['SliderId'];
-            return true;
+    public function saveToDB() {
+        if (empty($this->id)) {
+            throw new Exception("ID must be provided to save news.");
         }
 
-        return false;
+        $safeId = $this->sanitizeKey($this->id);
+
+        $data = [
+            'imagePath'   => $this->imagePath,
+            'description' => $this->description,
+            'sliderId'    => $this->sliderId
+        ];
+
+        $this->firebase->publish("news/{$safeId}", $data);
+        return true;
     }
 
-    public function updateFromDB($dbFile) {
-        if (!$this->id) return false;
+    public function loadFromDB($id) {
+        if (empty($id)) {
+            throw new Exception("News ID must be provided.");
+        }
 
-        $db = $this->connectDB($dbFile);
-        $stmt = $db->prepare("UPDATE News SET ImagePath = :imagePath, Description = :description, SliderId = :sliderId WHERE id = :id");
-        $stmt->bindParam(':imagePath', $this->imagePath);
-        $stmt->bindParam(':description', $this->description);
-        $stmt->bindParam(':sliderId', $this->sliderId);
-        $stmt->bindParam(':id', $this->id, PDO::PARAM_INT);
-        return $stmt->execute();
+        $safeId = $this->sanitizeKey($id);
+        $data = $this->firebase->getAll("news/{$safeId}");
+
+        if (!$data || !is_array($data)) {
+            throw new Exception("News not found.");
+        }
+
+        $this->id          = $id;
+        $this->imagePath   = $data['imagePath'] ?? '';
+        $this->description = $data['description'] ?? '';
+        $this->sliderId    = $data['sliderId'] ?? null;
+
+        return true;
+    }
+
+    public function updateFromDB() {
+        return $this->saveToDB(); // логіка ідентична
+    }
+
+    public function deleteFromDB() {
+        if (empty($this->id)) {
+            throw new Exception("ID must be provided for deletion.");
+        }
+
+        $safeId = $this->sanitizeKey($this->id);
+        $this->firebase->publish("news/{$safeId}", null);
+        return true;
     }
 
     public function renderNewsItem() {
-        // Render news item with fixed image size and rounded corners
         $imgTag = $this->imagePath 
-            ? '<img src="' . htmlspecialchars($this->imagePath) . '" alt="News Image" ' 
-              . 'width="270" height="200" style="object-fit:cover; border-radius:12px;"/>' 
+            ? '<img src="' . htmlspecialchars($this->imagePath) . '" alt="News Image" width="270" height="200" style="object-fit:cover; border-radius:12px;" />' 
             : '';
         $desc = htmlspecialchars($this->description);
 
@@ -80,6 +94,6 @@ class News {
                     </div>
                 </div>
             </div>
-            HTML;
+        HTML;
     }
 }
