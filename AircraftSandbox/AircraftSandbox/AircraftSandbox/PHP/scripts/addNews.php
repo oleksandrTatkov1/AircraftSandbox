@@ -1,8 +1,7 @@
 <?php
-// addNews.php — для Firebase
-ini_set('display_errors', 0);
-ini_set('display_startup_errors', 0);
-error_reporting(E_ERROR | E_PARSE);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 require_once __DIR__ . '/../clases/News.php';
 use PHP\Clases\News;
@@ -28,30 +27,34 @@ try {
         throw new Exception('Не вдалося завантажити зображення. Код помилки: ' . $image['error']);
     }
 
-    $allowedExt = ['jpg','jpeg','png','gif','webp'];
+    $allowedExt = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
     $ext = strtolower(pathinfo($image['name'], PATHINFO_EXTENSION));
-    if (!in_array($ext, $allowedExt, true)) {
+    if (!in_array($ext, $allowedExt)) {
         throw new Exception('Неприпустимий формат зображення. Дозволено: ' . implode(', ', $allowedExt));
     }
 
-    // 💡 Використовуємо оригінальне ім’я файлу
-    $cleanName = basename($image['name']);
-    $relativePath = '/img/news/' . $cleanName;
-    $fullPath = rtrim($_SERVER['DOCUMENT_ROOT'], '/') . $relativePath;
+    $newName = uniqid('news_', true) . '.' . $ext;
 
-    $dir = dirname($fullPath);
-    if (!is_dir($dir) && !mkdir($dir, 0777, true)) {
-        throw new Exception('Не вдалося створити директорію для зображень.');
+    // 🔥 Абсолютний ШЛЯХ до потрібної папки (жорстко прописаний)
+    $absoluteDir = $_SERVER['DOCUMENT_ROOT'] . '/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/news/';
+    $relativePath = '/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/news/' . $newName;
+
+    // Повний шлях до файла
+    $fullPath = $absoluteDir . $newName;
+
+    if (!is_dir($absoluteDir) && !mkdir($absoluteDir, 0777, true)) {
+        throw new Exception("Не вдалося створити директорію для зображень: {$absoluteDir}");
     }
 
-    // Якщо вже існує файл з таким ім’ям — перезапишеться
     if (!move_uploaded_file($image['tmp_name'], $fullPath)) {
         throw new Exception('Не вдалося зберегти файл на сервері.');
     }
 
-    $uniqueId = uniqid(); // Унікальний ID новини
+    // ✅ Firebase повинен зберігати шлях відносно сайту (кореня)
+    $firebasePath = '/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/news/' . $newName;
 
-    $news = new News($relativePath, $desc, $sliderId, $uniqueId);
+    $uniqueId = uniqid();
+    $news = new News($firebasePath, $desc, $sliderId, $uniqueId);
     $news->saveToDB();
 
     echo '✅ Новина успішно додана!';
