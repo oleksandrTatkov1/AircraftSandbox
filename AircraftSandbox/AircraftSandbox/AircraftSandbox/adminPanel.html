@@ -34,14 +34,11 @@
                     </li>
                   </ul>
                 </nav>
-                <div class="header__registration">
-                  <button class="header__buttonForReg" id="auth-button">
-                    Авторизація 
-                  </button>
-                  <div class="header__profile" id="user-profile" style="display: none;">
-                    <img src="/AircraftSandbox/img/index/header/free-icon-user-483361.png" alt="Профіль" class="profile-icon">
-                  </div>
-                </div>                    
+          
+                  <a href="/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/profile.html">
+                    <img id="header-avatar" src="/AircraftSandbox/img/index/header/free-icon-user-483361.png" alt="Профіль" class="profile-icon" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                </a>
+                       
             </div>
             <div class="menu-btn">
                 <span></span>
@@ -309,5 +306,69 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 </script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+  fetch("/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/login_Firebase.php")
+  .then(response => response.json())
+    .then(user => {
+      if (!user || !user.Login) return;
+
+      // Аватар
+      const profileAvatar = document.querySelector(".profile-card__avatar");
+if (profileAvatar && user.ImagePath) {
+  profileAvatar.src = user.ImagePath;
+}
+
+const headerAvatar = document.getElementById("header-avatar");
+if (headerAvatar && user.ImagePath) {
+  headerAvatar.src = user.ImagePath;
+}
+
+
+      // Ім’я
+      const username = document.querySelector(".profile-card__username");
+      if (username && user.Name) {
+        username.textContent = "@" + user.Name;
+      }
+
+      // Біо
+      const bio = document.querySelector(".profile-card__bio");
+      if (bio && user.Bio) {
+        bio.textContent = user.Bio;
+      }
+
+      // Хедер: показати аватар замість кнопки
+      const authButton = document.getElementById("auth-button");
+      const userProfile = document.getElementById("user-profile");
+      if (authButton) authButton.style.display = "none";
+      if (userProfile) userProfile.style.display = "block";
+
+      // Оновити аватар та ім’я у постах
+      document.querySelectorAll(".post__user").forEach(el => {
+        el.textContent = "@" + user.Name;
+      });
+
+      document.querySelectorAll(".post__avatar").forEach(el => {
+        el.src = user.ImagePath;
+      });
+    })
+});
+
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        fetch("/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/checkSuperUser.php")
+          .then(res => res.json())
+          .then(data => {
+            if (!data.authorized) {
+              window.location.replace("/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/index.html");
+            }
+          })
+          .catch(() => {
+            window.location.replace("/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/index.html");
+          });
+      });
+      </script>
+      
 </body>
 </html>

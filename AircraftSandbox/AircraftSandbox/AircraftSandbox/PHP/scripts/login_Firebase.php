@@ -29,5 +29,6 @@ echo json_encode([
     'Name' => $user->Name ?? '',
     'Phone' => $user->Phone ?? '',
     'ImagePath' => $user->ImagePath ?: '/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/default-avatar.png',
-    'Bio' => $user->Bio ?? ''
+    'Bio' => $user->Bio ?? '',
+    'IsSuperUser' => $user->IsSuperUser ?? 0
 ]);
