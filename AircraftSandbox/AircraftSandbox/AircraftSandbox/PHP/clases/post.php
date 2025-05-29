@@ -16,7 +16,7 @@ class Post {
     public $likesCount;
     public $dislikesCount;
 
-    private $firebase;
+    public $firebase;
 
     public function __construct($authToken = null) {
         $this->id = null;
@@ -92,8 +92,8 @@ class Post {
      * Also update UserInfo to record ownership
      */
     public function saveToDB() {
-        if (empty($this->id) || empty($this->ownerLogin)) {
-            throw new Exception("Post ID and ownerLogin must not be empty.");
+        if (empty($this->id)) {
+            throw new Exception("Post ID and must not be empty.");
         }
 
         $safeId = $this->sanitizeKey($this->id);
@@ -105,17 +105,10 @@ class Post {
             'content'       => $this->content,
             'likesCount'    => $this->likesCount,
             'dislikesCount' => $this->dislikesCount,
-            'ownerLogin'    => $this->ownerLogin,
         ];
 
         // Save post data
         $this->firebase->publish($path, $payload);
-
-        // Update UserInfo: add this post to user's post list
-        $userInfo = new UserInfo();
-        $userInfo->Login = $this->ownerLogin;
-        // assume UserInfo::addPost handles publishing relation
-        $userInfo->addPost($this);
 
         return true;
     }
@@ -123,11 +116,7 @@ class Post {
     /**
      * Render the post HTML; load author record into authorInfo
      */
-    public function createPost() {
-        // Load author info for later use
-        $userInfo = new UserInfo();
-        $userInfo->loadFromDB($this->ownerLogin);
-        $this->authorInfo = $userInfo;
+    public function createPost($authorLogin) {
 
         $escapedHeader    = htmlspecialchars($this->header, ENT_QUOTES, 'UTF-8');
         $escapedContent   = nl2br(htmlspecialchars($this->content, ENT_QUOTES, 'UTF-8'));
@@ -135,17 +124,18 @@ class Post {
         $postId           = htmlspecialchars($this->id, ENT_QUOTES, 'UTF-8');
         $likes            = (int)$this->likesCount;
         $dislikes         = (int)$this->dislikesCount;
+        
         return"
         <div class=\"post scroll-section\" id=\"post-{$postId}\">
           <div class=\"post__header\">
             <img 
-              src=\"{$userInfo->UserLogin}\" 
-              alt=\"Avatar of {$userInfo->ImagePath}\" 
+              src=\"\" 
+              alt=\"Avatar of {$authorLogin}\" 
               class=\"post__avatar\"
-              onerror=\"this.onerror=null;this.src='{$userInfo->UserLogin}'\"
+              onerror=\"this.onerror=null;this.src=''\"
             >
             <div>
-              <h3 class=\"post__user\">{$userInfo->UserLogin}</h3>
+              <h3 class=\"post__user\">{$authorLogin}</h3>
               <p class=\"post__title\">{$escapedHeader}</p>
             </div>
             <div class=\"post__menu\">

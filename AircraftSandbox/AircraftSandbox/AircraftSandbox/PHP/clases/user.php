@@ -13,7 +13,7 @@ class User {
     public $Bio;
     public $ImagePath;
 
-    private $firebase;
+    public $firebase;
 
     public function __construct($authToken = null) {
         $this->Login = '';

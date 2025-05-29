@@ -95,40 +95,49 @@
         </footer>
     </div>
     <script>
-document.body.addEventListener('click', event => {
-    const btn = event.target.closest('.post__like, .post__dislike');
-    if (!btn) return;
+    document.body.addEventListener('click', event => {
+        const btn = event.target.closest('.post__like, .post__dislike');
+        if (!btn) return;
 
-    const postId = btn.dataset.id;
-    const action = btn.dataset.action;
+        const postId = btn.dataset.id;
+        const action = btn.dataset.action;
 
-    fetch('/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/updateLikes.php', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: `postId=${encodeURIComponent(postId)}&action=${encodeURIComponent(action)}`
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (!data.success) {
-            alert('❌ Помилка: ' + data.message);
-            return;
-        }
-
-        // ✅ Знайдемо потрібний пост
-        const postElem = btn.closest('.post');
-        if (!postElem) return;
-
-        const likeSpan = postElem.querySelector('.like-count');
-        const dislSpan = postElem.querySelector('.dislike-count');
-
-        if (likeSpan) likeSpan.textContent = data.likesCount;
-        if (dislSpan) dislSpan.textContent = data.dislikesCount;
-    })
-    .catch(err => {
-        console.error('❌ Мережева помилка або JSON:', err);
+        fetch('PHP/scripts/updateLikes.php', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+            },
+            body: new URLSearchParams({ postId, action }).toString()
+        })
+        .then(res => res.text().then(txt => {
+            const ct = res.headers.get('Content-Type') || '';
+            if (res.ok && ct.includes('application/json')) {
+                try {
+                    return JSON.parse(txt);
+                } catch (e) {
+                    throw new Error('Invalid JSON: ' + e.message);
+                }
+            } else {
+                throw new Error(`HTTP ${res.status}:\n${txt}`);
+            }
+        }))
+        .then(data => {
+            if (!data.success) {
+                alert('❌ Помилка: ' + data.message);
+                return;
+            }
+            const postElem = btn.closest('.post');
+            if (!postElem) return;
+            postElem.querySelector('.like-count').textContent    = data.likesCount;
+            postElem.querySelector('.dislike-count').textContent = data.dislikesCount;
+        })
+        .catch(err => {
+            console.error('❌ Response was not JSON or network error:', err);
+            alert('Сталася помилка:\n' + err.message);
+        });
     });
-});
-</script>
+    </script>
     <script>
        document.addEventListener("DOMContentLoaded", function () {
         document.querySelector('.create-post__form').addEventListener('submit', function (e) {
