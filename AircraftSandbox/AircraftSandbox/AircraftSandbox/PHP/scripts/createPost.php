@@ -85,4 +85,4 @@ $userInfo->CommentDate = date(DATE_ISO8601); // зараз у ISO
 $userInfo->saveToDB();  // публікує “userInfo/{$userLogin}_{$postId}_{$id}`
 
 // 6) Відповідь — HTML лише нового поста
-echo $post->createPost($currentUser);
+echo $post->createPost();

@@ -117,7 +117,7 @@ class Post {
     /**
      * Render the post HTML; load author record into authorInfo
      */
-    public function createPost($authorLogin) {
+    public function createPost() {
 
         $escapedHeader    = htmlspecialchars($this->header, ENT_QUOTES, 'UTF-8');
         $escapedAuthor    = htmlspecialchars($this->ownerLogin, ENT_QUOTES, 'UTF-8');
