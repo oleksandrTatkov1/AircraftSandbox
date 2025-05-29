@@ -72,6 +72,19 @@
   transition: background-color 0.2s ease-in-out;
 }
 
+.profile-card__edit a {
+  background-color: #3b476c;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 10px;
+  height: fit-content;
+  cursor: pointer;
+}
+
+.profile-card__edit:hover {
+  background-color: #6c73be;
+}
 
 /* === Контент вкладки === */
 .profile-card__content {

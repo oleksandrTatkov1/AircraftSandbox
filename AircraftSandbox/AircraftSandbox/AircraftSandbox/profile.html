@@ -58,14 +58,28 @@
                 <h2 class="profile-card__username">@DefaultUsername</h2>
                 <p class="profile-card__bio">Придумайте біо.</p>
               </div>
-              <button class="profile-card__edit"><a href="profileRedact.html">Редагувати профіль</a></button>
+              <div class="profile-card__actions">
+                <button class="profile-card__edit" id="admin-panel-btn" style="display: none;">
+                  <a href="adminPanel.html">Адмін Панель</a>
+                </button>
+                <button class="profile-card__edit">
+                  <a href="profileRedact.html">Редагувати профіль</a>
+                </button>
+              </div>
+              
             </div>
-      
+            <button class="profile-card__edit" id="admin-panel-btn" style="display: none;">
+              <a href="adminPanel.html">Адмін Панель</a>
+            </button>                       
             <div class="profile-card__tabs">
+            
+              <div class="profile-card__tabs">
                 <div class="profile-card__indicator" id="tab-indicator"></div>
               
                 <button class="profile-card__tab" data-tab="posts">Пости</button>
                 <button class="profile-card__tab" data-tab="replies">Відповіді</button>
+              </div>
+              
               </div>
               
       
@@ -78,7 +92,16 @@
                 <h4 class="post__title">Best Beginner-Friendly Airliners?</h4>
                 <p class="post__text">Hey everyone! 🖐 I’m new to flight sims and looking for a good airliner to start with...</p>
               </div>
-
+              <div class="profile-card__content hidden" id="replies">
+                <div class="profile-card__answer">
+                  <div class="answer__header">
+                    <img src="e737bbb3-f42c-48c5-a56f-d1beb509ac81.png" class="answer__avatar" />
+                    <span class="answer__user">@GloryToWLW</span>
+                  </div>
+                  <h4 class="answer__title">Best Beginner-Friendly Airliners?</h4>
+                  <p class="answer__text">Hey everyone! 🖐 I’m new to flight sims and looking for a good airliner to start with...</p>
+                </div>
+              </div>
               <div class="profile-card__post">
                 <div class="post__header">
                   <img src="e737bbb3-f42c-48c5-a56f-d1beb509ac81.png" class="post__avatar" />
@@ -92,16 +115,7 @@
             </div>
       
             <div class="profile-card__content hidden" id="replies">
-              <div class="profile-card__answer">
-                <div class="answer__header">
-                  <img src="e737bbb3-f42c-48c5-a56f-d1beb509ac81.png" class="answer__avatar" />
-                  <span class="answer__user">@GloryToWLW</span>
-                </div>
-                <h4 class="answer__title">Best Beginner-Friendly Airliners?</h4>
-                <p class="answer__text">Hey everyone! 🖐 I’m new to flight sims and looking for a good airliner to start with...</p>
-              </div>
-            </div>
-          </div>
+             
         </div>
       </main>
       
@@ -155,22 +169,15 @@
         el.textContent = "@" + user.Name;
       });
 
+      //Адмін чи нє
+      if (user.IsSuperUser == 1) {
+    const adminBtn = document.getElementById("admin-panel-btn");
+    if (adminBtn) adminBtn.style.display = "inline-block";
+  }
       document.querySelectorAll(".post__avatar").forEach(el => {
         el.src = user.ImagePath;
       });
-
-      // Оновити у відповідях
-      document.querySelectorAll(".answer__user").forEach(el => {
-        el.textContent = "@" + user.Name;
-      });
-
-      document.querySelectorAll(".answer__avatar").forEach(el => {
-        el.src = user.ImagePath;
-      });
     })
-    .catch(error => {
-      console.error("❌ Помилка отримання сесії:", error);
-    });
 });
 
     </script>
