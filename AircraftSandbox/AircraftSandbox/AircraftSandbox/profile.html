@@ -90,20 +90,12 @@
               <div class="profile-card__post">
                 <div class="post__header">
                   <img src="e737bbb3-f42c-48c5-a56f-d1beb509ac81.png" class="post__avatar" />
-                  <span class="post__user">@GloryToWLW</span>
-                </div>
-                <h4 class="post__title">Best Beginner-Friendly Airliners?</h4>
-                <p class="post__text">Hey everyone! 🖐 I’m new to flight sims and looking for a good airliner to start with...</p>
-              </div>
+              
               <div class="profile-card__content hidden" id="replies">
                 <div class="profile-card__answer">
                   <div class="answer__header">
                     <img src="e737bbb3-f42c-48c5-a56f-d1beb509ac81.png" class="answer__avatar" />
-                    <span class="answer__user">@GloryToWLW</span>
-                  </div>
-                  <h4 class="answer__title">Best Beginner-Friendly Airliners?</h4>
-                  <p class="answer__text">Hey everyone! 🖐 I’m new to flight sims and looking for a good airliner to start with...</p>
-                </div>
+                   
               </div>
               <div class="profile-card__post">
                 <div class="post__header">
@@ -229,7 +221,20 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   </script>
   
-  
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      fetch("/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/loadUserPost.php")
+        .then(response => response.text())
+        .then(postsHtml => {
+          const postsContainer = document.getElementById("posts");
+          if (postsContainer) {
+            postsContainer.innerHTML = postsHtml;
+          }
+        })
+        .catch(err => console.error("Помилка при завантаженні постів:", err));
+    });
+    </script>
+    
   
 </html>
 
