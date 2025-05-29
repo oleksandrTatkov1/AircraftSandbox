@@ -1,35 +1,25 @@
 <?php
-// deleteNews.php
-// Удаляет запись News по переданному POST-id и возвращает текстовый ответ
-
-// Отключаем вывод варнингов
+// deleteNews.php для Firebase
 ini_set('display_errors', 0);
 error_reporting(0);
+
+require_once __DIR__ . '/../clases/News.php';
+use PHP\Clases\News;
 
 try {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         throw new Exception('Неправильний метод запиту');
     }
 
-    if (empty($_POST['id']) || !ctype_digit($_POST['id'])) {
+    if (empty($_POST['id'])) {
         throw new Exception('Некоректний ID');
     }
-    $id = (int)$_POST['id'];
+    $id = $_POST['id'];
 
-    $dbFile = __DIR__ . '/../../sqlite/users.db';
-    $db = new PDO("sqlite:" . $dbFile);
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-    // Проверяем, что такая запись есть
-    $check = $db->prepare("SELECT COUNT(*) FROM News WHERE id = :id");
-    $check->execute([':id' => $id]);
-    if ($check->fetchColumn() == 0) {
-        throw new Exception("Запис з ID $id не знайдено");
-    }
-
-    // Удаляем
-    $del = $db->prepare("DELETE FROM News WHERE id = :id");
-    $del->execute([':id' => $id]);
+    // Завантажуємо і видаляємо новину
+    $news = new News();
+    $news->loadFromDB($id);
+    $news->deleteFromDB();
 
     echo "✅ Новина з ID $id успішно видалена!";
 } catch (Exception $e) {
