@@ -1,5 +1,13 @@
 <?php
 namespace PHP\Clases;
+require_once __DIR__ . '/User.php';
+require_once __DIR__ . '/../utils/firebasePublisher.php';
+require_once __DIR__ . '/userPosts.php';
+use PHP\Utils\FirebasePublisher;
+use PHP\Clases\User;
+use PHP\Clases\UserInfo;
+use Exception;
+
 class Post {
     public $id;
     public $header;
@@ -7,139 +15,137 @@ class Post {
     public $content;
     public $likesCount;
     public $dislikesCount;
-    public $ownerLogin;
 
-    public function __construct() {
-        $this->id = 0;
+    private $firebase;
+
+    public function __construct($authToken = null) {
+        $this->id = null;
         $this->header = '';
         $this->imagePath = '';
         $this->content = '';
         $this->likesCount = 0;
         $this->dislikesCount = 0;
-        $this->ownerLogin = '';
+
+        $this->firebase = new FirebasePublisher($authToken);
     }
 
-    public function loadFromDB($db, $id) {
+    /**
+     * Normalize a key for Firebase paths
+     */
+    private function sanitizeKey($key) {
+        return str_replace(['@', '.', ' '], ['_at_', '_dot_', '_'], (string)$key);
+    }
+
+    /**
+     * Load a post by its ID
+     */
+    public function loadFromDB($id) {
         if (!is_numeric($id)) {
             throw new Exception("Invalid post ID.");
         }
 
-        $stmt = $db->prepare("SELECT * FROM Post WHERE id = :id");
-        if (!$stmt) {
-            throw new Exception("Failed to prepare statement for loading post.");
-        }
+        $safeId = $this->sanitizeKey($id);
+        $path = "posts/{$safeId}";
 
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-        if (!$stmt->execute()) {
-            throw new Exception("Failed to execute statement for loading post.");
-        }
-
-        $post = $stmt->fetch(PDO::FETCH_ASSOC);
-        if (!$post) {
+        $data = $this->firebase->getAll($path);
+        if (!is_array($data) || empty($data)) {
             throw new Exception("Post not found.");
         }
 
-        $this->id = $post['id'];
-        $this->header = $post['header'];
-        $this->imagePath = $post['imagePath'];
-        $this->content = $post['content'];
-        $this->likesCount = $post['likesCount'];
-        $this->dislikesCount = $post['dislikesCount'];
-        $this->ownerLogin = $post['ownerLogin'];
+        $this->id            = (int)$id;
+        $this->header        = $data['header'] ?? '';
+        $this->imagePath     = $data['imagePath'] ?? '';
+        $this->content       = $data['content'] ?? '';
+        $this->likesCount    = (int)($data['likesCount'] ?? 0);
+        $this->dislikesCount = (int)($data['dislikesCount'] ?? 0);
 
         return true;
     }
 
-    public function saveToDB($db) {
-        $stmt = $db->prepare("INSERT INTO Post (header, imagePath, content, likesCount, dislikesCount, ownerLogin) 
-                              VALUES (:header, :imagePath, :content, :likesCount, :dislikesCount, :ownerLogin)");
-        if (!$stmt) {
-            throw new Exception("Failed to prepare insert statement.");
+    
+
+    /**
+     * Alias for saveToDB (Firebase overwrites existing data)
+     */
+    public function updateToDB() {
+        return $this->saveToDB();
+    }
+
+    /**
+     * Delete the post
+     */
+    public function deleteFromDB() {
+        if (empty($this->id)) {
+            throw new Exception("Post ID must not be empty for deletion.");
         }
 
-        $stmt->bindParam(':header', $this->header);
-        $stmt->bindParam(':imagePath', $this->imagePath);
-        $stmt->bindParam(':content', $this->content);
-        $stmt->bindParam(':likesCount', $this->likesCount);
-        $stmt->bindParam(':dislikesCount', $this->dislikesCount);
-        $stmt->bindParam(':ownerLogin', $this->ownerLogin);
-        
-        if (!$stmt->execute()) {
-            throw new Exception("Failed to insert post into database.");
-        }
-        $this->id = (int)$db->lastInsertId();
+        $safeId = $this->sanitizeKey($this->id);
+        $path = "posts/{$safeId}";
+
+        $this->firebase->publish($path, null);
         return true;
     }
 
-    public function updateToDB($db) {
-        if ($this->id <= 0) {
-            throw new Exception("Invalid post ID for update.");
+    /**
+
+     * Save (or create) the current post under its ID
+     * Also update UserInfo to record ownership
+     */
+    public function saveToDB() {
+        if (empty($this->id) || empty($this->ownerLogin)) {
+            throw new Exception("Post ID and ownerLogin must not be empty.");
         }
 
-        $stmt = $db->prepare("UPDATE Post SET header = :header, imagePath = :imagePath, content = :content, 
-                              likesCount = :likesCount, dislikesCount = :dislikesCount, ownerLogin = :ownerLogin 
-                              WHERE id = :id");
-        if (!$stmt) {
-            throw new Exception("Failed to prepare update statement.");
-        }
+        $safeId = $this->sanitizeKey($this->id);
+        $path = "posts/{$safeId}";
 
-        $stmt->bindParam(':header', $this->header);
-        $stmt->bindParam(':imagePath', $this->imagePath);
-        $stmt->bindParam(':content', $this->content);
-        $stmt->bindParam(':likesCount', $this->likesCount);
-        $stmt->bindParam(':dislikesCount', $this->dislikesCount);
-        $stmt->bindParam(':ownerLogin', $this->ownerLogin);
-        $stmt->bindParam(':id', $this->id, PDO::PARAM_INT);
+        $payload = [
+            'header'        => $this->header,
+            'imagePath'     => $this->imagePath,
+            'content'       => $this->content,
+            'likesCount'    => $this->likesCount,
+            'dislikesCount' => $this->dislikesCount,
+            'ownerLogin'    => $this->ownerLogin,
+        ];
 
-        if (!$stmt->execute()) {
-            throw new Exception("Failed to update post.");
-        }
+        // Save post data
+        $this->firebase->publish($path, $payload);
 
-        return true;
-    }
-
-    public function deleteFromDB($db) {
-        if ($this->id <= 0) {
-            throw new Exception("Invalid post ID for deletion.");
-        }
-
-        $stmt = $db->prepare("DELETE FROM Post WHERE id = :id");
-        if (!$stmt) {
-            throw new Exception("Failed to prepare delete statement.");
-        }
-
-        $stmt->bindParam(':id', $this->id, PDO::PARAM_INT);
-        if (!$stmt->execute()) {
-            throw new Exception("Failed to delete post.");
-        }
+        // Update UserInfo: add this post to user's post list
+        $userInfo = new UserInfo();
+        $userInfo->Login = $this->ownerLogin;
+        // assume UserInfo::addPost handles publishing relation
+        $userInfo->addPost($this);
 
         return true;
     }
 
+    /**
+     * Render the post HTML; load author record into authorInfo
+     */
     public function createPost() {
-      $escapedLogin     = htmlspecialchars($this->ownerLogin, ENT_QUOTES, 'UTF-8');
-      $escapedHeader    = htmlspecialchars($this->header, ENT_QUOTES, 'UTF-8');
-      $escapedContent   = nl2br(htmlspecialchars($this->content, ENT_QUOTES, 'UTF-8'));
-      $escapedImagePath = htmlspecialchars($this->imagePath, ENT_QUOTES, 'UTF-8');
-      $postId           = (int)$this->id;
-      $likes            = (int)$this->likesCount;
-      $dislikes         = (int)$this->dislikesCount;
+        // Load author info for later use
+        $userInfo = new UserInfo();
+        $userInfo->loadFromDB($this->ownerLogin);
+        $this->authorInfo = $userInfo;
 
-      // Пути к аватаркам относительно страницы, например:
-      $userAvatarUrl   = "../img/users/{$escapedLogin}.png";
-      $defaultAvatarUrl = "../img/users/default-avatar.png";
-
-      return "
+        $escapedHeader    = htmlspecialchars($this->header, ENT_QUOTES, 'UTF-8');
+        $escapedContent   = nl2br(htmlspecialchars($this->content, ENT_QUOTES, 'UTF-8'));
+        $escapedImagePath = htmlspecialchars($this->imagePath, ENT_QUOTES, 'UTF-8');
+        $postId           = htmlspecialchars($this->id, ENT_QUOTES, 'UTF-8');
+        $likes            = (int)$this->likesCount;
+        $dislikes         = (int)$this->dislikesCount;
+        return"
         <div class=\"post scroll-section\" id=\"post-{$postId}\">
           <div class=\"post__header\">
             <img 
-              src=\"{$userAvatarUrl}\" 
-              alt=\"Avatar of {$escapedLogin}\" 
+              src=\"{$userInfo->UserLogin}\" 
+              alt=\"Avatar of {$userInfo->ImagePath}\" 
               class=\"post__avatar\"
-              onerror=\"this.onerror=null;this.src='{$defaultAvatarUrl}'\"
+              onerror=\"this.onerror=null;this.src='{$userInfo->UserLogin}'\"
             >
             <div>
-              <h3 class=\"post__user\">{$escapedLogin}</h3>
+              <h3 class=\"post__user\">{$userInfo->UserLogin}</h3>
               <p class=\"post__title\">{$escapedHeader}</p>
             </div>
             <div class=\"post__menu\">

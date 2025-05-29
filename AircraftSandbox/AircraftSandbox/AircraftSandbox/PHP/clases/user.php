@@ -1,6 +1,5 @@
 <?php
 namespace PHP\Clases;
-
 require_once __DIR__ . '/../utils/firebasePublisher.php';
 use PHP\Utils\FirebasePublisher;
 use Exception;

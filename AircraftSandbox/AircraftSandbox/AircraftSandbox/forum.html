@@ -179,15 +179,6 @@ document.body.addEventListener('click', event => {
 </body>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        fetch('/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/loadPosts.php')
-            .then(response => response.text())
-            .then(html => {
-                document.querySelector('.posts-container').innerHTML = html;
-            });
-    });
-</script>
-<script>
 document.addEventListener('DOMContentLoaded', function () {
     // Зачекаємо, поки завантажаться пости
     fetch('/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/loadPosts.php')

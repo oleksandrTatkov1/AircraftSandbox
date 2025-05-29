@@ -1,52 +1,34 @@
 <?php
-declare(strict_types=1);
+// scripts/loadPosts.php
 
-ini_set('display_errors', '0');
-error_reporting(E_ERROR | E_PARSE);
+require_once __DIR__ . '/../Clases/Post.php';
+require_once __DIR__ . '/../Utils/firebasePublisher.php';
 
-require_once __DIR__ . '/../clases/Post.php';
-session_start();
+use PHP\Clases\Post;
+use PHP\Utils\FirebasePublisher;
 
-try {
-    $dbFile = __DIR__ . '/../../sqlite/users.db';
-    if (!file_exists($dbFile) || !is_readable($dbFile)) {
-        exit;
-    }
-    $db = new \PDO("sqlite:$dbFile");
-    $db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+header('Content-Type: text/html; charset=utf-8');
 
-    $stmt = $db->query('SELECT * FROM Post ORDER BY id DESC');
-    $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    if (!$rows) exit;
+$firebase = new FirebasePublisher();
+$allPosts = $firebase->getAll('posts');
 
-    foreach ($rows as $row) {
-        $id            = (int)$row['Id'];
-        $header        = htmlspecialchars($row['Header']);
-        $imagePath     = htmlspecialchars($row['ImagePath']);
-        $content       = nl2br(htmlspecialchars($row['Content']));
-        $likesCount    = (int)$row['LikesCount'];
-        $dislikesCount = (int)$row['DislikesCount'];
-        $ownerLogin    = htmlspecialchars($row['ownerLogin']);
-
-        echo <<<HTML
-    <div class="post scroll-section from-left" data-id="$id">
-        <div class="post__header">
-            <img class="post__avatar" src="img/avatars/default.png" alt="User avatar">
-            <div>
-                <p class="post__user">$ownerLogin</p>
-                <p class="post__title">$header</p>
-            </div>
-        </div>
-        <div class="post__image"><img src="$imagePath" alt="Post image"></div>
-        <p class="post__text">$content</p>
-        <div class="post__footer">
-            <button class="post__like" data-id="$id" data-action="like">👍 <span class="like-count">$likesCount</span></button>
-            <button class="post__dislike" data-id="$id" data-action="dislike">👎 <span class="dislike-count">$dislikesCount</span></button>
-        </div>
-    </div>
-HTML;
-    }
-
-} catch (\Exception $e) {
+if (!is_array($allPosts) || empty($allPosts)) {
+    echo '';
     exit;
 }
+
+$html = '';
+foreach ($allPosts as $key => $data) {
+    $post = new Post();
+    $post->id            = is_numeric($key) ? (int)$key : $key;
+    $post->header        = $data['header'] ?? '';
+    $post->content       = $data['content'] ?? '';
+    $post->imagePath     = $data['imagePath'] ?? '';
+    $post->likesCount    = intval($data['likesCount'] ?? 0);
+    $post->dislikesCount = intval($data['dislikesCount'] ?? 0);
+    $post->ownerLogin    = $data['ownerLogin'] ?? '';
+    $html .= $post->createPost();
+}
+
+echo $html;
+?>

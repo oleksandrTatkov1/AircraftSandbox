@@ -1,62 +1,47 @@
 <?php
-declare(strict_types=1);
+// scripts/createPost.php
 
-// подавляем варнинги/нотиcы
-ini_set('display_errors', '0');
-ini_set('display_startup_errors', '0');
-error_reporting(E_ERROR | E_PARSE);
+require_once __DIR__ . '/../Clases/Post.php';
 
-// подключаем класс Post
-require_once __DIR__ . '/../../PHP/clases/Post.php';
+use PHP\Clases\Post;
 
+header('Content-Type: text/html; charset=utf-8');
 session_start();
-
-try {
-    // Проверка авторизации
-    if (empty($_SESSION['user_login'])) {
-        http_response_code(403); // Запрещено
-        exit;
-    }
-
-    // соединяемся с БД
-    $dbFile = __DIR__ . '/../../sqlite/users.db';
-    if (!file_exists($dbFile) || !is_readable($dbFile)) {
-        exit;
-    }
-    $db = new \PDO("sqlite:$dbFile");
-    $db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-
-    // парсим входящие поля
-    $header = $_POST['header']  ?? '';
-    $content = $_POST['content'] ?? '';
-    $owner = $_SESSION['user_login'];
-
-    // загрузка файла (если есть)
-    $uploadDir    = realpath(__DIR__ . '/../../img/posts') . DIRECTORY_SEPARATOR;
-    $imageBaseURL = '../AircraftSandbox/img/posts/';
-    $imagePath    = $imageBaseURL . 'defaultimage.jpg';
-    if (!empty($_FILES['image']['tmp_name']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-        $fn = basename($_FILES['image']['name']);
-        if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadDir . $fn)) {
-            $imagePath = $imageBaseURL . $fn;
-        }
-    }
-
-    // создаём объект и сохраняем
-    $post = new \PHP\Clases\Post();
-    $post->header        = $header;
-    $post->content       = $content;
-    $post->likesCount    = 0;
-    $post->dislikesCount = 0;
-    $post->imagePath     = $imagePath;
-    $post->ownerLogin    = $owner;
-
-    $post->saveToDB($db);
-
-    // подхватываем ID и сразу возвращаем HTML
-    echo $post->createPost();
-
-} catch (\Exception $e) {
-    // ничего не выводим спустя AJAX-запроса
-    exit;
+if (empty($_SESSION['user_login'])) {
+    http_response_code(401);
+    exit('Unauthorized');
 }
+
+$login = $_SESSION['user_login'];
+$header       = trim($_POST['header'] ?? '');
+$content      = trim($_POST['content'] ?? '');
+$likesCount   = intval($_POST['likesCount'] ?? 0);
+$dislikesCount= intval($_POST['dislikesCount'] ?? 0);
+
+// Handle optional image upload
+$imagePath = '';
+if (!empty($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+    $uploadDir = '/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/posts';
+    if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+    $filename = basename($_FILES['image']['name']);
+    $target = $uploadDir . $filename;
+    move_uploaded_file($_FILES['image']['tmp_name'], $target);
+    $imagePath = '/posts/' . $filename;
+}
+
+// Use timestamp as unique ID (or use any other generator)
+$postId = (string) time();
+
+$post = new Post();
+$post->id = $postId;
+$post->header = $header;
+$post->content = $content;
+$post->imagePath = $imagePath;
+$post->likesCount = $likesCount;
+$post->dislikesCount = $dislikesCount;
+$post->ownerLogin = $login;
+$post->saveToDB();
+
+// Return the HTML for the newly created post
+echo $post->createPost();
+?>
