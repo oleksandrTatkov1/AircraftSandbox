@@ -177,11 +177,10 @@ class UserInfo extends User {
         $html .= '</div>';
 
         return $html;
-    }
-    public static function renderAllCommentsByUserId(string $userId): string {
-        $comments = self::getAllUserCommentsById($userId); // Твій метод, який повертає всі коментарі користувача
+    }public static function renderAllCommentsByUserId(string $userId): string {
+        $comments = self::getAllUserCommentsById($userId);
         if (empty($comments)) {
-            return '<p>Комментариев пока нет.</p>';
+            return '<p>Комментарів поки нема.</p>';
         }
     
         $html = '<div class="comments-container">';
@@ -190,44 +189,37 @@ class UserInfo extends User {
             $date   = htmlspecialchars($c['date'], ENT_QUOTES, 'UTF-8');
             $text   = nl2br(htmlspecialchars($c['text'], ENT_QUOTES, 'UTF-8'));
             $user = User::searchById($author);
-
+    
             $userImagePath = htmlspecialchars($user->ImagePath, ENT_QUOTES, 'UTF-8');
-
-            // Если строка пустая (или содержит только пробелы), используем аватар по умолчанию
+    
             if (empty(trim($userImagePath))) {
                 $authorImage = "/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/default-avatar.png";
             } else {
-                // Иначе обрезаем всё после символа "?"
                 $cleanUserImagePath = explode('?', $userImagePath)[0];
                 $authorImage = $cleanUserImagePath;
             }
-
-
     
-
-        $html .= <<<HTML
-    <div class="comment-card">
-        <div class="comment-header">
-            <img 
-                src="{$authorImage}" 
-                alt="Avatar of {$author}" 
-                class="comment-avatar"
-                onerror="this.onerror=null;this.src='/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/default-avatar.png'">
-            <div class="comment-info">
-                <span class="comment-author">{$author}</span>
-                <span class="comment-date">{$date}</span>
-            </div>
-        </div>
-        <div class="comment-body">
-            {$text}
-        </div>
-    </div>
+            $html .= <<<HTML
+                <div class="comment">
+                  <div class="comment__inner">
+                    <img class="comment__avatar" 
+                         src="{$authorImage}" 
+                         alt="Avatar of {$author}" 
+                         onerror="this.onerror=null;this.src='/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/default-avatar.png'">
+                    <div>
+                      <p class="comment__user">{$author}</p>
+                      <p class="comment__date">{$date}</p>
+                      <p class="comment__text">{$text}</p>
+                    </div>
+                  </div>
+                </div>
     HTML;
         }
         $html .= '</div>';
     
         return $html;
     }
+    
     
     public static function getAllUserCommentsById(string $userId): array {
         $inst = new self();  // створюємо екземпляр без токена
