@@ -80,8 +80,6 @@ $userInfo->id = $currentUser;
 $userInfo->UserLogin   = $currentUser;
 $userInfo->PostId      = $postId;
 $userInfo->Reaction    = 0;                  // без реакції
-$userInfo->CommentText = '';                 // без коментаря
-$userInfo->CommentDate = date(DATE_ISO8601); // зараз у ISO
 $userInfo->saveToDB();  // публікує “userInfo/{$userLogin}_{$postId}_{$id}`
 
 // 6) Відповідь — HTML лише нового поста

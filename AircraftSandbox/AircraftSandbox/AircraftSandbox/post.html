@@ -45,132 +45,26 @@
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script src="../AircraftSandbox/js/script.js"></script>
   <script>
-    let globalPostId = null;
-
-document.addEventListener("DOMContentLoaded", function () {
-  const params = new URLSearchParams(window.location.search);
-  const postId = params.get('id');
-  globalPostId = postId;
-
-  if (!postId) {
-    document.getElementById("post-title").textContent = "❌ Пост не знайдено.";
-    return;
-  }
-
-  fetch(`/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/loadPostById.php?id=${postId}`)
-    .then(res => res.json())
-    .then(data => {
-      if (!data || data.error) {
-        document.getElementById("post-title").textContent = "❌ Пост не знайдено.";
+    document.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(location.search);
+      const postId = params.get('post');
+      const container = document.querySelector('.post-thread__post');
+      if (!postId || !container) {
+        container?.insertAdjacentHTML('beforeend', '<p>Пост не знайдено.</p>');
         return;
       }
-
-      document.getElementById("post-title").textContent = data.header;
-      document.getElementById("post-text").textContent = data.content;
-      document.getElementById("like-count").textContent = data.likesCount;
-      document.getElementById("dislike-count").textContent = data.dislikesCount;
-
-      document.querySelector('.post-thread__like').dataset.id = postId;
-      document.querySelector('.post-thread__dislike').dataset.id = postId;
-
-      if (data.imagePath) {
-        const img = document.getElementById("post-image");
-        img.src = data.imagePath;
-        img.style.display = 'block';
-      }
+      fetch(`/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/getPostHtml.php?post=${postId}`)
+        .then(r => r.ok ? r.text() : Promise.reject(r.status))
+        .then(html => {
+          container.innerHTML = html;
+          // здесь можно вешать лайки/дизлайки, аватарки и т.д.
+        })
+        .catch(err => {
+          container.innerHTML = `<p>Не вдалося завантажити пост: ${err}</p>`;
+        });
     });
-
-  // Авторизація
-  fetch('/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/getSessionUser.php')
-    .then(res => res.json())
-    .then(data => {
-      if (data.loggedIn) {
-        const profileEl = document.getElementById('user-profile');
-        if (profileEl) {
-          profileEl.style.display = 'block';
-          profileEl.title = `Ви увійшли як: ${data.login}`;
-        }
-      }
-    });
-
-  // Обробка лайків / дизлайків
-  document.querySelectorAll('.post-thread__like, .post-thread__dislike').forEach(button => {
-    button.addEventListener('click', () => {
-      const action = button.dataset.action;
-      const postId = globalPostId;
-
-      fetch('/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/updateLikes.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `postId=${postId}&action=${action}`
-      })
-      .then(res => res.json())
-      .then(result => {
-        if (result.success) {
-          document.getElementById('like-count').textContent = result.likesCount;
-          document.getElementById('dislike-count').textContent = result.dislikesCount;
-        } else {
-          console.warn("⚠️", result.message || 'Не вдалося оновити реакцію');
-        }
-      });
-    });
-  });
-});
   </script>
-  <script>
-function loadComments(postId) {
-  fetch(`/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/loadComments.php?postId=${postId}`)
-    .then(res => res.json())
-    .then(comments => {
-      const container = document.getElementById('comments-container');
-      container.innerHTML = '';
-      if (!comments.length) {
-        container.innerHTML = '<p>Коментарів поки немає.</p>';
-        return;
-      }
 
-      comments.forEach(c => {
-        const el = document.createElement('div');
-        el.className = 'comment';
-        el.innerHTML = `
-          <div class="comment__inner">
-            <div>
-              <p class="comment__user">${c.UserLogin}</p>
-              <p class="comment__text">${c.CommentText}</p>
-              <small>${c.CommentDate}</small>
-            </div>
-          </div>
-        `;
-        container.appendChild(el);
-      });
-    });
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  const postId = globalPostId;
-  loadComments(postId);
-
-  document.getElementById('submit-comment')?.addEventListener('click', () => {
-    const text = document.getElementById('comment-text').value.trim();
-    if (!text) return;
-
-    fetch('/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/addComment.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `postId=${postId}&comment=${encodeURIComponent(text)}`
-    })
-    .then(res => res.json())
-    .then(data => {
-      if (data.success) {
-        document.getElementById('comment-text').value = '';
-        loadComments(postId);
-      } else {
-        alert(data.message || 'Помилка при додаванні коментаря');
-      }
-    });
-  });
-});
-</script>
 </body>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
@@ -188,6 +82,122 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 });
 </script>
+<script>
+(function(){
+  // Вешаем единый слушатель на всё тело — без DOMContentLoaded и getElementById
+  document.body.addEventListener('click', function(e) {
+    // отлавливаем клик по кнопке «Надіслати»
+    const btn = e.target.closest('#submit-comment');
+    if (!btn) return;
 
+    e.preventDefault();
+
+    // Получаем текстовое поле через querySelector
+    const textarea = document.querySelector('#comment-text');
+    if (!textarea) return alert('Поле для коментаря не знайдено');
+
+    const text = textarea.value.trim();
+    if (!text) return alert('Введіть текст коментаря');
+
+    // Берём ID поста из параметров URL
+    const postId = new URLSearchParams(window.location.search).get('post');
+    if (!postId) return alert('ID поста не знайдено');
+
+    // Отправляем комментарий
+    fetch('/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/addComment.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+      body: new URLSearchParams({ postId, comment: text }).toString()
+    })
+    .then(res => res.text().then(body => {
+      if (!res.ok) throw new Error(body || `HTTP ${res.status}`);
+      try {
+        return JSON.parse(body);
+      } catch {
+        throw new Error('Invalid JSON: ' + body);
+      }
+    }))
+    .then(data => {
+      if (!data.success) throw new Error(data.message);
+      textarea.value = '';
+      // перезагружаем комментарии
+      if (typeof loadComments === 'function') {
+        loadComments(postId);
+      }
+    })
+    .catch(err => {
+      console.error('addComment error:', err);
+      alert('Не вдалося додати коментар:\n' + err.message);
+    });
+  });
+})();
+</script>
+<script>
+  /**
+   * Загружает HTML-комментарии для поста и рендерит их в блоке #comments-container,
+   * сохраняя форму добавления внизу.
+   *
+   * @param {string} postId — идентификатор поста
+   */
+  function loadComments(postId) {
+    const container = document.getElementById('comments-container');
+    if (!container) return;
+
+    // Сохраняем текущую форму (чтобы не затирать её)
+    const form = document.getElementById('comment-form');
+    // Выполняем запрос к вашему PHP-скрипту, который возвращает готовый UL-список <li>…
+    fetch(`/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/getCommentsHtml.php?post=${encodeURIComponent(postId)}`)
+      .then(res => res.ok ? res.text() : Promise.reject(res.status))
+      .then(html => {
+        // Вставляем HTML комментариев и возвращаем форму в конец
+        container.innerHTML = html;
+        container.appendChild(form);
+      })
+      .catch(err => {
+        console.error('❌ Ошибка загрузки комментариев:', err);
+        container.innerHTML = '<p>Не вдалося завантажити коментарі.</p>';
+        container.appendChild(form);
+      });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const postId = new URLSearchParams(window.location.search).get('post');
+    if (!postId) return;
+
+    // Сразу грузим комментарии при открытии страницы
+    loadComments(postId);
+
+    // Подменяем addComment-обработчик, чтобы после успешной отправки звонить loadComments
+    document.body.addEventListener('click', function(e) {
+      const btn = e.target.closest('#submit-comment');
+      if (!btn) return;
+
+      e.preventDefault();
+      const textarea = document.querySelector('#comment-text');
+      const text = textarea.value.trim();
+      if (!text) return alert('Введіть текст коментаря');
+
+      fetch('/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/addComment.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+        body: new URLSearchParams({ postId, comment: text }).toString()
+      })
+      .then(res => res.text().then(body => {
+        if (!res.ok) throw new Error(body || `HTTP ${res.status}`);
+        return JSON.parse(body);
+      }))
+      .then(data => {
+        if (!data.success) throw new Error(data.message);
+        textarea.value = '';
+        // Перезагружаем список комментариев
+        loadComments(postId);
+      })
+      .catch(err => {
+        console.error('❌ Помилка додавання коментаря:', err);
+        alert('Не вдалося додати коментар:\n' + err.message);
+      });
+    });
+  });
+</script>
 
 </html>

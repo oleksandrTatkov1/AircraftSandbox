@@ -133,7 +133,7 @@ class Post {
             $authorImage = htmlspecialchars($author->ImagePath, ENT_QUOTES, 'UTF-8');
         }
         return"
-        <div class=\"post scroll-section\" id=\"post-{$postId}\">
+        <div class=\"post scroll-section\" id=\"post-{$postId}\" data-id=\"{$postId}\">
           <div class=\"post__header\">
             <img 
               src=\"{$authorImage}\" 
