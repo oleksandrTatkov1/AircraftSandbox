@@ -76,4 +76,12 @@ class FirebasePublisher {
 
         return json_decode($response, true);
     }
+
+    public function sanitizeKey(string $key): string {
+        return str_replace(
+            ['@', '.', ' '],
+            ['_at_', '_dot_', '_'],
+            $key
+        );
+    }
 }
