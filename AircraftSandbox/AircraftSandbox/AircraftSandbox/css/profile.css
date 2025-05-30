@@ -28,7 +28,7 @@
 }
 
 .profile-card__actions button:hover {
-  background-color: #666;
+  background-color:#6c73be;
 }
 
 .profile-card__actions button a {
@@ -68,7 +68,6 @@
 
 /* === Кнопка редагування === */
 .profile-card__edit a{
-  background-color: #3b476c;
   color: white;
   padding: 0.5rem 1rem;
   border: none;
