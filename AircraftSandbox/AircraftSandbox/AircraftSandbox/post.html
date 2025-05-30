@@ -10,8 +10,42 @@
 <body>
   <div class="page-wrapper">
     <header class="header">
-      <!-- ... (твій хедер без змін) ... -->
-    </header>
+            <div class="container header__container">
+                <div class="header__logo">
+                    <img src="../AircraftSandbox/img/index/header/logo_black.png" alt="logo" class="header__imgL">
+                </div>
+                <div class="header__menu">
+                    <nav class="header__nav nav">
+                      <ul class="nav__list">
+                        <li class="nav__item"><a href="index.html" class="nav__link">Головна</a></li>
+                        <li class="nav__item"><a href="forum.html" class="nav__link">Форум</a></li>
+                      
+                        <li class="nav__item"><a href="apk.html" class="nav__link">Додаткові APK</a></li>
+                        <li class="nav__item">
+                          <input type="checkbox" id="dropItem" class="dropdown-toggle">
+                          <label for="dropItem" class="dropdown-label">Додаткові ресурси <span class="arrow">▼</span></label>
+                          <ul class="dropdown-menu">
+                            <li class="dropdown-item"><a href="https://t.me/SkyTechDev_bot">Підтримка</a></li>
+                            <li class="dropdown-item"><a href="guides.html">Туторіали</a></li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </nav>
+                    <div class="header__registration">
+                        <div class="header__profile" id="user-profile">
+                            <a href="/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/profile.html">
+                                <img id="header-avatar" src="/AircraftSandbox/img/index/header/free-icon-user-483361.png" alt="Профіль" class="profile-icon" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-btn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </header>
 
     <main class="main container">
       <section class="post-thread">
@@ -38,9 +72,15 @@
       </section>
     </main>
 
-    <footer class="footer">
-      <!-- ... (твой футер без змін) ... -->
-    </footer>
+        <footer class="footer">
+            <div class="footer__container">
+                <div class="links">
+                    <a href="https://www.instagram.com/skytechdev/?igsh=MXRyZnI2eW9reWp0dg%3D%3D#" class="links_Instagram">Instagram</a>
+                    <a href="https://t.me/skytechdev" class="links_Telegram">Telegram</a>
+                    <a href="https://www.youtube.com/@skytechdev" class="links_YouTube">YouTube</a>
+                </div>
+            </div>
+        </footer>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
