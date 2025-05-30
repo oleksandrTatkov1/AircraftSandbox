@@ -154,15 +154,17 @@ class UserInfo extends User {
                 : 'default-avatar.png';
     
             // Добавляем расширение только если в ImagePath нет точки (jpg, png)
-            $authorImage = (strpos($userImagePath, '.') === false)
-                ? "/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/{$userImagePath}.jpg"
-                : "/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/{$userImagePath}";
+            $cleanUserImagePath = explode('?', $userImagePath)[0];
+$authorImage = (strpos($cleanUserImagePath, '.') === false)
+                ? $cleanUserImagePath
+                : "/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/default-avatar";
+
     
             $html .= <<<HTML
     <div class="comment-card">
         <div class="comment-header">
             <img 
-                src="{$authorImage}" 
+                src="{$cleanUserImagePath}" 
                 alt="Avatar of {$author}" 
                 class="comment-avatar"
                 onerror="this.onerror=null;this.src='/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/default-avatar.png'">
@@ -198,16 +200,18 @@ class UserInfo extends User {
                 : 'default-avatar.png';
     
             // Добавляем расширение только если в ImagePath нет точки (jpg, png)
-            $authorImage = (strpos($userImagePath, '.') === false)
-                ? "/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/{$userImagePath}.jpg"
-                : "/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/{$userImagePath}";
+           $cleanUserImagePath = explode('?', $userImagePath)[0];
+$authorImage = (strpos($cleanUserImagePath, '.') === false)
+                ? $cleanUserImagePath
+                : "/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/default-avatar";
+
     
 
         $html .= <<<HTML
     <div class="comment-card">
         <div class="comment-header">
             <img 
-                src="{$authorImage}" 
+                src="{$cleanUserImagePath}" 
                 alt="Avatar of {$author}" 
                 class="comment-avatar"
                 onerror="this.onerror=null;this.src='/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/default-avatar.png'">
@@ -268,6 +272,71 @@ class UserInfo extends User {
         return $comments;
     }
     
+    public static function renderPostThreadFromPost(Post $post): string {
+        // Экранируем поля
+        $header       = htmlspecialchars($post->header, ENT_QUOTES, 'UTF-8');
+        $imagePath    = htmlspecialchars($post->imagePath, ENT_QUOTES, 'UTF-8');
+        $content      = nl2br(htmlspecialchars($post->content, ENT_QUOTES, 'UTF-8'));
+        $likesCount   = (int)$post->likesCount;
+        $dislikesCount= (int)$post->dislikesCount;
+        $postId       = htmlspecialchars($post->id, ENT_QUOTES, 'UTF-8');
 
+        // Собираем HTML по твоему шаблону
+        $postHtml = <<<HTML
+<div class="post-thread__post">
+  <h2 class="post-thread__title" id="post-title">{$header}</h2>
+  <!-- Показываем картинку, только если есть -->
+  <img src="{$imagePath}" alt="Post image"
+       class="post-thread__image" id="post-image"
+       style="display:{$imagePath};">
+  <p class="post-thread__text" id="post-text">{$content}</p>
+  <div class="post-thread__actions">
+    <button class="post-thread__like" data-action="like" data-id="{$postId}">
+      👍 <span class="like-count" id="like-count">{$likesCount}</span>
+    </button>
+    <button class="post-thread__dislike" data-action="dislike" data-id="{$postId}">
+      👎 <span class="dislike-count" id="dislike-count">{$dislikesCount}</span>
+    </button>
+  </div>
+</div>
+HTML;
+
+        // Затем — комментарии и форма
+        $commentsHtml = <<<HTML
+<div class="post-thread__comments">
+  <h3 class="post-thread__comments-title">Коментарі</h3>
+  <div id="comments-container">
+    <div id="comment-form" style="margin-top:20px;">
+      <textarea id="comment-text"
+                placeholder="Напишіть свій коментар..."
+                style="width:100%;padding:10px;border-radius:8px;"></textarea>
+      <button id="submit-comment"
+              style="margin-top:10px;padding:8px 16px;">
+        Надіслати
+      </button>
+    </div>
+    <div id="comments-list">
+      <!-- Першоначально рендеримо на сервері наявні коментарі -->
+      {COMMENTS}
+    </div>
+  </div>
+</div>
+HTML;
+
+        // Встраиваем список комментариев, полученный из UserInfo
+        $allComments = UserInfo::renderAllCommentsByPostId($post->id);
+        $commentsHtml = str_replace('{COMMENTS}', $allComments, $commentsHtml);
+
+        // Склеиваем всё в одну секцию
+        $full = <<<HTML
+<section class="post-thread">
+  {$postHtml}
+  {$commentsHtml}
+</section>
+HTML;
+
+        return $full;
+    }
 }
+
 ?>

@@ -190,5 +190,5 @@ class Post {
       return null;
   }
 
-  }
+}
 ?>

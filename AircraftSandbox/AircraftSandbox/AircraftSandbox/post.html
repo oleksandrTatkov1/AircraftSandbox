@@ -49,26 +49,7 @@
 
     <main class="main container">
       <section class="post-thread">
-        <div class="post-thread__post">
-          <h2 class="post-thread__title" id="post-title"></h2>
-          <img src="" alt="Post image" class="post-thread__image" id="post-image" style="display:none;">
-          <p class="post-thread__text" id="post-text"></p>
-          <div class="post-thread__actions">
-          <button class="post-thread__like" data-action="like" data-id="">👍 <span class="like-count" id="like-count">0</span></button>
-          <button class="post-thread__dislike" data-action="dislike" data-id="">👎 <span class="dislike-count" id="dislike-count">0</span></button>
-          </div>
-        </div>
-
-        <div class="post-thread__comments">
-          <h3 class="post-thread__comments-title">Коментарі</h3>
-          <div id="comments-container">
-            <div id="comment-form" style="margin-top: 20px;">
-              <textarea id="comment-text" placeholder="Напишіть свій коментар..." style="width:100%;padding:10px;border-radius:8px;"></textarea>
-              <button id="submit-comment" style="margin-top:10px;padding:8px 16px;">Надіслати</button>
-            </div>
-            <div id="comments-list"></div>
-          </div>
-        </div>
+        
       </section>
     </main>
 
@@ -86,25 +67,59 @@
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script src="../AircraftSandbox/js/script.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const params = new URLSearchParams(location.search);
-      const postId = params.get('post');
-      const container = document.querySelector('.post-thread__post');
-      if (!postId || !container) {
-        container?.insertAdjacentHTML('beforeend', '<p>Пост не знайдено.</p>');
-        return;
+document.addEventListener('DOMContentLoaded', () => {
+  // 1) Находим секцию, куда будем вставлять тред
+  const threadSection = document.querySelector('section.post-thread');
+  if (!threadSection) return console.error('Section .post-thread not found');
+
+  // 2) Берём ID поста из параметров URL
+  const params = new URLSearchParams(window.location.search);
+  const postId = params.get('post');
+  if (!postId) {
+    threadSection.innerHTML = '<p>Пост не знайдено.</p>';
+    return;
+  }
+
+  // 3) Запрашиваем готовый HTML треда
+  fetch(`/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/getPostHtml.php?post=${encodeURIComponent(postId)}`)
+    .then(res => {
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.text();
+    })
+    .then(html => {
+      // 4) Вставляем полученный кусок внутрь секции
+      threadSection.innerHTML = html;
+
+      // 5) После вставки можно инициализировать лайки/дизлайки
+      initPostActions(postId);
+      // 6) И сразу прогрузить комментарии (если нужна подгрузка через AJAX)
+      if (typeof loadComments === 'function') {
+        loadComments(postId);
       }
-      fetch(`/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/getPostHtml.php?post=${postId}`)
-        .then(r => r.ok ? r.text() : Promise.reject(r.status))
-        .then(html => {
-          container.innerHTML = html;
-          // здесь можно вешать лайки/дизлайки, аватарки и т.д.
-        })
-        .catch(err => {
-          container.innerHTML = `<p>Не вдалося завантажити пост: ${err}</p>`;
-        });
+    })
+    .catch(err => {
+      console.error('Не вдалося завантажити тред:', err);
+      threadSection.innerHTML = `<p>Не вдалося завантажити пост: ${err.message}</p>`;
     });
-  </script>
+});
+
+/**
+ * Пример функции инициализации кликов по лайку/дизлайку.
+ * Подключайте сюда вашу логику из script.js
+ */
+function initPostActions(postId) {
+  document.querySelectorAll('.post-thread__like, .post-thread__dislike').forEach(btn => {
+    btn.addEventListener('click', e => {
+      const action = btn.getAttribute('data-action');
+      // Ваша реализация AJAX-запроса на like/dislike…
+      console.log(`Action ${action} on post ${postId}`);
+      // Например:
+      // fetch(`/.../react.php`, { method:'POST', body: new URLSearchParams({postId,action}) })…
+    });
+  });
+}
+</script>
+
 
 </body>
 <script>
