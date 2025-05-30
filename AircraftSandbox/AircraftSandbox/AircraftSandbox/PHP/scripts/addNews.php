@@ -1,22 +1,10 @@
 <?php
-// addNews.php — без BOM и пустых строк до <?php
-// Отключаем любые варнинги/нотисы
-ini_set('display_errors', 0);
-ini_set('display_startup_errors', 0);
-error_reporting(E_ERROR | E_PARSE);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-// Подключаем (если нужно) класс-валидатор для экранирования
-// require_once __DIR__ . '/../../PHP/utils/Validator.php';
-
-// Подключаем PDO
-try {
-    $dbFile = __DIR__ . '/../../sqlite/users.db';
-    $db = new PDO("sqlite:" . $dbFile);
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (Exception $e) {
-    http_response_code(500);
-    exit('❌ Помилка: не вдалося підключитися до БД.');
-}
+require_once __DIR__ . '/../clases/News.php';
+use PHP\Clases\News;
 
 try {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -34,49 +22,44 @@ try {
         throw new Exception('Невірний індекс слайдера.');
     }
 
-    // Обрабатываем файл
     $image = $_FILES['newsImage'];
     if ($image['error'] !== UPLOAD_ERR_OK) {
         throw new Exception('Не вдалося завантажити зображення. Код помилки: ' . $image['error']);
     }
 
-    // Проверка расширения (опционально)
-    $allowedExt = ['jpg','jpeg','png','gif','webp'];
+    $allowedExt = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
     $ext = strtolower(pathinfo($image['name'], PATHINFO_EXTENSION));
-    if (!in_array($ext, $allowedExt, true)) {
+    if (!in_array($ext, $allowedExt)) {
         throw new Exception('Неприпустимий формат зображення. Дозволено: ' . implode(', ', $allowedExt));
     }
 
-    // Генерируем уникальное имя и путь
-    $newName      = uniqid('news_', true) . '.' . $ext;
-    $relativePath = '/img/news/' . $newName;
-    $fullPath     = rtrim($_SERVER['DOCUMENT_ROOT'], '/') . $relativePath;
+    $newName = uniqid('news_', true) . '.' . $ext;
 
-    // Создаём папку, если нет
-    $dir = dirname($fullPath);
-    if (!is_dir($dir) && !mkdir($dir, 0777, true)) {
-        throw new Exception('Не вдалося створити директорію для зображень.');
+    // 🔥 Абсолютний ШЛЯХ до потрібної папки (жорстко прописаний)
+    $absoluteDir = $_SERVER['DOCUMENT_ROOT'] . '/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/news/';
+    $relativePath = '/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/news/' . $newName;
+
+    // Повний шлях до файла
+    $fullPath = $absoluteDir . $newName;
+
+    if (!is_dir($absoluteDir) && !mkdir($absoluteDir, 0777, true)) {
+        throw new Exception("Не вдалося створити директорію для зображень: {$absoluteDir}");
     }
 
-    // Перемещаем файл
     if (!move_uploaded_file($image['tmp_name'], $fullPath)) {
         throw new Exception('Не вдалося зберегти файл на сервері.');
     }
 
-    // Вставляем в БД
-    $stmt = $db->prepare("
-        INSERT INTO News (ImagePath, Description, SliderId)
-        VALUES (:path, :desc, :sid)
-    ");
-    $stmt->bindValue(':path', $relativePath, PDO::PARAM_STR);
-    $stmt->bindValue(':desc', $desc,       PDO::PARAM_STR);
-    $stmt->bindValue(':sid',  $sliderId,   PDO::PARAM_INT);
-    $stmt->execute();
+    // ✅ Firebase повинен зберігати шлях відносно сайту (кореня)
+    $firebasePath = '/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/news/' . $newName;
+
+    $uniqueId = uniqid();
+    $news = new News($firebasePath, $desc, $sliderId, $uniqueId);
+    $news->saveToDB();
 
     echo '✅ Новина успішно додана!';
 
 } catch (Exception $e) {
-    // В случае ошибки выводим сообщение
     http_response_code(400);
     echo '❌ Помилка: ' . htmlspecialchars($e->getMessage(), ENT_QUOTES);
 }

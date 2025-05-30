@@ -1,7 +1,8 @@
 <?php
 namespace PHP\Clases;
 
-use PDO;
+require_once __DIR__ . '/../utils/firebasePublisher.php';
+use PHP\Utils\FirebasePublisher;
 use Exception;
 
 class ApkInfo {
@@ -16,8 +17,10 @@ class ApkInfo {
     public $category;
     public $apkLink;
 
-    public function __construct() {
-        $this->id = 0;
+    private $firebase;
+
+    public function __construct($authToken = null) {
+        $this->id = null;
         $this->author = '';
         $this->size = '';
         $this->addedBy = '';
@@ -27,118 +30,92 @@ class ApkInfo {
         $this->description = '';
         $this->category = '';
         $this->apkLink = '';
+
+        $this->firebase = new FirebasePublisher($authToken);
     }
 
-    public function loadFromDB($db, $id) {
-    if (!is_numeric($id)) {
-        throw new Exception("Invalid APK ID.");
+    private function sanitizeKey($key) {
+        return str_replace(['@', '.', ' '], ['_at_', '_dot_', '_'], (string)$key);
     }
 
-    $stmt = $db->prepare("SELECT * FROM ApkInfo WHERE Id = :id"); // <<< тут ВЕЛИКА LITERA
-    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-    $stmt->execute();
-
-    $apk = $stmt->fetch(PDO::FETCH_ASSOC);
-    if (!$apk) {
-        throw new Exception("APK not found.");
-    }
-
-    // 👇 обов'язково так само з великої букви:
-    $this->id          = $apk['Id'];
-    $this->author      = $apk['Author'];
-    $this->size        = $apk['Size'];
-    $this->addedBy     = $apk['AddedBy'];
-    $this->date        = $apk['Date'];
-    $this->downloads   = $apk['Downloads'];
-    $this->imagePath   = $apk['ImagePath'];
-    $this->description = $apk['Description'];
-    $this->category    = $apk['Category'];
-    $this->apkLink     = $apk['ApkLink'];
-
-    return true;
-}
-
-    public static function renderCardById($db, $id) {
-    $stmt = $db->prepare("SELECT * FROM ApkInfo WHERE Id = :id");
-    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-    $stmt->execute();
-
-    $apk = $stmt->fetch(PDO::FETCH_ASSOC);
-    if (!$apk) return '';
-
-    $title    = htmlspecialchars($apk['Description'], ENT_QUOTES, 'UTF-8');
-    $category = htmlspecialchars($apk['Category'], ENT_QUOTES, 'UTF-8');
-    $apkId    = (int)$apk['Id']; // ❗ важливо
-
-    return "
-    <div class=\"apk-card {$category} fade-in\" data-id=\"{$apkId}\">
-        <div class=\"apk-card__overlay\">
-            <span class=\"apk-card__title\">{$title}</span>
-        </div>
-    </div>";
-}
-
-    public function saveToDB($db) {
-        $stmt = $db->prepare("INSERT INTO ApkInfo (author, size, added_by, date, downloads, image_path, description, category)
-                              VALUES (:author, :size, :added_by, :date, :downloads, :image_path, :description, :category)");
-        if (!$stmt) {
-            throw new Exception("Failed to prepare insert statement.");
+    public function loadFromDB($id) {
+        if (empty($id) || !is_string($id)) {
+            throw new Exception("Invalid APK ID.");
         }
 
-        $stmt->bindParam(':author', $this->author);
-        $stmt->bindParam(':size', $this->size);
-        $stmt->bindParam(':added_by', $this->addedBy);
-        $stmt->bindParam(':date', $this->date);
-        $stmt->bindParam(':downloads', $this->downloads);
-        $stmt->bindParam(':image_path', $this->imagePath);
-        $stmt->bindParam(':description', $this->description);
-        $stmt->bindParam(':category', $this->category);
+        $safeId = $this->sanitizeKey($id);
+        $data = $this->firebase->getAll("apkInfo/{$safeId}");
 
-        if (!$stmt->execute()) {
-            throw new Exception("Failed to insert APK.");
+        if (!$data || !is_array($data)) {
+            throw new Exception("APK not found.");
         }
 
-        $this->id = (int)$db->lastInsertId();
-        return true;
-    }
-
-    public function updateToDB($db) {
-        if ($this->id <= 0) {
-            throw new Exception("Invalid APK ID for update.");
-        }
-
-        $stmt = $db->prepare("UPDATE ApkInfo SET author = :author, size = :size, added_by = :added_by, date = :date,
-                              downloads = :downloads, image_path = :image_path, description = :description, category = :category
-                              WHERE id = :id");
-        $stmt->bindParam(':author', $this->author);
-        $stmt->bindParam(':size', $this->size);
-        $stmt->bindParam(':added_by', $this->addedBy);
-        $stmt->bindParam(':date', $this->date);
-        $stmt->bindParam(':downloads', $this->downloads);
-        $stmt->bindParam(':image_path', $this->imagePath);
-        $stmt->bindParam(':description', $this->description);
-        $stmt->bindParam(':category', $this->category);
-        $stmt->bindParam(':id', $this->id, PDO::PARAM_INT);
-
-        if (!$stmt->execute()) {
-            throw new Exception("Failed to update APK.");
-        }
+        $this->id          = (int)$id;
+        $this->author      = $data['author'] ?? '';
+        $this->size        = $data['size'] ?? '';
+        $this->addedBy     = $data['addedBy'] ?? '';
+        $this->date        = $data['date'] ?? '';
+        $this->downloads   = (int)($data['downloads'] ?? 0);
+        $this->imagePath   = $data['imagePath'] ?? '';
+        $this->description = $data['description'] ?? '';
+        $this->category    = $data['category'] ?? '';
+        $this->apkLink     = $data['apkLink'] ?? '';
 
         return true;
     }
 
-    public function deleteFromDB($db) {
-        if ($this->id <= 0) {
-            throw new Exception("Invalid APK ID for deletion.");
+    public function saveToDB() {
+        if (empty($this->id)) {
+            throw new Exception("ID must be provided for saving.");
         }
 
-        $stmt = $db->prepare("DELETE FROM ApkInfo WHERE id = :id");
-        $stmt->bindParam(':id', $this->id, PDO::PARAM_INT);
-        if (!$stmt->execute()) {
-            throw new Exception("Failed to delete APK.");
-        }
+        $safeId = $this->sanitizeKey($this->id);
+        $data = [
+            'author'      => $this->author,
+            'size'        => $this->size,
+            'addedBy'     => $this->addedBy,
+            'date'        => $this->date,
+            'downloads'   => $this->downloads,
+            'imagePath'   => $this->imagePath,
+            'description' => $this->description,
+            'category'    => $this->category,
+            'apkLink'     => $this->apkLink
+        ];
 
+        $this->firebase->publish("apkInfo/{$safeId}", $data);
         return true;
+    }
+
+    public function updateToDB() {
+        return $this->saveToDB(); // same logic
+    }
+
+    public function deleteFromDB() {
+        if (empty($this->id)) {
+            throw new Exception("ID must be provided for deletion.");
+        }
+
+        $safeId = $this->sanitizeKey($this->id);
+        $this->firebase->publish("apkInfo/{$safeId}", null);
+        return true;
+    }
+
+    public static function renderCardById($firebase, $id) {
+        $safeId = str_replace(['@', '.', ' '], ['_at_', '_dot_', '_'], (string)$id);
+        $apk = $firebase->getAll("apkInfo/{$safeId}");
+
+        if (!$apk) return '';
+
+        $title    = htmlspecialchars($apk['description'] ?? '', ENT_QUOTES, 'UTF-8');
+        $category = htmlspecialchars($apk['category'] ?? '', ENT_QUOTES, 'UTF-8');
+        $apkId    = htmlspecialchars($id, ENT_QUOTES, 'UTF-8');
+
+        return "
+        <div class=\"apk-card {$category} fade-in\" data-id=\"{$apkId}\">
+            <div class=\"apk-card__overlay\">
+                <span class=\"apk-card__title\">{$title}</span>
+            </div>
+        </div>";
     }
 
     public function createApkCard() {

@@ -1,52 +1,61 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const postData = {
-      title: 'MLM SUPREMACY',
-      image: 'img/post-example.jpg',
-      text: 'We found a bug in the game we need company to fix it... SkyTechDev fix it quickly!',
-      likes: 12,
-      dislikes: 2,
-      comments: [
-        {
-          avatar: 'img/avatar1.png',
-          user: 'DogPower228',
-          text: 'I think this true. SkyTechDev fix it.'
-        },
-        {
-          avatar: 'img/avatar2.png',
-          user: 'StarikDomPonik',
-          text: 'I don’t think so. SkyTechDev can’t fix it so fast as u want.'
-        },
-        {
-          avatar: 'img/avatar3.png',
-          user: 'GloryToLvL',
-          text: '@StarikDomPonik it agrees with you'
-        },
-        {
-          avatar: 'img/avatar4.png',
-          user: 'LybitelPonickovSMaslom',
-          text: 'I need more donuts. SKYTECHDEV I NEED DONUTS IN YOUR GAME'
-        }
-      ]
-    };
-  
-    document.getElementById('post-title').textContent = postData.title;
-    document.getElementById('post-image').src = postData.image;
-    document.getElementById('post-text').textContent = postData.text;
-    document.getElementById('like-count').textContent = postData.likes;
-    document.getElementById('dislike-count').textContent = postData.dislikes;
-  
-    const commentsContainer = document.getElementById('comments');
-    postData.comments.forEach(comment => {
-      const commentEl = document.createElement('div');
-      commentEl.className = 'comment';
-      commentEl.innerHTML = `
-        <img class="comment__avatar" src="${comment.avatar}" alt="avatar">
-        <div>
-          <p class="comment__user">${comment.user}</p>
-          <p class="comment__text">${comment.text}</p>
-        </div>
-      `;
-      commentsContainer.appendChild(commentEl);
-    });
-  });
-  
+document.addEventListener("DOMContentLoaded", () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const postId = urlParams.get("id");
+
+    if (!postId) {
+        console.error("❌ ID поста не знайдено в URL");
+        return;
+    }
+
+    fetch(`/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/loadPostById.php?id=${postId}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.error) {
+                console.error("❌ Помилка завантаження поста:", data.error);
+                return;
+            }
+
+            // Підставляємо вміст
+            document.getElementById("post-title").textContent = data.Header;
+            document.getElementById("post-image").src = data.ImagePath;
+            document.getElementById("post-text").textContent = data.Content;
+            document.getElementById("like-count").textContent = data.LikesCount;
+            document.getElementById("dislike-count").textContent = data.DislikesCount;
+
+            // Лайки/дизлайки
+            const likeBtn = document.querySelector(".post-thread__like");
+            const dislikeBtn = document.querySelector(".post-thread__dislike");
+
+            likeBtn.addEventListener("click", () => {
+                updateReaction(postId, "like");
+            });
+
+            dislikeBtn.addEventListener("click", () => {
+                updateReaction(postId, "dislike");
+            });
+        })
+        .catch(err => {
+            console.error("❌ Fetch помилка:", err);
+        });
+
+    function updateReaction(postId, action) {
+        fetch('/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/updateLikes.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: `postId=${postId}&action=${action}`
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (!data.success) {
+                console.error("❌ Сервер не прийняв лайк/дизлайк:", data.message);
+                return;
+            }
+
+            document.getElementById('like-count').textContent = data.likesCount;
+            document.getElementById('dislike-count').textContent = data.dislikesCount;
+        })
+        .catch(err => {
+            console.error("❌ Помилка реакції:", err);
+        });
+    }
+});

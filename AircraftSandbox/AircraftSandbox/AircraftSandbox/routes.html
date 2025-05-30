@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -148,5 +148,22 @@
 </body>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script src="../AircraftSandbox/js/script.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    fetch('/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/authCheck.php')
+        .then(response => response.json())
+        .then(data => {
+            if (!data.authorized) {
+                window.location.href = '/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/registerAlpha/register.html';
+            }
+        })
+        .catch(error => {
+            console.error('❌ Помилка перевірки авторизації:', error);
+            // можно временно перенаправить при ошибке сервера
+            window.location.href = '/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/registerAlpha/register.html';
+        });
+});
+</script>
+
 <script src="../AircraftSandbox/js/routes.js"></script>
 </html>

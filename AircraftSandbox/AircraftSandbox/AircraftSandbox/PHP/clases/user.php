@@ -1,114 +1,88 @@
 <?php
 namespace PHP\Clases;
-use PDO;
+require_once __DIR__ . '/../utils/firebasePublisher.php';
+use PHP\Utils\FirebasePublisher;
 use Exception;
+
 class User {
     public $Login;
     public $Name;
     public $Password;
     public $Phone;
     public $IsSuperUser;
+    public $Bio;
+    public $ImagePath;
 
-    public function __construct() {
+    public $firebase;
+
+    public function __construct($authToken = null) {
         $this->Login = '';
         $this->Name = '';
         $this->Password = '';
         $this->Phone = '';
         $this->IsSuperUser = 0;
+        $this->ImagePath = '';
+        $this->Bio = '';
+        
+        $this->firebase = new FirebasePublisher($authToken);
     }
 
-    public function loadFromDB($db, $login) {
-        if (empty($login)) {
-            throw new Exception("Login must not be empty.");
-        }
+    public function loadFromDB($login) {
+        $safeEmail = $this->sanitizeKey($login);
 
-        $stmt = $db->prepare("SELECT * FROM User WHERE Login = :login");
-        if (!$stmt) {
-            throw new Exception("Failed to prepare statement.");
-        }
+        $path = "users/$safeEmail";
 
-        $stmt->bindParam(':login', $login);
-        if (!$stmt->execute()) {
-            throw new Exception("Failed to execute statement.");
-        }
+        $data = $this->firebase->getAll($path);
 
-        $user = $stmt->fetch(\PDO::FETCH_ASSOC);
-        if ($user) {
-            $this->Login = $user['Login'];
-            $this->Name = $user['Name'];
-            $this->Password = $user['Password'];
-            $this->Phone = $user['Phone'];
-            $this->IsSuperUser = $user['IsSuperUser'];
+        if (is_array($data) && !empty($data)) {
+            $this->Login       = $login;
+            $this->Name        = $data['Name'] ?? null;
+            $this->Password    = $data['Password'] ?? null;
+            $this->Phone       = $data['Phone'] ?? null;
+            $this->IsSuperUser = (int)($data['IsSuperUser'] ?? 0);
+            $this->ImagePath = $data['ImagePath'] ?? null;
+            $this->Bio = $data['Bio'] ?? null;
             return true;
-        } else {
-            throw new Exception("User not found.");
         }
+        return false;
     }
 
-    public function saveToDB($db) {
+
+    private function sanitizeKey($key) {
+        return str_replace(['@', '.'], ['_at_', '_dot_'], $key);
+    }
+
+    public function saveToDB() {
         if (empty($this->Login) || empty($this->Password)) {
             throw new Exception("Login and Password must not be empty.");
         }
 
-        $stmt = $db->prepare("INSERT INTO User (Login, Name, Password, Phone, IsSuperUser) 
-                              VALUES (:login, :name, :password, :phone, :isSuperUser)");
-        if (!$stmt) {
-            throw new Exception("Failed to prepare statement.");
-        }
+        $key = $this->sanitizeKey($this->Login);
 
-        $stmt->bindParam(':login', $this->Login);
-        $stmt->bindParam(':name', $this->Name);
-        $stmt->bindParam(':password', $this->Password);
-        $stmt->bindParam(':phone', $this->Phone);
-        $stmt->bindParam(':isSuperUser', $this->IsSuperUser, \PDO::PARAM_INT);
+        $data = [
+            'Name' => $this->Name,
+            'Password' => $this->Password,
+            'Phone' => $this->Phone,
+            'IsSuperUser' => $this->IsSuperUser,
+            'ImagePath' => $this->ImagePath,
+            'Bio' => $this->Bio
+        ];
 
-        if (!$stmt->execute()) {
-            throw new Exception("Failed to save user to database.");
-        }
-
+        $this->firebase->publish("users/$key", $data);
         return true;
     }
 
-    public function updateToDB($db) {
+
+    public function updateToDB() {
+        return $this->saveToDB(); // Для Firebase publish() обновит или создаст запись
+    }
+
+    public function deleteFromDB() {
         if (empty($this->Login)) {
             throw new Exception("Login must not be empty.");
         }
 
-        $stmt = $db->prepare("UPDATE User 
-                              SET Name = :name, Password = :password, Phone = :phone, IsSuperUser = :isSuperUser 
-                              WHERE Login = :login");
-        if (!$stmt) {
-            throw new Exception("Failed to prepare statement.");
-        }
-
-        $stmt->bindParam(':login', $this->Login);
-        $stmt->bindParam(':name', $this->Name);
-        $stmt->bindParam(':password', $this->Password);
-        $stmt->bindParam(':phone', $this->Phone);
-        $stmt->bindParam(':isSuperUser', $this->IsSuperUser, \PDO::PARAM_INT);
-
-        if (!$stmt->execute()) {
-            throw new Exception("Failed to update user.");
-        }
-
-        return true;
-    }
-
-    public function deleteFromDB($db) {
-        if (empty($this->Login)) {
-            throw new Exception("Login must not be empty.");
-        }
-
-        $stmt = $db->prepare("DELETE FROM User WHERE Login = :login");
-        if (!$stmt) {
-            throw new Exception("Failed to prepare statement.");
-        }
-
-        $stmt->bindParam(':login', $this->Login);
-        if (!$stmt->execute()) {
-            throw new Exception("Failed to delete user.");
-        }
-
+        $this->firebase->publish("users/{$this->Login}", null); // Удаление в Firebase через null
         return true;
     }
 
@@ -127,5 +101,32 @@ class User {
 
         return password_verify($plainPassword, $this->Password);
     }
+
+    public static function searchById(string $login, ?string $authToken = null): ?User
+    {
+        $firebase = new FirebasePublisher($authToken);
+        $allUsers = $firebase->getAll("users");
+
+        if (!is_array($allUsers)) {
+            return null;
+        }
+
+        $sanitizedKey = str_replace(['@', '.'], ['_at_', '_dot_'], $login);
+
+        foreach ($allUsers as $key => $data) {
+            if ($key === $sanitizedKey) {
+                $user = new self($authToken);
+                $user->Login       = $login;
+                $user->Name        = $data['Name'] ?? null;
+                $user->Password    = $data['Password'] ?? null;
+                $user->Phone       = $data['Phone'] ?? null;
+                $user->IsSuperUser = (int)($data['IsSuperUser'] ?? 0);
+                $user->ImagePath   = $data['ImagePath'] ?? null;
+                $user->Bio         = $data['Bio'] ?? null;
+                return $user;
+            }
+        }
+
+        return null;
+    }
 }
-?>

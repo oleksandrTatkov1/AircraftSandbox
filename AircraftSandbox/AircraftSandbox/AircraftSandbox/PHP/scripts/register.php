@@ -1,34 +1,26 @@
 <?php
-// 1) Отключаем варнинги и нотиcы
 ini_set('display_errors', 0);
 ini_set('display_startup_errors', 0);
-error_reporting(E_ERROR | E_PARSE);
+error_reporting(E_ALL);
 
-// 2) Импорты – ДОЛЖНЫ стоять до любого кода (кроме declare/namespace)
+// Подключение файлов
+require_once '../../PHP/clases/User.php';
+require_once '../../PHP/utils/validator.php';
 use PHP\Utils\Validator;
 use PHP\Clases\User;
-
-// 3) Подключаем файлы классов
-require_once '../../PHP/utils/Validator.php';
-require_once '../../PHP/clases/User.php';
-
-// 4) Запускаем сессию и далее идёт логика
+// Запускаем сессию
 session_start();
 
 try {
-    // Подключаем БД
-    $db = new PDO('sqlite:../../sqlite/users.db');
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-    // Обработка формы
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send'])) {
         $name     = $_POST['name']         ?? '';
         $login    = $_POST['login']        ?? '';
         $password = $_POST['password']     ?? '';
         $phone    = $_POST['phone']        ?? '';
         $isSuper  = $_POST['is_superuser'] ?? 0;
-
-        // Валидация
+        $Bio      = $_POST['bio']          ?? '';
+        $ImagePath = $_POST['image_path']  ?? '';
+        
         if (!Validator::isEmail($login)) {
             throw new Exception('Невірний формат email у полі "login".');
         }
@@ -39,19 +31,18 @@ try {
             throw new Exception('Пароль надто простий. Він має містити щонайменше 8 символів, великі та малі літери, цифри й спеціальні символи.');
         }
 
-        // Создаём пользователя
-        $user = new User();
+        $user = new User(); 
         $user->Name        = $name;
         $user->Login       = $login;
         $user->setPassword($password);
         $user->Phone       = $phone;
         $user->IsSuperUser = (int)$isSuper;
-
-        // Сохраняем
-        if ($user->saveToDB($db)) {
+        $user->Bio = $Bio;
+        $user->ImagePath = $ImagePath;
+        if ($user->saveToDB()) {
             echo '✅ Реєстрація успішна!';
         } else {
-            echo '❌ Помилка при збереженні в базу!';
+            echo '❌ Помилка при збереженні в Firebase!';
         }
     } else {
         echo '❌ Некоректний запит.';

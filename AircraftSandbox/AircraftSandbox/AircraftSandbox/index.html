@@ -22,7 +22,7 @@
                       <ul class="nav__list">
                         <li class="nav__item"><a href="index.html" class="nav__link">Головна</a></li>
                         <li class="nav__item"><a href="forum.html" class="nav__link">Форум</a></li>
-                        <li class="nav__item"><a href="routes.html" class="nav__link">Маршрути польотів</a></li>
+                       
                         <li class="nav__item"><a href="apk.html" class="nav__link">Додаткові APK</a></li>
                         <li class="nav__item">
                           <input type="checkbox" id="dropItem" class="dropdown-toggle">
@@ -35,12 +35,9 @@
                       </ul>
                     </nav>
                     <div class="header__registration">
-                      <button class="header__buttonForReg" id="auth-button">
-                        Авторизація 
-                      </button>
-                      <div class="header__profile" id="user-profile" style="display: none;">
-                        <img src="/AircraftSandbox/img/index/header/free-icon-user-483361.png" alt="Профіль" class="profile-icon">
-                      </div>
+                        <a href="/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/profile.html">
+                            <img id="header-avatar" src="/AircraftSandbox/img/index/header/free-icon-user-483361.png" alt="Профіль" class="profile-icon" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                        </a>
                     </div>                    
                 </div>
                 <div class="menu-btn">
@@ -150,5 +147,51 @@
                 });
             });
         </script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+      fetch('/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/login_Firebase.php')
+        .then(res => res.json())
+        .then(user => {
+          if (user && user.ImagePath) {
+            const avatar = document.getElementById('header-avatar');
+            if (avatar) {
+              avatar.src = user.ImagePath;
+            }
+    
+            const userProfileLink = document.getElementById('user-profile');
+            if (userProfileLink) {
+              userProfileLink.style.display = 'inline-block';
+            }
+    
+            const authButton = document.getElementById('auth-button');
+            if (authButton) {
+              authButton.style.display = 'none';
+            }
+          }
+        })
+        .catch(err => {
+          console.error('Не вдалося завантажити дані користувача:', err);
+        });
+    });
+    </script>
 <script src="../AircraftSandbox/js/script.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    fetch('/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/authCheck.php')
+        .then(response => response.json())
+        .then(data => {
+            if (!data.authorized) {
+                window.location.href = '/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/registerAlpha/register.html';
+            }
+        })
+        .catch(error => {
+            console.error('❌ Помилка перевірки авторизації:', error);
+            // можно временно перенаправить при ошибке сервера
+            window.location.href = '/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/registerAlpha/register.html';
+        });
+});
+</script>
+
+
 </html>

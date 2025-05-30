@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,7 +24,7 @@
                       <ul class="nav__list">
                         <li class="nav__item"><a href="index.html" class="nav__link">Головна</a></li>
                         <li class="nav__item"><a href="forum.html" class="nav__link">Форум</a></li>
-                        <li class="nav__item"><a href="routes.html" class="nav__link">Маршрути польотів</a></li>
+               
                         <li class="nav__item"><a href="apk.html" class="nav__link">Додаткові APK</a></li>
                         <li class="nav__item">
                           <input type="checkbox" id="dropItem" class="dropdown-toggle">
@@ -88,6 +89,24 @@
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+    fetch('/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/authCheck.php')
+        .then(response => response.json())
+        .then(data => {
+            if (!data.authorized) {
+                window.location.href = '/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/registerAlpha/register.html';
+            }
+        })
+        .catch(error => {
+            console.error('❌ Помилка перевірки авторизації:', error);
+            // можно временно перенаправить при ошибке сервера
+            window.location.href = '/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/registerAlpha/register.html';
+        });
+});
+</script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
   const urlParams = new URLSearchParams(window.location.search);
   const id = urlParams.get('Id') || urlParams.get('id');
   if (!id) return;
@@ -95,9 +114,9 @@ document.addEventListener('DOMContentLoaded', () => {
   fetch(`PHP/scripts/loadApkById.php?Id=${id}`)
     .then(res => res.json())
     .then(data => {
-      if (data.error) {
-        console.error('❌', data.error);
-        return;
+      if (!data || data.success === false || data.error) {
+      console.error('❌ Помилка завантаження APK:', data.error || 'невідомо');
+      return;
       }
 
       document.querySelector('.goldInfoAPK__img img').src = data.imagePath;

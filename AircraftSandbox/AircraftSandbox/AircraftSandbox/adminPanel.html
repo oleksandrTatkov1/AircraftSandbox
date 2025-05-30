@@ -1,5 +1,7 @@
+
 <!DOCTYPE html>
 <html lang="uk">
+  
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,7 +22,7 @@
                   <ul class="nav__list">
                     <li class="nav__item"><a href="index.html" class="nav__link">Головна</a></li>
                     <li class="nav__item"><a href="forum.html" class="nav__link">Форум</a></li>
-                    <li class="nav__item"><a href="routes.html" class="nav__link">Маршрути польотів</a></li>
+       
                     <li class="nav__item"><a href="apk.html" class="nav__link">Додаткові APK</a></li>
                     <li class="nav__item">
                       <input type="checkbox" id="dropItem" class="dropdown-toggle">
@@ -32,14 +34,11 @@
                     </li>
                   </ul>
                 </nav>
-                <div class="header__registration">
-                  <button class="header__buttonForReg" id="auth-button">
-                    Авторизація 
-                  </button>
-                  <div class="header__profile" id="user-profile" style="display: none;">
-                    <img src="/AircraftSandbox/img/index/header/free-icon-user-483361.png" alt="Профіль" class="profile-icon">
-                  </div>
-                </div>                    
+          
+                  <a href="/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/profile.html">
+                    <img id="header-avatar" src="/AircraftSandbox/img/index/header/free-icon-user-483361.png" alt="Профіль" class="profile-icon" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                </a>
+                       
             </div>
             <div class="menu-btn">
                 <span></span>
@@ -56,7 +55,9 @@
           <button class="admin-panel__tab" data-target="news">Додати новину</button>
           <button class="admin-panel__tab" data-target="delete-apk">Видалити APK</button>
           <button class="admin-panel__tab" data-target="delete-news">Видалити новину</button>
+          <button class="admin-panel__tab" data-target="delete-post">Видалити пост</button>
         </div>
+        
 
               <form class="admin-panel__form admin-panel__form--apk is-visible" enctype="multipart/form-data">
 
@@ -132,6 +133,23 @@
           <select id="deleteApkDropdown" class="admin-panel__input" required></select>
       </label>
     </form>
+      <form class="admin-panel__form admin-panel__form--delete-post">
+        <label class="admin-panel__label">Оберіть користувача:
+          <select id="deletePostUserDropdown" class="admin-panel__input" required>
+            <option value="">Оберіть користувача</option>
+          </select>
+        </label>
+      
+        <label class="admin-panel__label">Оберіть пост:
+          <select id="deletePostDropdown" class="admin-panel__input" required>
+            <option value="">Оберіть пост</option>
+          </select>
+        </label>
+      
+        <button type="button" id="deletePostButton" class="admin-panel__submit">Видалити пост</button>
+      </form>
+      
+      
       </section>
     </main>
 
@@ -147,6 +165,23 @@
   </div>
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script src="../AircraftSandbox/js/script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        fetch('/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/authCheck.php')
+            .then(response => response.json())
+            .then(data => {
+                if (!data.authorized) {
+                    window.location.href = '/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/registerAlpha/register.html';
+                }
+            })
+            .catch(error => {
+                console.error('❌ Помилка перевірки авторизації:', error);
+                // можно временно перенаправить при ошибке сервера
+                window.location.href = '/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/registerAlpha/register.html';
+            });
+    });
+  </script>
+
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const tabs = document.querySelectorAll('.admin-panel__tab');
@@ -290,5 +325,139 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 </script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+  fetch("/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/login_Firebase.php")
+  .then(response => response.json())
+    .then(user => {
+      if (!user || !user.Login) return;
+
+      // Аватар
+      const profileAvatar = document.querySelector(".profile-card__avatar");
+if (profileAvatar && user.ImagePath) {
+  profileAvatar.src = user.ImagePath;
+}
+
+const headerAvatar = document.getElementById("header-avatar");
+if (headerAvatar && user.ImagePath) {
+  headerAvatar.src = user.ImagePath;
+}
+
+
+      // Ім’я
+      const username = document.querySelector(".profile-card__username");
+      if (username && user.Name) {
+        username.textContent = "@" + user.Name;
+      }
+
+      // Біо
+      const bio = document.querySelector(".profile-card__bio");
+      if (bio && user.Bio) {
+        bio.textContent = user.Bio;
+      }
+
+      // Хедер: показати аватар замість кнопки
+      const authButton = document.getElementById("auth-button");
+      const userProfile = document.getElementById("user-profile");
+      if (authButton) authButton.style.display = "none";
+      if (userProfile) userProfile.style.display = "block";
+
+      // Оновити аватар та ім’я у постах
+      document.querySelectorAll(".post__user").forEach(el => {
+        el.textContent = "@" + user.Name;
+      });
+
+      document.querySelectorAll(".post__avatar").forEach(el => {
+        el.src = user.ImagePath;
+      });
+    })
+});
+
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        fetch("/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/checkSuperUser.php")
+          .then(res => res.json())
+          .then(data => {
+            if (!data.authorized) {
+              window.location.replace("/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/index.html");
+            }
+          })
+          .catch(() => {
+            window.location.replace("/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/index.html");
+          });
+      });
+      </script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const userDropdown = document.getElementById('deletePostUserDropdown');
+    const postDropdown = document.getElementById('deletePostDropdown');
+    const deleteButton = document.getElementById('deletePostButton');
+  
+    // Завантаження користувачів
+    fetch('PHP/scripts/getUsersList.php')
+  .then(res => res.json())
+  .then(users => {
+    userDropdown.innerHTML = '<option value="">Оберіть користувача</option>';
+    users.forEach(user => {
+      const opt = document.createElement('option');
+      opt.value = user.Login;  // використовуємо Login для запиту
+      opt.textContent = user.Name;  // відображаємо ім’я
+      userDropdown.appendChild(opt);
+    });
+  });
+
+
+  
+    // Завантаження постів після вибору користувача
+    userDropdown.addEventListener('change', () => {
+      const login = userDropdown.value;
+      postDropdown.innerHTML = '<option value=\"\">Оберіть пост</option>';
+      if (!login) return;
+  
+      fetch(`PHP/scripts/getUserPosts.php?login=${encodeURIComponent(login)}`)
+        .then(res => res.json())
+        .then(posts => {
+          posts.forEach(post => {
+            const opt = document.createElement('option');
+            opt.value = post.id;
+            opt.textContent = post.title;
+            postDropdown.appendChild(opt);
+          });
+        });
+    });
+  
+    // Видалення поста
+    deleteButton.addEventListener('click', () => {
+      const login = userDropdown.value;
+      const postId = postDropdown.value;
+  
+      if (!login || !postId) {
+        alert('Будь ласка, оберіть користувача та пост.');
+        return;
+      }
+  
+      if (!confirm(`Ви впевнені, що хочете видалити пост ${postId} користувача ${login}?`)) return;
+  
+      fetch('PHP/scripts/deleteUserPost.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: `login=${encodeURIComponent(login)}&postId=${encodeURIComponent(postId)}`
+      })
+      .then(res => res.text())
+      .then(msg => {
+        alert(msg);
+        postDropdown.querySelector(`option[value=\"${postId}\"]`).remove();
+        postDropdown.selectedIndex = 0;
+      })
+      .catch(err => {
+        console.error('❌ Помилка видалення поста:', err);
+        alert('Не вдалося видалити пост.');
+      });
+    });
+  });
+  </script>
+  
+    
 </body>
 </html>

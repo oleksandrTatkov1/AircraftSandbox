@@ -1,45 +1,37 @@
 <?php
-// loadNews.php — без BOM и пустых строк до <?php
+// loadNews.php — Firebase версія
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 require_once __DIR__ . '/../clases/News.php';
 use PHP\Clases\News;
+use PHP\Utils\FirebasePublisher;
 
-$dbFile = __DIR__ . '/../../sqlite/users.db';
 $bySlider = [];
 
 try {
-    // Подключаемся к базе
-    $pdo = new PDO("sqlite:" . $dbFile);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $firebase = new FirebasePublisher();
+    $allNews = $firebase->getAll('news');
 
-    // Получаем все записи сразу
-    $stmt = $pdo->query("SELECT * FROM News");
-    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    if (!$allNews || !is_array($allNews)) {
+        throw new Exception("Новини не знайдено.");
+    }
 
-    foreach ($rows as $r) {
-        // Инициализируем объект по тому же конструктору, что и save/load
+    foreach ($allNews as $id => $r) {
         $news = new News(
-            $r['ImagePath'],
-            $r['Description'],
-            $r['SliderId'],
-            $r['id']
+            $r['imagePath'] ?? '',
+            $r['description'] ?? '',
+            $r['sliderId'] ?? null,
+            $id
         );
 
-        // Приводим sliderId к целому
         $sid = intval($news->sliderId);
-        if ($sid < 1) {
-            // пропускаем невалидные или пустые
-            continue;
-        }
+        if ($sid < 1) continue;
 
-        // Рендерим и группируем
         $bySlider[$sid][] = $news->renderNewsItem();
     }
 
-    // Отдаём AJAX-у чистые блоки
     foreach ($bySlider as $sid => $items) {
         echo '<div data-slider-id="' . $sid . '">';
         echo implode('', $items);
@@ -47,9 +39,8 @@ try {
     }
 
 } catch (Throwable $e) {
-    // При ошибке возвращаем 500 и информируем JS
     http_response_code(500);
     echo '<div data-slider-id="error">'
-       . 'Ошибка загрузки новостей: ' . htmlspecialchars($e->getMessage(), ENT_QUOTES)
+       . 'Помилка завантаження новин: ' . htmlspecialchars($e->getMessage(), ENT_QUOTES)
        . '</div>';
 }

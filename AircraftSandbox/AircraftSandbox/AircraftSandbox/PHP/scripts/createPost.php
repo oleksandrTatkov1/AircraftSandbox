@@ -1,56 +1,86 @@
 <?php
-declare(strict_types=1);
+// scripts/createPost.php
 
-// подавляем варнинги/нотиcы
-ini_set('display_errors', '0');
-ini_set('display_startup_errors', '0');
-error_reporting(E_ERROR | E_PARSE);
+namespace PHP\Scripts;
 
-// подключаем класс Post
-require_once __DIR__ . '/../../PHP/clases/Post.php';
+// автозавантаження через composer чи вручну
+require_once __DIR__ . '/../clases/post.php';
+require_once __DIR__ . '/../clases/userPosts.php';
+
+use PHP\Clases\Post;
+use PHP\Clases\UserInfo;
 
 session_start();
 
-try {
-    // соединяемся с БД
-    $dbFile = __DIR__ . '/../../sqlite/users.db';
-    if (!file_exists($dbFile) || !is_readable($dbFile)) {
-        exit;
-    }
-    $db = new \PDO("sqlite:$dbFile");
-    $db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+// 1) Авторизація
+if (empty($_SESSION['user_login'])) {
+    http_response_code(401);
+    exit('Unauthorized');
+}
+$currentUser = $_SESSION['user_login'];
 
-    // парсим входящие поля
-    $header = $_POST['header']  ?? '';
-    $content = $_POST['content'] ?? '';
-    $owner = $_SESSION['user_login'] ?? 'guest';
+// 2) Зчитуємо поля форми
+$header        = trim($_POST['header'] ?? '');
+$content       = trim($_POST['content'] ?? '');
+$imagePath     = ''; // за замовчуванням
+$likesCount    = 0;
+$dislikesCount = 0;
+$ownerLogin    = '';
+// Обробка завантаження зображення (за бажанням)
+if (!empty($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+    $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/posts/';
+    if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
 
-    // загрузка файла (если есть)
-    $uploadDir    = realpath(__DIR__ . '/../../img/posts') . DIRECTORY_SEPARATOR;
-    $imageBaseURL = '../AircraftSandbox/img/posts/';
-    $imagePath    = $imageBaseURL . 'defaultimage.jpg';
-    if (!empty($_FILES['image']['tmp_name']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-        $fn = basename($_FILES['image']['name']);
-        if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadDir . $fn)) {
-            $imagePath = $imageBaseURL . $fn;
+    $filename = basename($_FILES['image']['name']);
+    $target   = $uploadDir . $filename;
+    $tmpPath  = $_FILES['image']['tmp_name'];
+
+    // Путь, где может лежать оригинальный файл (если tmp не существует)
+    $originalSearchPaths = [
+        $_SERVER['DOCUMENT_ROOT'] . '/' . $filename, // корень сайта
+        __DIR__ . '/' . $filename                     // рядом со скриптом
+        // добавь сюда пути, где могут лежать загруженные заранее файлы
+    ];
+
+    // Попробуем сначала переместить из временного места
+    if (is_uploaded_file($tmpPath) && move_uploaded_file($tmpPath, $target)) {
+        $imagePath = '/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/posts/' . $filename;
+    } else {
+        // Файл не переместился — ищем оригинальный файл
+        foreach ($originalSearchPaths as $src) {
+            if (file_exists($src)) {
+                if (copy($src, $target)) {
+                    $imagePath = '/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/posts/' . $filename;
+                    break;
+                }
+            }
         }
     }
-
-    // создаём объект и сохраняем
-    $post = new \PHP\Clases\Post();
-    $post->header        = $header;
-    $post->content       = $content;
-    $post->likesCount    = 0;
-    $post->dislikesCount = 0;
-    $post->imagePath     = $imagePath;
-    $post->ownerLogin    = $owner;
-
-    $post->saveToDB($db);
-
-    // подхватываем ID и сразу возвращаем HTML
-    echo $post->createPost();
-
-} catch (\Exception $e) {
-    // ничего не выводим спустя AJAX-запроса
-    exit;
 }
+
+
+
+// 3) Генеруємо унікальний ID поста
+$postId = (string) time();  // або будь-який власний генератор
+
+// 4) Створюємо і зберігаємо Post
+$post = new Post();
+$post->id          = $postId;
+$post->ownerLogin  = $currentUser;
+$post->header      = $header;
+$post->content     = $content;
+$post->imagePath   = $imagePath;
+$post->likesCount  = $likesCount;
+$post->dislikesCount = $dislikesCount;
+$post->saveToDB();  // тут має публікуватись тільки “posts/{$postId}`
+
+// 5) Створюємо UserInfo-запис для зв’язку “юзер ↔ пост”
+$userInfo = new UserInfo();
+$userInfo->id = $currentUser;
+$userInfo->UserLogin   = $currentUser;
+$userInfo->PostId      = $postId;
+$userInfo->Reaction    = 0;                  // без реакції
+$userInfo->saveToDB();  // публікує “userInfo/{$userLogin}_{$postId}_{$id}`
+
+// 6) Відповідь — HTML лише нового поста
+echo $post->createPost();

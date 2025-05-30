@@ -10,6 +10,8 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
   <link rel="stylesheet" href="../AircraftSandbox/css/style.css">
   <link rel="stylesheet" href="../AircraftSandbox/css/profile.css"/>
+
+
 </head>
 <body>
   <div class="page-wrapper">
@@ -23,7 +25,7 @@
                   <ul class="nav__list">
                     <li class="nav__item"><a href="index.html" class="nav__link">Головна</a></li>
                     <li class="nav__item"><a href="forum.html" class="nav__link">Форум</a></li>
-                    <li class="nav__item"><a href="routes.html" class="nav__link">Маршрути польотів</a></li>
+           
                     <li class="nav__item"><a href="apk.html" class="nav__link">Додаткові APK</a></li>
                     <li class="nav__item">
                       <input type="checkbox" id="dropItem" class="dropdown-toggle">
@@ -36,12 +38,7 @@
                   </ul>
                 </nav>
                 <div class="header__registration">
-                  <button class="header__buttonForReg" id="auth-button">
-                    Авторизація 
-                  </button>
-                  <div class="header__profile" id="user-profile" style="display: none;">
-                    <img src="/AircraftSandbox/img/index/header/free-icon-user-483361.png" alt="Профіль" class="profile-icon">
-                  </div>
+        
                 </div>                    
             </div>
             <div class="menu-btn">
@@ -58,32 +55,42 @@
             <div class="profile-card__header">
               <img src="../AircraftSandbox/img/APK/main/photo_2025-04-17_15-47-28.jpg" alt="Avatar" class="profile-card__avatar">
               <div class="profile-card__info">
-                <h2 class="profile-card__username">@GloryToWLW</h2>
-                <p class="profile-card__bio">
-                  Discussing all things aviation, from dogfights to dream flights. Join the squadron! ✈️
-                </p>
+                <h2 class="profile-card__username">@DefaultUsername</h2>
+                <p class="profile-card__bio">Придумайте біо.</p>
               </div>
-              <button class="profile-card__edit"><a href="profileRedact.html">Редагувати профіль</a></button>
-            </div>
-      
-            <div class="profile-card__tabs">
-                <div class="profile-card__indicator" id="tab-indicator"></div>
+              <div class="profile-card__actions">
+                <button class="profile-card__edit" id="admin-panel-btn" style="display: none;">
+                  <a href="adminPanel.html">Адмін Панель</a>
+                </button>
+                <button class="profile-card__edit">
+                  <a href="profileRedact.html">Редагувати профіль</a>
+                 
+                </button>
+                <button class="logout-button" id="logoutBtn">Вийти з аккаунту</button>
+
+              </div>
               
-                <button class="profile-card__tab" data-tab="posts">Пости</button>
-                <button class="profile-card__tab" data-tab="replies">Відповіді</button>
-              </div>
+            </div>
+            <button class="profile-card__edit" id="admin-panel-btn" style="display: none;">
+              <a href="adminPanel.html">Адмін Панель</a>
+            </button>                       
+            <div class="profile-card__tabs">
+              <div class="profile-card__indicator" id="tab-indicator"></div>
+              <button class="profile-card__tab active" data-tab="posts">Пости</button>
+              <button class="profile-card__tab" data-tab="replies">Відповіді</button>
+            </div>
+            
               
       
             <div class="profile-card__content" id="posts">
               <div class="profile-card__post">
                 <div class="post__header">
-                  <img src="e737bbb3-f42c-48c5-a56f-d1beb509ac81.png" class="post__avatar" />
-                  <span class="post__user">@GloryToWLW</span>
-                </div>
-                <h4 class="post__title">Best Beginner-Friendly Airliners?</h4>
-                <p class="post__text">Hey everyone! 🖐 I’m new to flight sims and looking for a good airliner to start with...</p>
+                 
+              <div class="profile-card__content hidden" id="replies">
+                <div class="profile-card__answer">
+                  <div class="answer__header">
+                    
               </div>
-
               <div class="profile-card__post">
                 <div class="post__header">
                   <img src="e737bbb3-f42c-48c5-a56f-d1beb509ac81.png" class="post__avatar" />
@@ -97,16 +104,7 @@
             </div>
       
             <div class="profile-card__content hidden" id="replies">
-              <div class="profile-card__answer">
-                <div class="answer__header">
-                  <img src="e737bbb3-f42c-48c5-a56f-d1beb509ac81.png" class="answer__avatar" />
-                  <span class="answer__user">@GloryToWLW</span>
-                </div>
-                <h4 class="answer__title">Best Beginner-Friendly Airliners?</h4>
-                <p class="answer__text">Hey everyone! 🖐 I’m new to flight sims and looking for a good airliner to start with...</p>
-              </div>
-            </div>
-          </div>
+             
         </div>
       </main>
       
@@ -121,9 +119,175 @@
         </div>
     </footer>
   </div>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+  <script>
+   document.addEventListener("DOMContentLoaded", function () {
+  fetch("/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/login_Firebase.php")
+  .then(response => response.json())
+    .then(user => {
+      if (!user || !user.Login) return;
 
+      // Аватар
+      const avatar = document.querySelector(".profile-card__avatar");
+      if (avatar && user.ImagePath) {
+        avatar.src = user.ImagePath;
+      }
+
+      // Ім’я
+      const username = document.querySelector(".profile-card__username");
+      if (username && user.Name) {
+        username.textContent = "@" + user.Name;
+      }
+
+      // Біо
+      const bio = document.querySelector(".profile-card__bio");
+      if (bio && user.Bio) {
+        bio.textContent = user.Bio;
+      }
+
+      // Хедер: показати аватар замість кнопки
+      const authButton = document.getElementById("auth-button");
+      const userProfile = document.getElementById("user-profile");
+      if (authButton) authButton.style.display = "none";
+      if (userProfile) userProfile.style.display = "block";
+
+      // Оновити аватар та ім’я у постах
+      document.querySelectorAll(".post__user").forEach(el => {
+        el.textContent = "@" + user.Name;
+      });
+
+      //Адмін чи нє
+      if (user.IsSuperUser == 1) {
+    const adminBtn = document.getElementById("admin-panel-btn");
+    if (adminBtn) adminBtn.style.display = "inline-block";
+  }
+      document.querySelectorAll(".post__avatar").forEach(el => {
+        el.src = user.ImagePath;
+      });
+    })
+});
+
+    </script>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script src="../AircraftSandbox/js/script.js"></script>
+
 <script src="../AircraftSandbox/js/profile.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    fetch('/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/authCheck.php')
+        .then(response => response.json())
+        .then(data => {
+            if (!data.authorized) {
+                window.location.href = '/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/registerAlpha/register.html';
+            }
+        })
+        .catch(error => {
+            console.error('❌ Помилка перевірки авторизації:', error);
+            // можно временно перенаправить при ошибке сервера
+            window.location.href = '/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/registerAlpha/register.html';
+        });
+});
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', function () {
+        fetch('/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/sessionLogout.php', {
+          method: 'POST'
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            window.location.href = '/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/registerAlpha/register.html';
+          } else {
+            console.error('⚠️ Logout failed:', data);
+          }
+        })
+        .catch(err => {
+          console.error('❌ Logout error:', err);
+        });
+      });
+    }
+  });
+  </script>
+  
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      fetch("/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/loadUserPost.php")
+        .then(response => response.text())
+        .then(postsHtml => {
+          const postsContainer = document.getElementById("posts");
+          if (postsContainer) {
+            postsContainer.innerHTML = postsHtml;
+          }
+        })
+        .catch(err => console.error("Помилка при завантаженні постів:", err));
+    });
+    </script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const repliesTab = document.querySelector('[data-tab="replies"]');
+        const postsTab = document.querySelector('[data-tab="posts"]');
+        const repliesContainer = document.getElementById('replies');
+        const postsContainer = document.getElementById('posts');
+      
+        if (repliesTab) {
+          repliesTab.addEventListener('click', function () {
+            // Перемикання активної вкладки
+            document.querySelectorAll('.profile-card__tab').forEach(tab => tab.classList.remove('active'));
+            repliesTab.classList.add('active');
+      
+            // Сховати інші контейнери і показати replies
+            document.querySelectorAll('.profile-card__content').forEach(content => content.classList.add('hidden'));
+            if (repliesContainer) repliesContainer.classList.remove('hidden');
+      
+            // Очистити repliesContainer (показати індикатор)
+            if (repliesContainer) {
+              repliesContainer.innerHTML = '<p>Завантаження відповідей...</p>';
+            }
+      
+            // Завантаження даних
+            fetch('/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/loadUserComments.php', {
+              credentials: 'same-origin'
+            })
+            .then(response => {
+              if (!response.ok) {
+                throw new Error('Не вдалося завантажити відповіді');
+              }
+              return response.text();
+            })
+            .then(html => {
+              if (repliesContainer) {
+                repliesContainer.innerHTML = html;
+              }
+            })
+            .catch(error => {
+              console.error('❌ Помилка при завантаженні відповідей:', error);
+              if (repliesContainer) {
+                repliesContainer.innerHTML = '<p>Не вдалося завантажити відповіді.</p>';
+              }
+            });
+          });
+        }
+      
+        if (postsTab) {
+          postsTab.addEventListener('click', function () {
+            // Перемикання активної вкладки
+            document.querySelectorAll('.profile-card__tab').forEach(tab => tab.classList.remove('active'));
+            postsTab.classList.add('active');
+      
+            // Сховати replies і показати posts
+            document.querySelectorAll('.profile-card__content').forEach(content => content.classList.add('hidden'));
+            if (postsContainer) postsContainer.classList.remove('hidden');
+          });
+        }
+      });
+      </script>
+      
+  
 </html>
+

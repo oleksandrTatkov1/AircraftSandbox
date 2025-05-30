@@ -35,9 +35,9 @@ document.addEventListener('DOMContentLoaded', () => {
       paginationContainer.innerHTML = '';
 
       shownCards.forEach(card => {
-        apkGrid.insertAdjacentHTML('beforeend', card.outerHTML);
+      const clonedCard = card.cloneNode(true);
+      apkGrid.appendChild(clonedCard);
       });
-
       bindCardClicks();
 
       const prevBtn = document.createElement('button');

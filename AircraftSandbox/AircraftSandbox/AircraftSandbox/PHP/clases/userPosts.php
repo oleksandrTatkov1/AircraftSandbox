@@ -1,149 +1,273 @@
 <?php
+// PHP/Clases/UserInfo.php
 namespace PHP\Clases;
-use Exception;
-use PDO;
-use PDOException;
 
 require_once __DIR__ . '/User.php';
-require_once __DIR__ . '/Post.php';
+require_once __DIR__ . '/../utils/firebasePublisher.php';
+
+use PHP\Utils\FirebasePublisher;
+use Exception;
 
 class UserInfo extends User {
-    public $posts = []; // список постів цього юзера
+    public $id;
+    public $UserLogin;
+    public $PostId;
+    public $Reaction;
+    public $comments;   // Объединяем комментарий в один ассоциативный массив
 
-    public function addPost($db, Post $post) {
-        if (empty($this->Login)) {
-            throw new Exception("User login is not set.");
+    public $firebase;
+
+    public function __construct($authToken = null) {
+        parent::__construct($authToken);
+        $this->id        = null;
+        $this->UserLogin = '';
+        $this->PostId    = '';
+        $this->Reaction  = 0;
+        $this->firebase = new FirebasePublisher($authToken);
+    }
+
+    private function sanitizeKey(string $key): string {
+        return str_replace(
+            ['@', '.', ' '],
+            ['_at_', '_dot_', '_'],
+            $key
+        );
+    }
+
+    public function saveToDB(): bool {
+        if (empty($this->UserLogin) || empty($this->PostId)) {
+            throw new Exception("UserLogin, PostId and id must not be empty.");
         }
+        $u = $this->sanitizeKey($this->UserLogin);
+        $p = $this->sanitizeKey($this->PostId);
+        $safeKey = "{$u}_{$p}";
+        $path = "userInfo/{$safeKey}";
 
-        $post->ownerLogin = $this->Login;
-        if (!$post->saveToDB($db)) {
-            throw new Exception("Failed to save post.");
-        }
-
+        // Собираем данные для отправки, включая comments в виде единого массива
+        $payload = [
+            'UserLogin' => $this->UserLogin,
+            'PostId'    => $this->PostId,
+            'Reaction'  => $this->Reaction,
+            'comments'  => $this->comments
+        ];
+        
+        $this->firebase->publish($path, $payload);
         return true;
+    }
+
+    public static function getAllPostCommentsById(string $postId): array {
+        $inst = new self();  // создаём экземпляр без токена
+        $all = $inst->firebase->getAll('userInfo'); // получаем все записи из userInfo
+
+        if (!is_array($all) || empty($all)) {
+            return [];
+        }
+
+        $comments = [];
+        foreach ($all as $safeKey => $data) {
+            // Проверяем, совпадает ли PostId
+            if (($data['PostId'] ?? null) !== $postId) {
+                continue;
+            }
+
+            $userLogin = $data['UserLogin'] ?? null;
+
+            // Если поле comments существует и это массив
+            if (isset($data['comments']) && is_array($data['comments'])) {
+                foreach ($data['comments'] as $c) {
+                    if (!empty($c['date'])) {
+                        $comments[] = [
+                            'UserLogin' => $userLogin,
+                            'PostId'    => $postId,
+                            'id'        => $c['id']   ?? null,
+                            'text'      => $c['text'] ?? '',
+                            'date'      => $c['date'] ?? null,
+                        ];
+                    }
+                }
+            }
+        }
+
+        // Сортируем комментарии по дате (старые в начале)
+        usort($comments, function($a, $b) {
+            return strcmp($a['date'], $b['date']);
+        });
+
+        return $comments;
+    }
+
+
+    /**
+     * Получить связь конкретного пользователя с постом (с реакцией и комментарием).
+     *
+     * @param string $userLogin — логин пользователя
+     * @param string $postId    — идентификатор поста
+     * @return self|null
+     */
+    public static function getForUserAndPost(string $userLogin, string $postId): ?self {
+        $inst = new self();  // без токена
+        $u = $inst->sanitizeKey($userLogin);
+        $p = $inst->sanitizeKey($postId);
+        $key = "{$u}_{$p}";
+        $path = "userInfo/{$key}";
+
+        $data = $inst->firebase->getAll($path);
+        if (!is_array($data) || empty($data)) {
+            return null;
+        }
+
+        $inst->id        = $postId;
+        $inst->UserLogin = $data['UserLogin'] ?? $userLogin;
+        $inst->PostId    = $data['PostId']  ?? $postId;
+        $inst->Reaction  = (int)($data['Reaction'] ?? 0);
+
+        if (isset($data['comments']) && is_array($data['comments'])) {
+            $inst->comments = $data['comments']; // просто беремо масив як є
+        } else {
+            $inst->comments = []; // ініціалізуємо як порожній масив
+        }
+
+
+        return $inst;
     }
 
     /**
-     * Пакетная вставка нескольких Post-объектов в БД одним prepared-запросом.
-     * @param PDO  $db
-     * @param Post[] $posts
-     * @return int — число успешно вставленных записей
-     * @throws Exception
+     * Сформировать HTML-список комментариев для заданного поста.
+     *
+     * @param string $postId — идентификатор поста
+     * @return string       — HTML-код <ul>…</ul> или заглушка
      */
-    public function addMultiplePosts(PDO $db, array $posts): int
-    {
-        if (empty($this->Login)) {
-            throw new Exception("User login is not set.");
+    public static function renderAllCommentsByPostId(string $postId): string {
+        $comments = self::getAllPostCommentsById($postId);
+        if (empty($comments)) {
+            return '<p>Комментариев пока нет.</p>';
         }
 
-        $sql = "INSERT INTO Post 
-                  (Header, ImagePath, Content, LikesCount, DislikesCount, ownerLogin)
-                VALUES 
-                  (:header, :imagePath, :content, :likesCount, :dislikesCount, :ownerLogin)";
-
-        try {
-            $db->beginTransaction();
-            $stmt = $db->prepare($sql);
-            if (!$stmt) {
-                throw new Exception("Failed to prepare bulk insert statement.");
-            }
-
-            $count = 0;
-            foreach ($posts as $post) {
-                /* @var Post $post */
-                $stmt->execute([
-                    ':header'        => $post->header,
-                    ':imagePath'     => $post->imagePath,
-                    ':content'       => $post->content,
-                    ':likesCount'    => $post->likesCount,
-                    ':dislikesCount' => $post->dislikesCount,
-                    ':ownerLogin'    => $this->Login,
-                ]);
-                $count++;
-            }
-
-            $db->commit();
-            return $count;
-
-        } catch (PDOException $e) {
-            $db->rollBack();
-            // логируем детали ошибки
-            error_log("SQLSTATE={$e->getCode()}; info=" . json_encode($e->errorInfo));
-            throw new Exception("Bulk insert failed: " . $e->getMessage());
+        $html = '<div class="comments-container">';
+        foreach ($comments as $c) {
+            $author = htmlspecialchars($c['UserLogin'], ENT_QUOTES, 'UTF-8');
+            $date   = htmlspecialchars($c['date'], ENT_QUOTES, 'UTF-8');
+            $text   = nl2br(htmlspecialchars($c['text'], ENT_QUOTES, 'UTF-8'));
+            $user = User::searchById($author);
+            $userImagePath = $user && !empty($user->ImagePath)
+                ? htmlspecialchars($user->ImagePath, ENT_QUOTES, 'UTF-8')
+                : 'default-avatar.png';
+    
+            // Добавляем расширение только если в ImagePath нет точки (jpg, png)
+            $authorImage = (strpos($userImagePath, '.') === false)
+                ? "/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/{$userImagePath}.jpg"
+                : "/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/{$userImagePath}";
+    
+            $html .= <<<HTML
+    <div class="comment-card">
+        <div class="comment-header">
+            <img 
+                src="{$authorImage}" 
+                alt="Avatar of {$author}" 
+                class="comment-avatar"
+                onerror="this.onerror=null;this.src='/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/default-avatar.png'">
+            <div class="comment-info">
+                <span class="comment-author">{$author}</span>
+                <span class="comment-date">{$date}</span>
+            </div>
+        </div>
+        <div class="comment-body">
+            {$text}
+        </div>
+    </div>
+    HTML;
         }
-    }
+        $html .= '</div>';
 
-    public function deletePost($db, $postId) {
-        if (empty($this->Login)) {
-            throw new Exception("User login is not set.");
-        }
-
-        if (!is_numeric($postId)) {
-            throw new Exception("Invalid post ID.");
-        }
-
-        $stmt = $db->prepare("DELETE FROM Post WHERE id = :id AND ownerLogin = :login");
-        if (!$stmt) {
-            throw new Exception("Failed to prepare delete statement.");
-        }
-
-        $stmt->bindParam(':id', $postId, PDO::PARAM_INT);
-        $stmt->bindParam(':login', $this->Login);
-
-        if (!$stmt->execute()) {
-            throw new Exception("Failed to delete post.");
-        }
-
-        if ($stmt->rowCount() === 0) {
-            throw new Exception("No post found or not authorized.");
-        }
-
-        return true;
-    }
-
-    public function loadUserPosts($db) {
-        if (empty($this->Login)) {
-            throw new Exception("User login is not set.");
-        }
-
-        $stmt = $db->prepare("SELECT * FROM Post WHERE ownerLogin = :login");
-        if (!$stmt) {
-            throw new Exception("Failed to prepare select statement.");
-        }
-
-        $stmt->bindParam(':login', $this->Login);
-
-        if (!$stmt->execute()) {
-            throw new Exception("Failed to load posts.");
-        }
-
-        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $this->posts = [];
-
-        foreach ($results as $row) {
-            $post = new Post();
-            $post->id = $row['id'];
-            $post->header = $row['header'];
-            $post->imagePath = $row['imagePath'];
-            $post->content = $row['content'];
-            $post->likesCount = $row['likesCount'];
-            $post->dislikesCount = $row['dislikesCount'];
-            $post->ownerLogin = $row['ownerLogin'];
-            $this->posts[] = $post;
-        }
-
-        return count($this->posts);
-    }
-
-    public function showAllPostsHTML() {
-        $html = '';
-        foreach ($this->posts as $post) {
-            if (!method_exists($post, 'createPost')) {
-                throw new Exception("Post object missing createPost method.");
-            }
-            $html .= $post->createPost();
-        }
         return $html;
     }
+    public static function renderAllCommentsByUserId(string $userId): string {
+        $comments = self::getAllUserCommentsById($userId); // Твій метод, який повертає всі коментарі користувача
+        if (empty($comments)) {
+            return '<p>Комментариев пока нет.</p>';
+        }
+    
+        $html = '<div class="comments-container">';
+        foreach ($comments as $c) {
+            $author = htmlspecialchars($c['UserLogin'], ENT_QUOTES, 'UTF-8');
+            $date   = htmlspecialchars($c['date'], ENT_QUOTES, 'UTF-8');
+            $text   = nl2br(htmlspecialchars($c['text'], ENT_QUOTES, 'UTF-8'));
+            $user = User::searchById($author);
+            $userImagePath = $user && !empty($user->ImagePath)
+                ? htmlspecialchars($user->ImagePath, ENT_QUOTES, 'UTF-8')
+                : 'default-avatar.png';
+    
+            // Добавляем расширение только если в ImagePath нет точки (jpg, png)
+            $authorImage = (strpos($userImagePath, '.') === false)
+                ? "/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/{$userImagePath}.jpg"
+                : "/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/{$userImagePath}";
+    
+
+        $html .= <<<HTML
+    <div class="comment-card">
+        <div class="comment-header">
+            <img 
+                src="{$authorImage}" 
+                alt="Avatar of {$author}" 
+                class="comment-avatar"
+                onerror="this.onerror=null;this.src='/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/default-avatar.png'">
+            <div class="comment-info">
+                <span class="comment-author">{$author}</span>
+                <span class="comment-date">{$date}</span>
+            </div>
+        </div>
+        <div class="comment-body">
+            {$text}
+        </div>
+    </div>
+    HTML;
+        }
+        $html .= '</div>';
+    
+        return $html;
+    }
+    
+    public static function getAllUserCommentsById(string $userId): array {
+        $inst = new self();  // створюємо екземпляр без токена
+        $all = $inst->firebase->getAll('userInfo'); // отримуємо всі записи з userInfo
+    
+        if (!is_array($all) || empty($all)) {
+            return [];
+        }
+    
+        $comments = [];
+        foreach ($all as $safeKey => $data) {
+            $userLogin = $data['UserLogin'] ?? null;
+    
+            // Перевіряємо, чи UserLogin збігається з шуканим
+            if ($userLogin !== $userId) {
+                continue;
+            }
+    
+            // Якщо поле comments існує і це масив
+            if (isset($data['comments']) && is_array($data['comments'])) {
+                foreach ($data['comments'] as $c) {
+                    if (!empty($c['date'])) {
+                        $comments[] = [
+                            'UserLogin' => $userLogin,
+                            'PostId'    => $data['PostId'] ?? null,
+                            'id'        => $c['id'] ?? null,
+                            'text'      => $c['text'] ?? '',
+                            'date'      => $c['date'] ?? null,
+                        ];
+                    }
+                }
+            }
+        }
+    
+        // Сортуємо коментарі за датою (старіші на початку)
+        usort($comments, function($a, $b) {
+            return strcmp($a['date'], $b['date']);
+        });
+    
+        return $comments;
+    }
+    
+
 }
 ?>

@@ -8,10 +8,6 @@ try {
         throw new Exception("Метод не підтримується.");
     }
 
-    $dbFile = __DIR__ . '/../../sqlite/users.db';
-    $db = new PDO("sqlite:$dbFile");
-
-    // Перевірка наявності та зчитування полів
     $required = ['apkAuthor', 'apkSize', 'apkAddedBy', 'apkDate', 'apkDownloads', 'apkDesc', 'apkType', 'apkLink'];
     foreach ($required as $field) {
         if (empty($_POST[$field])) {
@@ -19,7 +15,6 @@ try {
         }
     }
 
-    // Обробка зображення
     if (!isset($_FILES['apkImage']) || $_FILES['apkImage']['error'] !== UPLOAD_ERR_OK) {
         throw new Exception("Помилка при завантаженні зображення.");
     }
@@ -36,8 +31,8 @@ try {
         throw new Exception("Не вдалося перемістити файл.");
     }
 
-    // Запис у БД
     $apk = new ApkInfo();
+    $apk->id = uniqid(); // Firebase ID
     $apk->author = $_POST['apkAuthor'];
     $apk->size = $_POST['apkSize'];
     $apk->addedBy = $_POST['apkAddedBy'];
@@ -48,22 +43,7 @@ try {
     $apk->imagePath = 'img/APK/' . $imageName;
     $apk->apkLink = $_POST['apkLink'];
 
-    $stmt = $db->prepare("INSERT INTO ApkInfo (Author, Size, AddedBy, Date, Downloads, ImagePath, Description, Category, ApkLink)
-                          VALUES (:author, :size, :addedBy, :date, :downloads, :imagePath, :description, :category, :apkLink)");
-
-    $stmt->bindParam(':author', $apk->author);
-    $stmt->bindParam(':size', $apk->size);
-    $stmt->bindParam(':addedBy', $apk->addedBy);
-    $stmt->bindParam(':date', $apk->date);
-    $stmt->bindParam(':downloads', $apk->downloads, PDO::PARAM_INT);
-    $stmt->bindParam(':imagePath', $apk->imagePath);
-    $stmt->bindParam(':description', $apk->description);
-    $stmt->bindParam(':category', $apk->category);
-    $stmt->bindParam(':apkLink', $apk->apkLink);
-
-    if (!$stmt->execute()) {
-        throw new Exception("Помилка під час збереження у базу даних.");
-    }
+    $apk->saveToDB();
 
     echo "✅ APK успішно додано.";
 } catch (Throwable $e) {
