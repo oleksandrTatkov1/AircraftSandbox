@@ -122,18 +122,11 @@ class UserInfo extends User {
         $inst->Reaction  = (int)($data['Reaction'] ?? 0);
 
         if (isset($data['comments']) && is_array($data['comments'])) {
-            $inst->comments = [
-                'id'   => $data['comments']['id']   ?? null,
-                'text' => $data['comments']['text'] ?? '',
-                'date' => $data['comments']['date'] ?? null,
-            ];
+            $inst->comments = $data['comments']; // просто беремо масив як є
         } else {
-            $inst->comments = [
-                'id'   => $data['CommentId']   ?? null,
-                'text' => $data['CommentText'] ?? '',
-                'date' => $data['CommentDate'] ?? null,
-            ];
+            $inst->comments = []; // ініціалізуємо як порожній масив
         }
+
 
         return $inst;
     }
@@ -150,25 +143,38 @@ class UserInfo extends User {
             return '<p>Комментариев пока нет.</p>';
         }
 
-        $html = '<ul class="comments-list">';
+        $html = '<div class="comments-container">';
         foreach ($comments as $c) {
             $author = htmlspecialchars($c['UserLogin'], ENT_QUOTES, 'UTF-8');
-            $date   = htmlspecialchars($c['date'],      ENT_QUOTES, 'UTF-8');
+            $date   = htmlspecialchars($c['date'], ENT_QUOTES, 'UTF-8');
             $text   = nl2br(htmlspecialchars($c['text'], ENT_QUOTES, 'UTF-8'));
 
+            // Формування шляху до аватара
+            $authorImage = "/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/{$author}.jpg";
+
             $html .= <<<HTML
-    <li class="comment-item">
+    <div class="comment-card">
         <div class="comment-header">
-            <span class="comment-author">{$author}</span>
-            <span class="comment-date">{$date}</span>
+            <img 
+                src="{$authorImage}" 
+                alt="Avatar of {$author}" 
+                class="comment-avatar"
+                onerror="this.onerror=null;this.src='/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/default-avatar.png'">
+            <div class="comment-info">
+                <span class="comment-author">{$author}</span>
+                <span class="comment-date">{$date}</span>
+            </div>
         </div>
-        <div class="comment-body">{$text}</div>
-    </li>
-HTML;
+        <div class="comment-body">
+            {$text}
+        </div>
+    </div>
+    HTML;
         }
-        $html .= '</ul>';
+        $html .= '</div>';
 
         return $html;
     }
+
 }
 ?>

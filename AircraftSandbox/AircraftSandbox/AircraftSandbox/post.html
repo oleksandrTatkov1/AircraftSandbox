@@ -29,9 +29,10 @@
           <h3 class="post-thread__comments-title">Коментарі</h3>
           <div id="comments-container">
             <div id="comment-form" style="margin-top: 20px;">
-            <textarea id="comment-text" placeholder="Напишіть свій коментар..." style="width:100%;padding:10px;border-radius:8px;"></textarea>
-            <button id="submit-comment" style="margin-top:10px;padding:8px 16px;">Надіслати</button>
-          </div>
+              <textarea id="comment-text" placeholder="Напишіть свій коментар..." style="width:100%;padding:10px;border-radius:8px;"></textarea>
+              <button id="submit-comment" style="margin-top:10px;padding:8px 16px;">Надіслати</button>
+            </div>
+            <div id="comments-list"></div>
           </div>
         </div>
       </section>
@@ -134,70 +135,57 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 <script>
   /**
-   * Загружает HTML-комментарии для поста и рендерит их в блоке #comments-container,
-   * сохраняя форму добавления внизу.
-   *
-   * @param {string} postId — идентификатор поста
-   */
-  function loadComments(postId) {
-    const container = document.getElementById('comments-container');
-    if (!container) return;
+ * Загружает комментарии и вставляет их в #comments-list
+ * @param {string} postId
+ */
+function loadComments(postId) {
+  const listContainer = document.getElementById('comments-list');
+  if (!listContainer) return;
 
-    // Сохраняем текущую форму (чтобы не затирать её)
-    const form = document.getElementById('comment-form');
-    // Выполняем запрос к вашему PHP-скрипту, который возвращает готовый UL-список <li>…
-    fetch(`/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/getCommentsHtml.php?post=${encodeURIComponent(postId)}`)
-      .then(res => res.ok ? res.text() : Promise.reject(res.status))
-      .then(html => {
-        // Вставляем HTML комментариев и возвращаем форму в конец
-        container.innerHTML = html;
-        container.appendChild(form);
-      })
-      .catch(err => {
-        console.error('❌ Ошибка загрузки комментариев:', err);
-        container.innerHTML = '<p>Не вдалося завантажити коментарі.</p>';
-        container.appendChild(form);
-      });
-  }
+  fetch(`/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/getCommentsHtml.php?post=${encodeURIComponent(postId)}`)
+    .then(res => res.ok ? res.text() : Promise.reject(res.status))
+    .then(html => {
+      // Меняем только список, форма не затрагивается
+      listContainer.innerHTML = html;
+    })
+    .catch(err => {
+      console.error('Ошибка загрузки комментариев:', err);
+      listContainer.innerHTML = '<p>Не вдалося завантажити коментарі.</p>';
+    });
+}
 
-  document.addEventListener('DOMContentLoaded', () => {
-    const postId = new URLSearchParams(window.location.search).get('post');
-    if (!postId) return;
+document.addEventListener('DOMContentLoaded', () => {
+  const postId = new URLSearchParams(location.search).get('post');
+  if (!postId) return;
 
-    // Сразу грузим комментарии при открытии страницы
-    loadComments(postId);
+  // 1) Сразу загрузить существующие:
+  loadComments(postId);
 
-    // Подменяем addComment-обработчик, чтобы после успешной отправки звонить loadComments
-    document.body.addEventListener('click', function(e) {
-      const btn = e.target.closest('#submit-comment');
-      if (!btn) return;
-
+  // 2) Повесить форму отправки:
+  document.getElementById('submit-comment')
+    .addEventListener('click', e => {
       e.preventDefault();
-      const textarea = document.querySelector('#comment-text');
-      const text = textarea.value.trim();
+      const text = document.getElementById('comment-text').value.trim();
       if (!text) return alert('Введіть текст коментаря');
 
-      fetch('/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/addComment.php', {
+      fetch(`/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/addComment.php`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
-        body: new URLSearchParams({ postId, comment: text }).toString()
+        body: new URLSearchParams({ postId, comment: text })
       })
-      .then(res => res.text().then(body => {
-        if (!res.ok) throw new Error(body || `HTTP ${res.status}`);
-        return JSON.parse(body);
-      }))
+      .then(res => res.json())
       .then(data => {
         if (!data.success) throw new Error(data.message);
-        textarea.value = '';
-        // Перезагружаем список комментариев
+        document.getElementById('comment-text').value = '';
         loadComments(postId);
       })
       .catch(err => {
-        console.error('❌ Помилка додавання коментаря:', err);
+        console.error('Помилка додавання коментаря:', err);
         alert('Не вдалося додати коментар:\n' + err.message);
       });
     });
-  });
+});
+
 </script>
 
 </html>
