@@ -109,7 +109,11 @@
     gap: 12px;
 }
 
-.create-post__textarea, .create-post__namearea {
+.create-post__namearea{
+    border-radius: 10px;
+}
+
+.create-post__textarea {
     resize: vertical;
     min-height: 80px;
     padding: 10px;
