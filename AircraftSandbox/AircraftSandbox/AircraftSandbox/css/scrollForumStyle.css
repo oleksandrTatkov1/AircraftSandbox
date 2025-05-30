@@ -111,6 +111,7 @@
 
 .create-post__namearea{
     border-radius: 10px;
+    padding: 10px;
 }
 
 .create-post__textarea {
