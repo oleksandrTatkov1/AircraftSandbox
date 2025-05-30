@@ -540,7 +540,7 @@ html, body {
     height: auto;
     position: relative;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translate(-50%, 5%);
     z-index: 1;
 }
 
