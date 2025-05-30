@@ -83,20 +83,18 @@
           <div class="profile-card__content" id="posts">
             <div class="profile-card__post">
               <div class="post__header">
-                <img src="e737bbb3-f42c-48c5-a56f-d1beb509ac81.png" class="post__avatar" />
-                <span class="post__user">@GloryToWLW</span>
+         
+              
               </div>
-              <h4 class="post__title">Best Beginner-Friendly Airliners?</h4>
-              <p class="post__text">Hey everyone! 🖐 I’m new to flight sims and looking for a good airliner to start with...</p>
+           
             </div>
 
             <div class="profile-card__post">
               <div class="post__header">
-                <img src="e737bbb3-f42c-48c5-a56f-d1beb509ac81.png" class="post__avatar" />
-                <span class="post__user">@GloryToWLW</span>
+                
+           
               </div>
-              <h4 class="post__title">Best Beginner-Friendly Airliners?</h4>
-              <p class="post__text">Hey everyone! 🖐 I’m new to flight sims and looking for a good airliner to start with...</p>
+             
             </div>
     
             <!-- Повторіть інші пости за цією ж структурою -->
@@ -248,6 +246,39 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 </script>
 
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const repliesContainer = document.querySelector("#replies");
+    if (repliesContainer) {
+      repliesContainer.addEventListener('click', e => {
+        const comment = e.target.closest('.comment');
+        if (comment && comment.dataset.postId) {
+          const postId = comment.dataset.postId;
+          window.location.href = `/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/post.html?post=${encodeURIComponent(postId)}`;
+        }
+      });
+    }
+  });
+  </script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const postsContainer = document.getElementById("posts");
+
+    if (postsContainer) {
+      postsContainer.innerHTML = '<p>Завантаження постів...</p>';
+    postsContainer.addEventListener('click', e => {
+      const post = e.target.closest('.profile-card__post');
+      if (post && post.dataset.postId) {
+        const postId = post.dataset.postId;
+        window.location.href = `/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/post.html?post=${encodeURIComponent(postId)}`;
+      }
+    });
+  }
+});
+  </script>
+  
 
   
 </html>

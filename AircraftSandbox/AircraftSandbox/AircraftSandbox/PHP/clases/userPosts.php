@@ -140,7 +140,7 @@ class UserInfo extends User {
     public static function renderAllCommentsByPostId(string $postId): string {
         $comments = self::getAllPostCommentsById($postId);
         if (empty($comments)) {
-            return '<p>Комментариев пока нет.</p>';
+            return '<p>Комментарів поки немає.</p>';
         }
 
         $html = '<div class="comments-container">';
@@ -177,10 +177,11 @@ class UserInfo extends User {
         $html .= '</div>';
 
         return $html;
-    }public static function renderAllCommentsByUserId(string $userId): string {
-        $comments = self::getAllUserCommentsById($userId);
+    }
+    public static function renderAllCommentsByUserId(string $userId): string {
+        $comments = self::getAllUserCommentsById($userId); 
         if (empty($comments)) {
-            return '<p>Комментарів поки нема.</p>';
+            return '<p>Комментарів поки немає.</p>';
         }
     
         $html = '<div class="comments-container">';
@@ -188,10 +189,10 @@ class UserInfo extends User {
             $author = htmlspecialchars($c['UserLogin'], ENT_QUOTES, 'UTF-8');
             $date   = htmlspecialchars($c['date'], ENT_QUOTES, 'UTF-8');
             $text   = nl2br(htmlspecialchars($c['text'], ENT_QUOTES, 'UTF-8'));
+            $postId = isset($c['PostId']) ? htmlspecialchars($c['PostId'], ENT_QUOTES, 'UTF-8') : ''; // виправлено!
+    
             $user = User::searchById($author);
-    
             $userImagePath = htmlspecialchars($user->ImagePath, ENT_QUOTES, 'UTF-8');
-    
             if (empty(trim($userImagePath))) {
                 $authorImage = "/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/default-avatar.png";
             } else {
@@ -200,25 +201,22 @@ class UserInfo extends User {
             }
     
             $html .= <<<HTML
-                <div class="comment">
-                  <div class="comment__inner">
-                    <img class="comment__avatar" 
-                         src="{$authorImage}" 
-                         alt="Avatar of {$author}" 
-                         onerror="this.onerror=null;this.src='/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/default-avatar.png'">
+            <div class="comment" data-post-id="{$postId}">
+                <div class="comment__inner">
+                    <img class="comment__avatar" src="{$authorImage}" alt="avatar">
                     <div>
-                      <p class="comment__user">{$author}</p>
-                      <p class="comment__date">{$date}</p>
-                      <p class="comment__text">{$text}</p>
+                        <p class="comment__user">{$author}</p>
+                        <p class="comment__text">{$text}</p>
                     </div>
-                  </div>
                 </div>
+            </div>
     HTML;
         }
         $html .= '</div>';
     
         return $html;
     }
+    
     
     
     public static function getAllUserCommentsById(string $userId): array {

@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
     threadSection.innerHTML = '<p>Пост не знайдено.</p>';
     return;
   }
-
+  threadSection.innerHTML = '<p>Завантаження поста...</p>';
   // 3) Запрашиваем готовый HTML треда
   fetch(`/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/getPostHtml.php?post=${encodeURIComponent(postId)}`)
     .then(res => {
