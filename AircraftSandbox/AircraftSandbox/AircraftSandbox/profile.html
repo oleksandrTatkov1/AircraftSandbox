@@ -85,13 +85,11 @@
             <div class="profile-card__content" id="posts">
               <div class="profile-card__post">
                 <div class="post__header">
-                  <img src="e737bbb3-f42c-48c5-a56f-d1beb509ac81.png" class="post__avatar" />
-              
+                 
               <div class="profile-card__content hidden" id="replies">
                 <div class="profile-card__answer">
                   <div class="answer__header">
-                    <img src="e737bbb3-f42c-48c5-a56f-d1beb509ac81.png" class="answer__avatar" />
-                   
+                    
               </div>
               <div class="profile-card__post">
                 <div class="post__header">
@@ -230,7 +228,66 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch(err => console.error("Помилка при завантаженні постів:", err));
     });
     </script>
-    
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const repliesTab = document.querySelector('[data-tab="replies"]');
+        const postsTab = document.querySelector('[data-tab="posts"]');
+        const repliesContainer = document.getElementById('replies');
+        const postsContainer = document.getElementById('posts');
+      
+        if (repliesTab) {
+          repliesTab.addEventListener('click', function () {
+            // Перемикання активної вкладки
+            document.querySelectorAll('.profile-card__tab').forEach(tab => tab.classList.remove('active'));
+            repliesTab.classList.add('active');
+      
+            // Сховати інші контейнери і показати replies
+            document.querySelectorAll('.profile-card__content').forEach(content => content.classList.add('hidden'));
+            if (repliesContainer) repliesContainer.classList.remove('hidden');
+      
+            // Очистити repliesContainer (показати індикатор)
+            if (repliesContainer) {
+              repliesContainer.innerHTML = '<p>Завантаження відповідей...</p>';
+            }
+      
+            // Завантаження даних
+            fetch('/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/loadUserComments.php', {
+              credentials: 'same-origin'
+            })
+            .then(response => {
+              if (!response.ok) {
+                throw new Error('Не вдалося завантажити відповіді');
+              }
+              return response.text();
+            })
+            .then(html => {
+              if (repliesContainer) {
+                repliesContainer.innerHTML = html;
+              }
+            })
+            .catch(error => {
+              console.error('❌ Помилка при завантаженні відповідей:', error);
+              if (repliesContainer) {
+                repliesContainer.innerHTML = '<p>Не вдалося завантажити відповіді.</p>';
+              }
+            });
+          });
+        }
+      
+        if (postsTab) {
+          postsTab.addEventListener('click', function () {
+            // Перемикання активної вкладки
+            document.querySelectorAll('.profile-card__tab').forEach(tab => tab.classList.remove('active'));
+            postsTab.classList.add('active');
+      
+            // Сховати replies і показати posts
+            document.querySelectorAll('.profile-card__content').forEach(content => content.classList.add('hidden'));
+            if (postsContainer) postsContainer.classList.remove('hidden');
+          });
+        }
+      });
+      </script>
+      
   
 </html>
 

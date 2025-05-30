@@ -148,10 +148,16 @@ class UserInfo extends User {
             $author = htmlspecialchars($c['UserLogin'], ENT_QUOTES, 'UTF-8');
             $date   = htmlspecialchars($c['date'], ENT_QUOTES, 'UTF-8');
             $text   = nl2br(htmlspecialchars($c['text'], ENT_QUOTES, 'UTF-8'));
-
-            // Формування шляху до аватара
-            $authorImage = "/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/{$author}.jpg";
-
+            $user = User::searchById($author);
+            $userImagePath = $user && !empty($user->ImagePath)
+                ? htmlspecialchars($user->ImagePath, ENT_QUOTES, 'UTF-8')
+                : 'default-avatar.png';
+    
+            // Добавляем расширение только если в ImagePath нет точки (jpg, png)
+            $authorImage = (strpos($userImagePath, '.') === false)
+                ? "/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/{$userImagePath}.jpg"
+                : "/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/{$userImagePath}";
+    
             $html .= <<<HTML
     <div class="comment-card">
         <div class="comment-header">
@@ -175,6 +181,93 @@ class UserInfo extends User {
 
         return $html;
     }
+    public static function renderAllCommentsByUserId(string $userId): string {
+        $comments = self::getAllUserCommentsById($userId); // Твій метод, який повертає всі коментарі користувача
+        if (empty($comments)) {
+            return '<p>Комментариев пока нет.</p>';
+        }
+    
+        $html = '<div class="comments-container">';
+        foreach ($comments as $c) {
+            $author = htmlspecialchars($c['UserLogin'], ENT_QUOTES, 'UTF-8');
+            $date   = htmlspecialchars($c['date'], ENT_QUOTES, 'UTF-8');
+            $text   = nl2br(htmlspecialchars($c['text'], ENT_QUOTES, 'UTF-8'));
+            $user = User::searchById($author);
+            $userImagePath = $user && !empty($user->ImagePath)
+                ? htmlspecialchars($user->ImagePath, ENT_QUOTES, 'UTF-8')
+                : 'default-avatar.png';
+    
+            // Добавляем расширение только если в ImagePath нет точки (jpg, png)
+            $authorImage = (strpos($userImagePath, '.') === false)
+                ? "/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/{$userImagePath}.jpg"
+                : "/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/{$userImagePath}";
+    
+
+        $html .= <<<HTML
+    <div class="comment-card">
+        <div class="comment-header">
+            <img 
+                src="{$authorImage}" 
+                alt="Avatar of {$author}" 
+                class="comment-avatar"
+                onerror="this.onerror=null;this.src='/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/default-avatar.png'">
+            <div class="comment-info">
+                <span class="comment-author">{$author}</span>
+                <span class="comment-date">{$date}</span>
+            </div>
+        </div>
+        <div class="comment-body">
+            {$text}
+        </div>
+    </div>
+    HTML;
+        }
+        $html .= '</div>';
+    
+        return $html;
+    }
+    
+    public static function getAllUserCommentsById(string $userId): array {
+        $inst = new self();  // створюємо екземпляр без токена
+        $all = $inst->firebase->getAll('userInfo'); // отримуємо всі записи з userInfo
+    
+        if (!is_array($all) || empty($all)) {
+            return [];
+        }
+    
+        $comments = [];
+        foreach ($all as $safeKey => $data) {
+            $userLogin = $data['UserLogin'] ?? null;
+    
+            // Перевіряємо, чи UserLogin збігається з шуканим
+            if ($userLogin !== $userId) {
+                continue;
+            }
+    
+            // Якщо поле comments існує і це масив
+            if (isset($data['comments']) && is_array($data['comments'])) {
+                foreach ($data['comments'] as $c) {
+                    if (!empty($c['date'])) {
+                        $comments[] = [
+                            'UserLogin' => $userLogin,
+                            'PostId'    => $data['PostId'] ?? null,
+                            'id'        => $c['id'] ?? null,
+                            'text'      => $c['text'] ?? '',
+                            'date'      => $c['date'] ?? null,
+                        ];
+                    }
+                }
+            }
+        }
+    
+        // Сортуємо коментарі за датою (старіші на початку)
+        usort($comments, function($a, $b) {
+            return strcmp($a['date'], $b['date']);
+        });
+    
+        return $comments;
+    }
+    
 
 }
 ?>
