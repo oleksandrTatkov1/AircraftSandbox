@@ -540,7 +540,6 @@ html, body {
     height: auto;
     position: relative;
     left: 50%;
-    margin-top: -55px;
     transform: translateX(-50%);
     z-index: 1;
 }
@@ -550,7 +549,7 @@ html, body {
     font-size: clamp(10px, calc(10px + 115 * (100vw / 1200)), 165px);
     position: absolute;
     left: 50%;
-    top: 45%;
+    top: 50%;
     transform: translate(-50%, -50%);
 }
 
@@ -565,13 +564,8 @@ html, body {
 .faceCite__logoUnder{
     position: absolute;
     font-family: "Londrina Solid";
-<<<<<<< HEAD
     font-size: clamp(22px, calc(22px + 0.0598 * (100vw - 320px)), 90px);
     left: 51%;
-=======
-    font-size: clamp(22px, calc(22px + 0.0598 * (100vw - 320px)), 91px);
-    left:50%;
->>>>>>> 3115ae20b3d657ff67bc9d1a12fb6c4bfc96a1ab
     top: 71%;
     transform: translate(-50%, -50%);
 }
