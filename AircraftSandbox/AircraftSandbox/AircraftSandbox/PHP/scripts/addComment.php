@@ -28,7 +28,7 @@ if ($postId === '' || $comment === '') {
 
 try {
     // Попытка загрузить существующую связь UserInfo для данного пользователя и поста
-    $ui = UserInfo::getForUserAndPost(null, $userLogin, $postId);
+    $ui = UserInfo::getForUserAndPost($userLogin, $postId);
 
     if (!$ui) {
         // Если записи нет — создаём новую связь
