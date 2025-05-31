@@ -36,16 +36,21 @@ try {
         $user->Bio = 'Google user';
 
         $safeName = str_replace(['@', '.'], ['', ''], $email);
-        $filename = $safeName;
+        $filename = $safeName . ".jpg";
 
-        $directory = $_SERVER['DOCUMENT_ROOT'] . "/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users";
+        // Путь на сервере (абсолютный физический путь к папке)
+        $directory = realpath(__DIR__ . '/../..') . '/img/users';
+
         if (!is_dir($directory)) {
             mkdir($directory, 0777, true);
         }
-        $targetPath = "/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/$filename.jpg";
-        $relativePath = "/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/$filename.jpg";
-        
 
+        $targetPath = "$directory/$filename";
+
+        // Путь, который будет использоваться на сайте (относительный URL для клиента)
+        $relativePath = '/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/' . $filename;
+
+        // Загрузка изображения
         $context = stream_context_create([
             "http" => [
                 "header" => "User-Agent: PHP"
@@ -53,16 +58,16 @@ try {
         ]);
         $imageData = @file_get_contents($picture, false, $context);
         if ($imageData !== false) {
-        $saved = file_put_contents($targetPath, $imageData);
-        if ($saved === false) {
-            echo json_encode([
-                'success' => false,
-                'message' => 'Не вдалося зберегти зображення у: ' . $targetPath,
-                'step' => 'file_put_contents'
-            ]);
-            exit;
-        }
-        $user->ImagePath = $relativePath;
+            $saved = file_put_contents($targetPath, $imageData);
+            if ($saved === false) {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Не вдалося зберегти зображення у: ' . $targetPath,
+                    'step' => 'file_put_contents'
+                ]);
+                exit;
+            }
+            $user->ImagePath = $relativePath;
         } else {
             echo json_encode([
                 'success' => false,
@@ -71,6 +76,7 @@ try {
             ]);
             exit;
         }
+
 
 
         $user->setPassword(bin2hex(random_bytes(8)));
