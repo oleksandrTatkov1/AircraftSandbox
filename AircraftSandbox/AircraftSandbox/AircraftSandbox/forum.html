@@ -37,7 +37,7 @@
                     </nav>
                     <div class="header__registration">
                         <a href="/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/profile.html">
-                            <img id="header-avatar" src="/AircraftSandbox/img/index/header/free-icon-user-483361.png" alt="Профіль" class="profile-icon" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                            <img id="header-avatar" src="" alt="Профіль" class="profile-icon" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
                         </a>
                     </div>                    
                 </div>
@@ -242,34 +242,58 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
     
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      fetch('/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/login_Firebase.php')
-        .then(res => res.json())
-        .then(user => {
-          if (user && user.ImagePath) {
-            const avatar = document.getElementById('header-avatar');
-            if (avatar) {
-              avatar.src = user.ImagePath;
-            }
-    
-            const userProfileLink = document.getElementById('user-profile');
-            if (userProfileLink) {
-              userProfileLink.style.display = 'inline-block';
-            }
-    
-            const authButton = document.getElementById('auth-button');
-            if (authButton) {
-              authButton.style.display = 'none';
-            }
-          }
-        })
-        .catch(err => {
-          console.error('Не вдалося завантажити дані користувача:', err);
-        });
-    });
-    </script>
+document.addEventListener("DOMContentLoaded", function () {
+  console.log("📦 DOM загружен, починаємо запит до login_Firebase.php");
 
-<script>
+  fetch('/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/login_Firebase.php')
+    .then(res => {
+      console.log("📡 Відповідь отримана. Статус:", res.status);
+      if (!res.ok) {
+        console.warn("⚠️ HTTP помилка:", res.status);
+        return res.json().then(err => {
+          console.error("❌ Повідомлення про помилку:", err.error || err);
+          throw new Error(err.error || "Невідома помилка");
+        });
+      }
+      return res.json();
+    })
+    .then(user => {
+      console.log("✅ Дані користувача:", user);
+
+      if (user && user.ImagePath) {
+        const avatar = document.getElementById('header-avatar');
+        if (avatar) {
+          console.log("🖼️ Знайдено аватар. Встановлюємо src:", user.ImagePath);
+          avatar.src = user.ImagePath;
+        } else {
+          console.warn("⚠️ Елемент #header-avatar не знайдено в DOM");
+        }
+
+        const userProfileLink = document.getElementById('user-profile');
+        if (userProfileLink) {
+          console.log("🔗 Показуємо посилання на профіль");
+          userProfileLink.style.display = 'inline-block';
+        } else {
+          console.warn("⚠️ Елемент #user-profile не знайдено");
+        }
+
+        const authButton = document.getElementById('auth-button');
+        if (authButton) {
+          console.log("🚪 Ховаємо кнопку входу");
+          authButton.style.display = 'none';
+        } else {
+          console.warn("⚠️ Елемент #auth-button не знайдено");
+        }
+      } else {
+        console.warn("⚠️ Дані користувача не містять ImagePath:", user);
+      }
+    })
+    .catch(err => {
+      console.error("❌ Не вдалося завантажити дані користувача:", err);
+    });
+});
+</script>
+
 document.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll('.post__avatar').forEach(img => {
     img.onerror = function () {

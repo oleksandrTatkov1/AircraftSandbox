@@ -35,16 +35,16 @@ try {
         $user->IsSuperUser = 0;
         $user->Bio = 'Google user';
 
-        $safeName = str_replace(['@', '.'], ['_at_', '_dot_'], $email);
-        $filename = "{$safeName}_avatar.jpg";
+        $safeName = str_replace(['@', '.'], ['', ''], $email);
+        $filename = $safeName;
 
-        $directory = $_SERVER['DOCUMENT_ROOT'] . "AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users";
+        $directory = $_SERVER['DOCUMENT_ROOT'] . "/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users";
         if (!is_dir($directory)) {
             mkdir($directory, 0777, true);
         }
-
-        $relativePath = "AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/$filename";
-        $targetPath = "$directory/$filename";
+        $targetPath = "/img/users/$filename.jpg";
+        $relativePath = "/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/$filename.jpg";
+        
 
         $context = stream_context_create([
             "http" => [
