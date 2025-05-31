@@ -56,6 +56,7 @@
           <button class="admin-panel__tab" data-target="delete-apk">Видалити APK</button>
           <button class="admin-panel__tab" data-target="delete-news">Видалити новину</button>
           <button class="admin-panel__tab" data-target="delete-post">Видалити пост</button>
+          <button class="admin-panel__tab" data-target="delete-comment">Видалити коментар</button>
         </div>
         
 
@@ -149,7 +150,27 @@
         <button type="button" id="deletePostButton" class="admin-panel__submit">Видалити пост</button>
       </form>
       
+      <form class="admin-panel__form admin-panel__form--delete-comment">
+        <label class="admin-panel__label">Оберіть користувача:
+          <select id="deleteCommentUserDropdown" class="admin-panel__input" required>
+            <option value="">Оберіть коментатора</option>
+          </select>
+        </label>
       
+        <label class="admin-panel__label">Оберіть пост:
+          <select id="deleteCommentPostDropdown" class="admin-panel__input" required>
+            <option value="">Оберіть пост під яким залишино коментар</option>
+          </select>
+        </label>
+      
+        <label class="admin-panel__label">Оберіть коментар:
+          <select id="deleteCommentDropdown" class="admin-panel__input" required>
+            <option value="">Оберіть коментар</option>
+          </select>
+        </label>
+      
+        <button type="button" id="deleteCommentButton" class="admin-panel__submit">Видалити коментар</button>
+      </form>
       </section>
     </main>
 
@@ -470,7 +491,126 @@ if (headerAvatar && user.ImagePath) {
   });
   </script>
   
-  
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const userDropdown = document.getElementById('deleteCommentUserDropdown');
+      const postDropdown = document.getElementById('deleteCommentPostDropdown');
+      const commentDropdown = document.getElementById('deleteCommentDropdown');
+      const deleteButton = document.getElementById('deleteCommentButton');
+    
+      // 1️⃣ Завантаження користувачів
+      fetch('PHP/scripts/getCommentUsersList.php')
+  .then(res => res.json())
+  .then(users => {
+    userDropdown.innerHTML = '<option value="">Оберіть коментатора</option>';
+    users.forEach(user => {
+      const opt = document.createElement('option');
+      opt.value = user.Login;
+      opt.textContent = user.Name ? `${user.Name} (${user.Login})` : user.Login;
+      userDropdown.appendChild(opt);
+    });
+  })
+  .catch(err => {
+    console.error('❌ Помилка завантаження користувачів:', err);
+    alert('Не вдалося завантажити список користувачів.');
+  });
+
+    
+      // 2️⃣ Завантаження постів користувача
+      userDropdown.addEventListener('change', () => {
+        const login = userDropdown.value;
+        postDropdown.innerHTML = '<option value="">Оберіть пост</option>';
+        commentDropdown.innerHTML = '<option value="">Оберіть коментар</option>';
+        if (!login) return;
+    
+        fetch(`PHP/scripts/getUserCommentPosts.php?login=${encodeURIComponent(login)}`)
+  .then(res => res.json())
+  .then(posts => {
+    postDropdown.innerHTML = '<option value="">Оберіть пост під яким залишино коментар</option>';
+    posts.forEach(post => {
+      const opt = document.createElement('option');
+      opt.value = post.PostId;
+      opt.textContent = post.Title ? `${post.Title} (ID: ${post.PostId})` : `ID: ${post.PostId}`;
+      postDropdown.appendChild(opt);
+    });
+  })
+  .catch(err => {
+    console.error('❌ Помилка завантаження постів:', err);
+    alert('Не вдалося завантажити список постів.');
+  });
+
+      });
+    
+      // 3️⃣ Завантаження коментарів
+      postDropdown.addEventListener('change', () => {
+        const login = userDropdown.value;
+        const postId = postDropdown.value;
+        commentDropdown.innerHTML = '<option value="">Оберіть коментар</option>';
+        if (!login || !postId) return;
+    
+        fetch(`PHP/scripts/getUserComments.php?login=${encodeURIComponent(login)}&postId=${encodeURIComponent(postId)}`)
+          .then(res => {
+            if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
+            return res.json();
+          })
+          .then(comments => {
+            if (comments.length === 0) {
+              const opt = document.createElement('option');
+              opt.value = '';
+              opt.textContent = 'Коментарів немає';
+              commentDropdown.appendChild(opt);
+              return;
+            }
+            comments.forEach(comment => {
+              const opt = document.createElement('option');
+              opt.value = comment.id;
+              opt.textContent = `${comment.text.slice(0, 30)}...`;
+              commentDropdown.appendChild(opt);
+            });
+          })
+          .catch(err => {
+            console.error('❌ Помилка завантаження коментарів:', err);
+            alert('Не вдалося завантажити список коментарів.');
+          });
+      });
+    
+      // 4️⃣ Видалення коментаря
+      deleteButton.addEventListener('click', () => {
+        const login = userDropdown.value;
+        const postId = postDropdown.value;
+        const commentId = commentDropdown.value;
+    
+        if (!login || !postId || !commentId) {
+          alert('Будь ласка, оберіть користувача, пост та коментар.');
+          return;
+        }
+    
+        if (!confirm(`Ви впевнені, що хочете видалити коментар ${commentId}?`)) return;
+    
+        fetch('PHP/scripts/deleteUserComment.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: `login=${encodeURIComponent(login)}&postId=${encodeURIComponent(postId)}&commentId=${encodeURIComponent(commentId)}`
+        })
+          .then(res => {
+            if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
+            return res.text();
+          })
+          .then(msg => {
+            alert(msg);
+            const optionToRemove = commentDropdown.querySelector(`option[value="${commentId}"]`);
+            if (optionToRemove) optionToRemove.remove();
+            commentDropdown.selectedIndex = 0;
+          })
+          .catch(err => {
+            console.error('❌ Помилка видалення коментаря:', err);
+            alert('Не вдалося видалити коментар.');
+          });
+      });
+    });
+    </script>
+    
+    
     
 </body>
 </html>
