@@ -34,6 +34,13 @@
                               <i class="input-icon uil uil-lock-alt"></i>
                           </div>
                           <button type="submit" class="btn mt-4">Увійти</button>
+                          <script src="https://accounts.google.com/gsi/client" async defer></script>
+                            <div id="g_id_onload"
+                                data-client_id="326026153218-gghrefo6968gvh462pogkun45dfn9ti1.apps.googleusercontent.com"
+                                data-callback="handleCredentialResponse"
+                                data-auto_prompt="false">
+                            </div>
+                            <div class="g_id_signin" data-type="standard"></div>
                       </form>
                   
                       <div id="login-message" style="margin-top: 20px; font-weight: bold;"></div>
@@ -53,7 +60,7 @@
                         .then(response => response.text())
                         .then(text => {
                             if (text.trim() === 'SUCCESS') {
-                                window.location.href = '/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/forum.html';
+                                window.location.href = 'AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/forum.html';
                             } else {
                                 document.getElementById('login-message').innerHTML = text;
                             }
@@ -125,7 +132,27 @@
                           });
                         });
                       </script>
-                        
+                        <script>
+                          async function handleCredentialResponse(response) {
+                            const jwt = response.credential;
+
+                            // Надіслати JWT на сервер
+                            const res = await fetch("/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/googleAuth.php", {
+                              method: "POST",
+                              headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify({ credential: jwt })
+                            });
+
+                            const data = await res.json();
+
+                            if (data.success) {
+                              // Наприклад, редірект
+                              window.location.href = "/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/index.php";
+                            } else {
+                              alert("Помилка авторизації");
+                            }
+                          }
+                        </script>
                     </div>
                   </div>
                 </div>                
