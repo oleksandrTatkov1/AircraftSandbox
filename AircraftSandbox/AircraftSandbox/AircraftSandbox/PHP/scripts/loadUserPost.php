@@ -33,24 +33,22 @@ if (is_array($allPosts)) {
             $authorAvatar = $author?->ImagePath ?: '/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/default-avatar.png';
 
             $html .= '
-            <div class="profile-card__post">
+            <div class="profile-card__post" data-post-id="' . htmlspecialchars($post->id, ENT_QUOTES) . '">
                 <div class="post__header">
                     <img src="' . htmlspecialchars($authorAvatar, ENT_QUOTES) . '" class="post__avatar" />
                     <span class="post__user">@' . htmlspecialchars($authorName, ENT_QUOTES) . '</span>
                 </div>
                 <h4 class="post__title">' . htmlspecialchars($post->header, ENT_QUOTES) . '</h4>
                 <p class="post__text">' . nl2br(htmlspecialchars($post->content, ENT_QUOTES)) . '</p>';
-
-                if (!empty($post->imagePath)) {
-                    $html .= '<div class="post__image-wrapper">
-            <img class="post__image" src="' . htmlspecialchars($post->imagePath, ENT_QUOTES) . '" alt="Post image">
-          </div>';
-
-                }
-                
-
+            
+            if (!empty($post->imagePath)) {
+                $html .= '<div class="post__image-wrapper">
+                    <img class="post__image" src="' . htmlspecialchars($post->imagePath, ENT_QUOTES) . '" alt="Post image">
+                </div>';
+            }
+            
             $html .= '</div>';
-        }
+        }    
     }
 }
 

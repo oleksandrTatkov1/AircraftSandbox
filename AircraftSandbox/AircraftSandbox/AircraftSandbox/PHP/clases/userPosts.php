@@ -140,7 +140,7 @@ class UserInfo extends User {
     public static function renderAllCommentsByPostId(string $postId): string {
         $comments = self::getAllPostCommentsById($postId);
         if (empty($comments)) {
-            return '<p>Комментариев пока нет.</p>';
+            return '<p>Комментарів поки немає.</p>';
         }
 
         $html = '<div class="comments-container">';
@@ -149,32 +149,29 @@ class UserInfo extends User {
             $date   = htmlspecialchars($c['date'], ENT_QUOTES, 'UTF-8');
             $text   = nl2br(htmlspecialchars($c['text'], ENT_QUOTES, 'UTF-8'));
             $user = User::searchById($author);
-            $userImagePath = $user && !empty($user->ImagePath)
-                ? htmlspecialchars($user->ImagePath, ENT_QUOTES, 'UTF-8')
-                : 'default-avatar.png';
+            $userImagePath = htmlspecialchars($user->ImagePath, ENT_QUOTES, 'UTF-8');
     
             // Добавляем расширение только если в ImagePath нет точки (jpg, png)
-            $authorImage = (strpos($userImagePath, '.') === false)
-                ? "/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/{$userImagePath}.jpg"
-                : "/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/{$userImagePath}";
+            if (empty(trim($userImagePath))) {
+                $authorImage = "/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/default-avatar.png";
+            } else {
+                // Иначе обрезаем всё после символа "?"
+                $cleanUserImagePath = explode('?', $userImagePath)[0];
+                $authorImage = $cleanUserImagePath;
+            }
+
     
             $html .= <<<HTML
-    <div class="comment-card">
-        <div class="comment-header">
-            <img 
-                src="{$authorImage}" 
-                alt="Avatar of {$author}" 
-                class="comment-avatar"
-                onerror="this.onerror=null;this.src='/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/default-avatar.png'">
-            <div class="comment-info">
-                <span class="comment-author">{$author}</span>
-                <span class="comment-date">{$date}</span>
-            </div>
-        </div>
-        <div class="comment-body">
-            {$text}
-        </div>
-    </div>
+                <div class="comment">
+                  <div class="comment__inner">
+                    <img class="comment__avatar" src= "{$authorImage}" alt="avatar">
+                    <div>
+                      <p class="comment__user">$author</p>
+                      <p class="comment__text">$text</p>
+                    </div>
+                  </div>
+                </div>
+
     HTML;
         }
         $html .= '</div>';
@@ -182,9 +179,9 @@ class UserInfo extends User {
         return $html;
     }
     public static function renderAllCommentsByUserId(string $userId): string {
-        $comments = self::getAllUserCommentsById($userId); // Твій метод, який повертає всі коментарі користувача
+        $comments = self::getAllUserCommentsById($userId); 
         if (empty($comments)) {
-            return '<p>Комментариев пока нет.</p>';
+            return '<p>Комментарів поки немає.</p>';
         }
     
         $html = '<div class="comments-container">';
@@ -192,40 +189,35 @@ class UserInfo extends User {
             $author = htmlspecialchars($c['UserLogin'], ENT_QUOTES, 'UTF-8');
             $date   = htmlspecialchars($c['date'], ENT_QUOTES, 'UTF-8');
             $text   = nl2br(htmlspecialchars($c['text'], ENT_QUOTES, 'UTF-8'));
+            $postId = isset($c['PostId']) ? htmlspecialchars($c['PostId'], ENT_QUOTES, 'UTF-8') : ''; // виправлено!
+    
             $user = User::searchById($author);
-            $userImagePath = $user && !empty($user->ImagePath)
-                ? htmlspecialchars($user->ImagePath, ENT_QUOTES, 'UTF-8')
-                : 'default-avatar.png';
+            $userImagePath = htmlspecialchars($user->ImagePath, ENT_QUOTES, 'UTF-8');
+            if (empty(trim($userImagePath))) {
+                $authorImage = "/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/default-avatar.png";
+            } else {
+                $cleanUserImagePath = explode('?', $userImagePath)[0];
+                $authorImage = $cleanUserImagePath;
+            }
     
-            // Добавляем расширение только если в ImagePath нет точки (jpg, png)
-            $authorImage = (strpos($userImagePath, '.') === false)
-                ? "/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/{$userImagePath}.jpg"
-                : "/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/{$userImagePath}";
-    
-
-        $html .= <<<HTML
-    <div class="comment-card">
-        <div class="comment-header">
-            <img 
-                src="{$authorImage}" 
-                alt="Avatar of {$author}" 
-                class="comment-avatar"
-                onerror="this.onerror=null;this.src='/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/default-avatar.png'">
-            <div class="comment-info">
-                <span class="comment-author">{$author}</span>
-                <span class="comment-date">{$date}</span>
+            $html .= <<<HTML
+            <div class="comment" data-post-id="{$postId}">
+                <div class="comment__inner">
+                    <img class="comment__avatar" src="{$authorImage}" alt="avatar">
+                    <div>
+                        <p class="comment__user">{$author}</p>
+                        <p class="comment__text">{$text}</p>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="comment-body">
-            {$text}
-        </div>
-    </div>
     HTML;
         }
         $html .= '</div>';
     
         return $html;
     }
+    
+    
     
     public static function getAllUserCommentsById(string $userId): array {
         $inst = new self();  // створюємо екземпляр без токена
@@ -268,6 +260,86 @@ class UserInfo extends User {
         return $comments;
     }
     
+    public static function renderPostThreadFromPost(Post $post): string {
+        // Экранируем поля
+        $header       = htmlspecialchars($post->header, ENT_QUOTES, 'UTF-8');
+        $imagePath    = htmlspecialchars($post->imagePath, ENT_QUOTES, 'UTF-8');
+        $content      = nl2br(htmlspecialchars($post->content, ENT_QUOTES, 'UTF-8'));
+        $likesCount   = (int)$post->likesCount;
+        $dislikesCount= (int)$post->dislikesCount;
+        $postId       = htmlspecialchars($post->id, ENT_QUOTES, 'UTF-8');
+        $ownerId      = htmlspecialchars($post->ownerLogin, ENT_QUOTES, 'UTF-8');
+        $user = User::searchById($ownerId);
 
+            $userImagePath = htmlspecialchars($user->ImagePath, ENT_QUOTES, 'UTF-8');
+
+            // Если строка пустая (или содержит только пробелы), используем аватар по умолчанию
+            if (empty(trim($userImagePath))) {
+                $authorImage = "/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/default-avatar.png";
+            } else {
+                // Иначе обрезаем всё после символа "?"
+                $cleanUserImagePath = explode('?', $userImagePath)[0];
+                $authorImage = $cleanUserImagePath;
+            }
+        $postHtml = <<<HTML
+<div class="post-thread__post">
+  <div class="user-post">
+       <img src="{$authorImage}" alt="Avatar" class="post__avatar">
+                <h3 class="post__user">$ownerId</h3>
+                <h2 class="post-thread__title" id="post-title">{$header}</h2>
+            </div>
+   </div>
+  <!-- Показываем картинку, только если есть -->
+  <img src="{$imagePath}" alt="Post image"
+       class="post-thread__image" id="post-image"
+       style="display:{$imagePath};">
+  <div class="post-thread__actions">
+    <button class="post-thread__like" data-action="like" data-id="{$postId}">
+      👍 <span class="like-count" id="like-count">{$likesCount}</span>
+    </button>
+    <button class="post-thread__dislike" data-action="dislike" data-id="{$postId}">
+      👎 <span class="dislike-count" id="dislike-count">{$dislikesCount}</span>
+    </button>
+  </div>
+</div>
+HTML;
+
+        // Затем — комментарии и форма
+        $commentsHtml = <<<HTML
+<div class="post-thread__comments">
+  <h3 class="post-thread__comments-title">Коментарі</h3>
+  <div id="comments-container">
+    <div id="comment-form" style="margin-top:20px;">
+      <textarea id="comment-text"
+                placeholder="Напишіть свій коментар..."
+                style="width:100%;padding:10px;border-radius:8px;"></textarea>
+      <button id="submit-comment"
+              style="margin-top:10px;padding:8px 16px;border-radius:10px; ">
+        Надіслати
+      </button>
+    </div>
+    <div id="comments-list"style="margin-bottom:30px;">
+      <!-- Першоначально рендеримо на сервері наявні коментарі -->
+      {COMMENTS}
+    </div>
+  </div>
+</div>
+HTML;
+
+        // Встраиваем список комментариев, полученный из UserInfo
+        $allComments = UserInfo::renderAllCommentsByPostId($post->id);
+        $commentsHtml = str_replace('{COMMENTS}', $allComments, $commentsHtml);
+
+        // Склеиваем всё в одну секцию
+        $full = <<<HTML
+<section class="post-thread">
+  {$postHtml}
+  {$commentsHtml}
+</section>
+HTML;
+
+        return $full;
+    }
 }
+
 ?>

@@ -15,7 +15,7 @@ class Post {
     public $content;
     public $likesCount;
     public $dislikesCount;
-
+    public $ownerLogin;
     public $firebase;
 
     public function __construct($authToken = null) {
@@ -25,7 +25,7 @@ class Post {
         $this->content = '';
         $this->likesCount = 0;
         $this->dislikesCount = 0;
-
+        $this->ownerLogin = '';
         $this->firebase = new FirebasePublisher($authToken);
     }
 
@@ -190,5 +190,5 @@ class Post {
       return null;
   }
 
-  }
+}
 ?>
