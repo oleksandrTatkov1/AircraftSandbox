@@ -1,11 +1,10 @@
 <?php
-require_once  '../../vendor/autoload.php';
-require_once  '../../PHP/Clases/User.php';
+require_once '../../vendor/autoload.php';
+require_once '../../PHP/Clases/User.php';
 
 use Google\Client;
 use PHP\Clases\User;
 
-// 1. Отримання та перевірка ID токена
 $data = json_decode(file_get_contents("php://input"), true);
 $idToken = $data['credential'] ?? null;
 
@@ -25,8 +24,9 @@ try {
     $email = $payload['email'];
     $name = $payload['name'] ?? '';
     $picture = $payload['picture'] ?? '';
-    
+
     $user = User::searchById($email);
+
     if (!$user) {
         $user = new User();
         $user->Login = $email;
@@ -35,28 +35,40 @@ try {
         $user->IsSuperUser = 0;
         $user->Bio = 'Google user';
 
-        // 2. Завантажити аватар
-        if ($picture) {
-            $imageData = file_get_contents($picture);
-            $filename = basename(parse_url($picture, PHP_URL_PATH));
-            $safeName = str_replace(['@', '.'], ['_at_', '_dot_'], $email);
-            $targetPath = "AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/{$safeName}_{$filename}";
-            file_put_contents($targetPath, $imageData);
+        $safeName = str_replace(['@', '.'], ['_at_', '_dot_'], $email);
+        $filename = "{$safeName}_avatar.jpg";
 
-            $user->ImagePath = "AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/{$safeName}_{$filename}";
+        $directory = $_SERVER['DOCUMENT_ROOT'] . "AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users";
+        if (!is_dir($directory)) {
+            mkdir($directory, 0777, true);
         }
 
-        // Генерація випадкового пароля для сумісності з існуючою системою
+        $relativePath = "AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/$filename";
+        $targetPath = "$directory/$filename";
+
+        $context = stream_context_create([
+            "http" => [
+                "header" => "User-Agent: PHP"
+            ]
+        ]);
+        $imageData = @file_get_contents($picture, false, $context);
+        if ($imageData !== false) {
+            file_put_contents($targetPath, $imageData);
+            $user->ImagePath = $relativePath;
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Не удалось загрузить изображение']);
+            exit;
+        }
+
+
         $user->setPassword(bin2hex(random_bytes(8)));
         $user->saveToDB();
-        
     }
 
-    // Тут ви можете зберегти сесію
     session_start();
     $_SESSION['user_login'] = $user->Login;
 
-    echo json_encode(['success' => true]);
+    echo json_encode(['success' => true, 'redirect' => 'index.html']);
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'message' => $e->getMessage()]);
 }

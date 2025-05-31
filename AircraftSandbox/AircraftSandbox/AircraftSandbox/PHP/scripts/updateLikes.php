@@ -32,7 +32,7 @@ try {
     $post->loadFromDB($postId);
 
     // 4) Існуюча або нова UserInfo
-    $ui = UserInfo::getForUserAndPost(null, $currentUser, $postId);
+    $ui = UserInfo::getForUserAndPost( $currentUser, $postId);
     if (!$ui) {
         $ui = new UserInfo();
         // задаємо id для ключа: sanitize(user)_sanitize(post)_id
