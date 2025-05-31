@@ -70,6 +70,49 @@
                       <p class="mb-0 mt-4 text-center"><a href="../passwordResetAuth.html" class="link">Забули пароль?</a></p>
                   </div>
                   <script>
+                  document.addEventListener("DOMContentLoaded", function () {
+                    window.handleCredentialResponse = function (response) {
+                      console.log("🔐 Отримано credential:", response);
+
+                      if (!response || !response.credential) {
+                        console.error("❌ Відсутній токен авторизації");
+                        return;
+                      }
+
+                      const payload = {
+                        credential: response.credential
+                      };
+
+                      console.log("📤 Відправляємо на сервер:", payload);
+
+                      fetch('/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/googleAuth.php', {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                      })
+                      .then(res => res.json())
+                      .then(data => {
+                        console.log("📥 Отримано відповідь від сервера:", data);
+
+                        if (data.success) {
+                          console.log("✅ Авторизація успішна. Перенаправлення:", data.redirect);
+                          window.location.href = data.redirect;
+                        } else {
+                          console.warn("⚠️ Помилка авторизації:");
+                          console.warn("🧩 Крок:", data.step || 'невідомо');
+                          console.warn("📄 Повідомлення:", data.message);
+                        }
+                      })
+                      .catch(err => {
+                        console.error("❌ Помилка з'єднання з сервером:", err);
+                      });
+                    };
+                  });
+                  </script>
+
+                  <script>
                     document.getElementById('login-form').addEventListener('submit', function(e) {
                         e.preventDefault(); 
                     

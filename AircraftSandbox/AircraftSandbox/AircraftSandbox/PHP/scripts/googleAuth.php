@@ -42,7 +42,7 @@ try {
         if (!is_dir($directory)) {
             mkdir($directory, 0777, true);
         }
-        $targetPath = "/img/users/$filename.jpg";
+        $targetPath = "/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/$filename.jpg";
         $relativePath = "/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/img/users/$filename.jpg";
         
 
@@ -53,10 +53,22 @@ try {
         ]);
         $imageData = @file_get_contents($picture, false, $context);
         if ($imageData !== false) {
-            file_put_contents($targetPath, $imageData);
-            $user->ImagePath = $relativePath;
+        $saved = file_put_contents($targetPath, $imageData);
+        if ($saved === false) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Не вдалося зберегти зображення у: ' . $targetPath,
+                'step' => 'file_put_contents'
+            ]);
+            exit;
+        }
+        $user->ImagePath = $relativePath;
         } else {
-            echo json_encode(['success' => false, 'message' => 'Не удалось загрузить изображение']);
+            echo json_encode([
+                'success' => false,
+                'message' => 'Не вдалося завантажити зображення з URL: ' . $picture,
+                'step' => 'file_get_contents'
+            ]);
             exit;
         }
 
