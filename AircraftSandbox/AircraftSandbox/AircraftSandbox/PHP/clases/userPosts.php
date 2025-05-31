@@ -332,7 +332,7 @@ HTML;
 
         // Склеиваем всё в одну секцию
         $full = <<<HTML
-<section class="post-thread">
+<section class="post-thread">z
   {$postHtml}
   {$commentsHtml}
 </section>
@@ -340,6 +340,19 @@ HTML;
 
         return $full;
     }
+    public function deleteCommentsByPostId(string $postId) {
+        $allUserInfo = $this->firebase->getAll('userInfo');
+        if (!is_array($allUserInfo) || empty($allUserInfo)) {
+            return;
+        }
+    
+        foreach ($allUserInfo as $key => $data) {
+            if (isset($data['PostId']) && $data['PostId'] === $postId) {
+                $this->firebase->publish("userInfo/{$key}", null);
+            }
+        }
+    }
+    
 }
 
 ?>

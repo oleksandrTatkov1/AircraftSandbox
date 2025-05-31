@@ -396,23 +396,21 @@ if (headerAvatar && user.ImagePath) {
   
     // Завантаження користувачів
     fetch('PHP/scripts/getUsersList.php')
-  .then(res => res.json())
-  .then(users => {
-    userDropdown.innerHTML = '<option value="">Оберіть користувача</option>';
-    users.forEach(user => {
-      const opt = document.createElement('option');
-      opt.value = user.Login;  // використовуємо Login для запиту
-      opt.textContent = user.Name;  // відображаємо ім’я
-      userDropdown.appendChild(opt);
-    });
-  });
-
-
+      .then(res => res.json())
+      .then(users => {
+        userDropdown.innerHTML = '<option value="">Оберіть користувача</option>';
+        users.forEach(user => {
+          const opt = document.createElement('option');
+          opt.value = user.Login;
+          opt.textContent = user.Name;
+          userDropdown.appendChild(opt);
+        });
+      });
   
     // Завантаження постів після вибору користувача
     userDropdown.addEventListener('change', () => {
       const login = userDropdown.value;
-      postDropdown.innerHTML = '<option value=\"\">Оберіть пост</option>';
+      postDropdown.innerHTML = '<option value="">Оберіть пост</option>';
       if (!login) return;
   
       fetch(`PHP/scripts/getUserPosts.php?login=${encodeURIComponent(login)}`)
@@ -427,7 +425,7 @@ if (headerAvatar && user.ImagePath) {
         });
     });
   
-    // Видалення поста
+    // Видалення поста та пов'язаних коментарів
     deleteButton.addEventListener('click', () => {
       const login = userDropdown.value;
       const postId = postDropdown.value;
@@ -437,23 +435,23 @@ if (headerAvatar && user.ImagePath) {
         return;
       }
   
-      if (!confirm(`Ви впевнені, що хочете видалити пост ${postId} користувача ${login}?`)) return;
+      if (!confirm(`Ви впевнені, що хочете видалити пост ${postId} користувача ${login} разом із коментарями?`)) return;
   
       fetch('PHP/scripts/deleteUserPost.php', {
         method: 'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: `login=${encodeURIComponent(login)}&postId=${encodeURIComponent(postId)}`
       })
-      .then(res => res.text())
-      .then(msg => {
-        alert(msg);
-        postDropdown.querySelector(`option[value=\"${postId}\"]`).remove();
-        postDropdown.selectedIndex = 0;
-      })
-      .catch(err => {
-        console.error('❌ Помилка видалення поста:', err);
-        alert('Не вдалося видалити пост.');
-      });
+        .then(res => res.text())
+        .then(msg => {
+          alert(msg);
+          postDropdown.querySelector(`option[value="${postId}"]`).remove();
+          postDropdown.selectedIndex = 0;
+        })
+        .catch(err => {
+          console.error('❌ Помилка видалення поста та коментарів:', err);
+          alert('Не вдалося видалити пост та коментарі.');
+        });
     });
   });
   </script>
