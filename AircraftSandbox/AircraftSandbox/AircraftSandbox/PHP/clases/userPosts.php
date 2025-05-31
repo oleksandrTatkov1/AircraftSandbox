@@ -332,7 +332,7 @@ HTML;
 
         // Склеиваем всё в одну секцию
         $full = <<<HTML
-<section class="post-thread">z
+<section class="post-thread">
   {$postHtml}
   {$commentsHtml}
 </section>
