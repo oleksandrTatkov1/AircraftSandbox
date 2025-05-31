@@ -340,7 +340,7 @@ HTML;
 
         return $full;
     }
-    public function deleteCommentsByPostId(string $postId) {
+    public function deleteAllCommentsByPostId(string $postId): void {
         $allUserInfo = $this->firebase->getAll('userInfo');
         if (!is_array($allUserInfo) || empty($allUserInfo)) {
             return;
@@ -352,6 +352,7 @@ HTML;
             }
         }
     }
+    
     
 }
 

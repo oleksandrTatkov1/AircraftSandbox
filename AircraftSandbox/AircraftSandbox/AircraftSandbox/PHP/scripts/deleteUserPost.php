@@ -3,6 +3,7 @@ require_once __DIR__ . '/../utils/firebasePublisher.php';
 require_once __DIR__ . '/../clases/User.php';
 require_once __DIR__ . '/../clases/userPosts.php';
 
+
 use PHP\Utils\FirebasePublisher;
 use PHP\Clases\UserInfo;
 
@@ -18,16 +19,13 @@ try {
     $login = $_POST['login'];
     $postId = $_POST['postId'];
 
+    // Удаляем сам пост
     $firebase = new FirebasePublisher();
-    $safeEmail = $firebase->sanitizeKey($login);
+    $firebase->publish("posts/$postId", null);
 
-    // Видаляємо сам пост
-    $path = "posts/$postId";
-    $firebase->publish($path, null);
-
-    // Видаляємо всі коментарі пов'язані з цим постом і користувачем
+    // Удаляем все комментарии связанные с этим постом
     $userInfo = new UserInfo();
-    $userInfo->deleteCommentsByPostIdAndOwner($postId, $login);
+    $userInfo->deleteAllCommentsByPostId($postId);
 
     echo "✅ Пост ID $postId та всі пов'язані коментарі успішно видалено!";
 } catch (Exception $e) {
