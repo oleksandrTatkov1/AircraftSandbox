@@ -33,6 +33,29 @@
 [Блок 2] User-Agent (браузер): Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0
 [Блок 3] Країна: United States, Регіон: Virginia, Місто: Ashburn, Координати: 39.03, -77.5
 --------------------------
+<<<<<<< HEAD
+[2025-05-31 17:24:22]
+[Блок 1] Оператор телефону: Vodafone (префікс: 095)
+[Блок 1] IP-адрес 8.8.8.8 є валідною
+[Блок 2] ОС користувача: Windows NT ANTON 10.0 build 26100 (Windows 11) AMD64
+[Блок 2] User-Agent (браузер): Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36
+[Блок 3] Країна: United States, Регіон: Virginia, Місто: Ashburn, Координати: 39.03, -77.5
+--------------------------
+=======
+<<<<<<< HEAD
+[2025-05-31 16:08:36]
+[Блок 1] Оператор телефону: Lifecell (префікс: 093)
+[Блок 1] IP-адрес 8.8.8.8 є валідною
+[Блок 2] ОС користувача: Windows NT HOME-PC 10.0 build 19045 (Windows 10) AMD64
+[Блок 2] User-Agent (браузер): Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36
+[Блок 3] Країна: United States, Регіон: Virginia, Місто: Ashburn, Координати: 39.03, -77.5
+--------------------------
+[2025-05-31 17:13:43]
+[Блок 1] Оператор телефону: Lifecell (префікс: 093)
+[Блок 1] IP-адрес 8.8.8.8 є валідною
+[Блок 2] ОС користувача: Windows NT HOME-PC 10.0 build 19045 (Windows 10) AMD64
+[Блок 2] User-Agent (браузер): Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36
+=======
 [2025-05-31 15:42:47]
 [Блок 1] Оператор телефону: Vodafone (префікс: 066)
 [Блок 1] IP-адрес 8.8.8.8 є валідною
@@ -45,5 +68,21 @@
 [Блок 1] IP-адрес 8.8.8.8 є валідною
 [Блок 2] ОС користувача: Windows NT DESKTOP-D4K20HS 10.0 build 26100 (Windows 11) AMD64
 [Блок 2] User-Agent (браузер): Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0
+>>>>>>> f5a7ef0a6c9fad03da3aa749a293a9a5b9ced0db
+[Блок 3] Країна: United States, Регіон: Virginia, Місто: Ashburn, Координати: 39.03, -77.5
+--------------------------
+>>>>>>> da2aad7f433eb3a8ef836bd6f9ef91424e2406f3
+[2025-05-31 17:34:29]
+[Блок 1] Оператор телефону: Lifecell (префікс: 093)
+[Блок 1] IP-адрес 8.8.8.8 є валідною
+[Блок 2] ОС користувача: Windows NT HOME-PC 10.0 build 19045 (Windows 10) AMD64
+[Блок 2] User-Agent (браузер): Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36
+[Блок 3] Країна: United States, Регіон: Virginia, Місто: Ashburn, Координати: 39.03, -77.5
+--------------------------
+[2025-05-31 17:42:50]
+[Блок 1] Оператор телефону: Lifecell (префікс: 093)
+[Блок 1] IP-адрес 8.8.8.8 є валідною
+[Блок 2] ОС користувача: Windows NT HOME-PC 10.0 build 19045 (Windows 10) AMD64
+[Блок 2] User-Agent (браузер): Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36
 [Блок 3] Країна: United States, Регіон: Virginia, Місто: Ashburn, Координати: 39.03, -77.5
 --------------------------
