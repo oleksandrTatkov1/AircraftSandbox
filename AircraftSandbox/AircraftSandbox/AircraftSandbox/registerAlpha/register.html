@@ -55,47 +55,13 @@
                             }
                           }
                         </script>
-                          <button id="custom-google-button" class="btn google-btn mt-3">
-                            <i class="uil uil-google"></i>
-                            <span>Увійти через Google</span>
-                          </button>
                           <script src="https://accounts.google.com/gsi/client" async defer></script>
-<script>
-  window.onload = function () {
-    google.accounts.id.initialize({
-      client_id: "326026153218-gghrefo6968gvh462pogkun45dfn9ti1.apps.googleusercontent.com",
-      callback: handleCredentialResponse
-    });
-
-    document.getElementById("custom-google-button").addEventListener("click", function () {
-      google.accounts.id.prompt((notification) => {
-        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-          google.accounts.id.prompt();
-        }
-      });
-    });
-  };
-
-  async function handleCredentialResponse(response) {
-    const jwt = response.credential;
-
-    const res = await fetch("/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/PHP/scripts/googleAuth.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ credential: jwt })
-    });
-
-    const data = await res.json();
-
-    if (data.success) {
-      window.location.href = "/AircraftSandbox/AircraftSandbox/AircraftSandbox/AircraftSandbox/index.html";
-    } else {
-      alert("Помилка авторизації");
-    }
-  }
-</script>
-
-
+                            <div id="g_id_onload"
+                                data-client_id="326026153218-gghrefo6968gvh462pogkun45dfn9ti1.apps.googleusercontent.com"
+                                data-callback="handleCredentialResponse"
+                                data-auto_prompt="false">
+                            </div>
+                            <div class="g_id_signin" data-type="standard"></div>
                             
                       </form>
                   
