@@ -431,6 +431,21 @@ html, body {
   }
 }
   
+@media (max-width: 767px) {
+  .header__menu {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .header__registration {
+    order: -1; /* Стає першим */
+    margin-bottom: 10px;
+  }
+
+  .header__nav {
+    order: 0; /* Стає другим */
+  }
+}
 
 
 /* Адаптивное меню */
