@@ -190,26 +190,26 @@ display: none;
   box-shadow: 0 8px 24px 0 rgba(16,39,112,.2);
 }
 
-.google-btn {
-  width: 70%;
+/* Обгортка для центрування та відступу */
+.g_id_signin {
+  display: flex !important;
   justify-content: center;
-  font-size: 13px;
-  padding: 0 20px;
-  height: 40px;
-  background-color: #4dd0e1;
-  color: #00313d;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 0 auto;
+  margin-top: 16px;
+  border-radius: 12px !important;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
 }
 
-.google-btn i {
-  font-size: 14px;
+/* iframe у середині Google-кнопки */
+.g_id_signin iframe {
+  border-radius: 12px !important;
+  box-shadow: 0 4px 8px rgba(21, 21, 21, 0.2);
+  transform: scale(0.95); /* трішки зменшити розмір */
+  transition: transform 0.2s ease-in-out;
 }
-.google-btn:hover {
-  background-color: #00313d;
-  color: #cfe9f1;
-  box-shadow: 0 8px 24px 0 rgba(16, 39, 112, 0.2);
+
+.g_id_signin:hover iframe {
+  transform: scale(1);
+  box-shadow: 0 8px 24px rgba(16, 39, 112, 0.2);
 }
