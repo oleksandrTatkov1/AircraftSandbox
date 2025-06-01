@@ -392,6 +392,36 @@ html, body {
     display: block;
 }
 
+/* Ховаємо профіль у мобільному меню за замовчуванням */
+.nav__item.mobile-profile {
+  display: none;
+}
+
+/* Показати профіль зверху меню при мобільній адаптації */
+@media (max-width: 767px) {
+  .nav__item.mobile-profile {
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+  }
+
+  .nav__item.mobile-profile img.profile-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+
+  .nav__item.mobile-profile img.profile-icon:hover {
+    transform: scale(1.1);
+  }
+
+  .nav__item.desktop-profile {
+    display: none;
+  }
+}
   
 
 
@@ -407,9 +437,6 @@ html, body {
     .menu-btn {
         overflow: auto;
         display: flex;
-    }
-    .header__registration{
-        display: none;
     }
 
     .header__menu{
