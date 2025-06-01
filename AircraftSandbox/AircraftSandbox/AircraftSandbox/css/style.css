@@ -554,6 +554,7 @@ html, body {
         display: flex;
         flex-direction: column;
         align-items: center;
+        gap: 8px;
     }
     
     .header__menu.menu--active {
